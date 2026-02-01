@@ -14,7 +14,7 @@
     
     <style>
         /* =========================================
-           NEO-BRUTALIST THEME
+           1. NEO-BRUTALIST THEME VARIABLES
            ========================================= */
         :root {
             /* Palette */
@@ -38,6 +38,7 @@
             --font-ui: 'Courier New', Courier, monospace;
         }
 
+        /* Dark Mode Override */
         [data-theme="dark"] {
             --c-bg: #121212;
             --c-panel: #1e1e1e;
@@ -46,7 +47,7 @@
             --c-primary: #bfa300;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
         body {
             background-color: var(--c-bg);
@@ -56,10 +57,11 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: background 0.3s;
         }
 
         /* =========================================
-           UI COMPONENTS
+           2. UI COMPONENT CLASSES
            ========================================= */
         .btn {
             background: var(--c-panel);
@@ -70,10 +72,14 @@
             font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.05s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            transition: all 0.1s;
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px;
             font-size: 11px;
             color: #000;
+            user-select: none;
         }
         .btn:hover { 
             background: var(--c-primary); 
@@ -88,35 +94,50 @@
         
         .btn-primary { background: var(--c-primary); }
         .btn-secondary { background: var(--c-secondary); }
+        .btn-accent { background: var(--c-accent); }
         .btn-danger { background: var(--c-danger); color: #fff; }
-        .btn-danger:hover { background: #ff3333; color: #fff; }
         
         .btn-sm { padding: 4px 8px; font-size: 10px; }
-        .btn-icon { width: 34px; height: 34px; padding: 0; }
+        .btn-icon { width: 36px; height: 36px; padding: 0; }
+        .btn-full { width: 100%; }
 
         .panel {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
             z-index: 10;
-            display: flex;
-            flex-direction: column;
         }
 
+        /* Form Elements */
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px; border: 2px solid #000; font-family: var(--font-ui);
+            background: var(--c-bg); color: var(--c-text);
+            font-size: 13px; transition: background 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus { background: #fff; }
+
         /* =========================================
-           LAYOUT
+           3. LAYOUT STRUCTURE
            ========================================= */
         header {
-            height: 50px;
+            height: 56px;
             border-bottom: var(--border-width) solid var(--c-border);
             background: var(--c-primary);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 15px;
             z-index: 20;
             flex-shrink: 0;
         }
         .logo { font-size: 18px; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 8px;}
 
         #app-container {
-            display: flex; flex: 1; overflow: hidden; position: relative;
+            display: flex; 
+            flex: 1; 
+            overflow: hidden; 
+            position: relative;
         }
 
         /* SIDEBAR */
@@ -127,11 +148,12 @@
             flex-direction: column;
             overflow-y: auto;
             flex-shrink: 0;
+            background: var(--c-panel);
             transition: transform 0.3s ease;
         }
 
         .sidebar-section { padding: 15px; border-bottom: 2px solid var(--c-border); }
-        .sidebar-title { font-weight: 900; margin-bottom: 10px; display: block; font-size: 13px; text-transform: uppercase; }
+        .sidebar-title { font-weight: 900; margin-bottom: 10px; display: block; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--c-primary); padding-bottom: 4px; display: inline-block;}
 
         .format-option {
             display: flex; align-items: center; width: 100%; text-align: left;
@@ -142,40 +164,47 @@
             font-weight: bold; font-size: 12px;
             transition: 0.1s;
         }
-        .format-option:hover { background: #eee; }
+        .format-option:hover { background: #eee; transform: translateX(2px); }
         .format-option.active { background: var(--c-accent); color: #fff; border-color: #000; box-shadow: 2px 2px 0 #000; }
 
-        /* CHECKLIST STYLES */
+        /* Toolbar Grid */
+        .toolbar-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
+        }
+
+        /* Checklist */
         .checklist-item {
             display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: bold;
-            cursor: pointer;
+            cursor: pointer; user-select: none;
         }
         .checklist-item input { width: 16px; height: 16px; margin-right: 10px; accent-color: var(--c-success); cursor: pointer;}
         
-        /* WORKSPACE */
+        /* WORKSPACE (The Gray Area) */
         #workspace {
             flex: 1;
             background-color: #bbb;
             /* Graph paper grid pattern */
-            background-image: linear-gradient(var(--c-border) 1px, transparent 1px), linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
             background-size: 20px 20px;
             background-color: #e0e0e0;
             overflow: auto;
             padding: 40px;
-            display: flex; justify-content: center;
+            display: flex; 
+            justify-content: center;
         }
 
-        /* THE PAPER SHEET */
+        /* THE A4 PAPER SHEET */
         #paper {
-            width: 210mm; /* A4 Width */
-            min-height: 297mm; /* A4 Height */
+            width: 210mm; 
+            min-height: 297mm; 
             background: white;
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             position: relative;
             transition: all 0.3s ease;
             margin-bottom: 40px;
+            padding: 0; /* Padding handled by specific style classes */
         }
 
         /* EDITOR AREA */
@@ -185,6 +214,7 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             padding: 0;
+            min-height: 200px;
         }
 
         /* Cover Page */
@@ -200,11 +230,6 @@
             padding-bottom: 20px;
         }
 
-        /* Formatting Toolbar (Grid) */
-        .toolbar-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px;
-        }
-
         /* FOOTER */
         footer {
             height: 30px; background: var(--c-panel); border-top: var(--border-width) solid var(--c-border);
@@ -213,17 +238,17 @@
         }
 
         /* =========================================
-           ACADEMIC STYLES (Applied to #paper)
+           4. ACADEMIC STYLES (The Magic)
            ========================================= */
         
         /* ABNT (Brazil - NBR 14724) */
         .style-abnt {
             font-family: Arial, sans-serif;
             color: black;
-            /* Margins handled in @media print, set for preview here loosely */
-            padding: 30px; 
         }
-        /* Apply to children paragraphs */
+        /* Margins for Screen Preview */
+        .style-abnt #editor-area, .style-abnt #cover-page { padding: 3cm 2cm 2cm 3cm; }
+        
         .style-abnt #editor-area, .style-abnt p, .style-abnt li {
             font-size: 12pt;
             line-height: 1.5;
@@ -231,32 +256,37 @@
             margin-bottom: 0; 
             text-indent: 1.25cm;
         }
+        .style-abnt p:first-of-type, .style-abnt h1 + p { text-indent: 1.25cm; }
         .style-abnt h1 { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0 10px 0; text-indent: 0; }
         .style-abnt h2 { font-size: 12pt; font-weight: bold; text-align: left; margin: 10px 0; text-indent: 0; }
-        .style-abnt #cover-page h1 { font-size: 16pt; margin-bottom: 40px; }
-        .style-abnt #cover-page h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 120px; }
+        
+        /* Cover specific */
+        .style-abnt #cover-page h1 { font-size: 16pt; margin-bottom: 40px; font-weight: bold; text-align: center; }
+        .style-abnt #cover-page h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 120px; text-align: center; }
 
         /* APA (US/Canada - 7th Ed) */
         .style-apa {
             font-family: 'Times New Roman', serif;
-            padding: 30px;
+            color: black;
         }
+        .style-apa #editor-area, .style-apa #cover-page { padding: 1in; }
+        
         .style-apa #editor-area, .style-apa p, .style-apa li {
             font-size: 12pt;
             line-height: 2; /* Double spacing */
             text-align: left;
-            margin-bottom: 0; /* APA double space applies to gap between paras too usually, but cleaner css uses margins */
         }
-        .style-apa p { margin-bottom: 12px; text-indent: 0.5in; } 
-        .style-apa p:first-of-type { text-indent: 0; }
-        .style-apa h1 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10px; }
-        .style-apa #cover-page h2 { font-size: 14pt; margin-bottom: 40px; }
+        .style-apa p { margin-bottom: 0; text-indent: 0.5in; }
+        .style-apa h1 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10px; text-indent: 0; }
+        .style-apa #cover-page h2 { font-size: 14pt; margin-bottom: 40px; text-align: center;}
         
         /* MLA (Humanities - 9th Ed) */
         .style-mla {
             font-family: 'Times New Roman', serif;
-            padding: 30px;
+            color: black;
         }
+        .style-mla #editor-area, .style-mla #cover-page { padding: 1in; }
+        
         .style-mla #editor-area, .style-mla p {
             font-size: 12pt;
             line-height: 1;
@@ -265,10 +295,12 @@
         }
         .style-mla h1 { font-size: 14pt; font-weight: bold; text-align: left; margin-bottom: 5px; }
 
-        /* Helper: Modal */
+        /* =========================================
+           5. MODALS & UTILS
+           ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.8);
             display: flex; align-items: center; justify-content: center;
             z-index: 1000;
             backdrop-filter: blur(2px);
@@ -281,48 +313,46 @@
             box-shadow: 10px 10px 0px #000;
             display: flex; flex-direction: column; gap: 10px;
             animation: slideIn 0.2s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         @keyframes slideIn { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
         
         .modal-header { font-size: 18px; font-weight: 900; margin-bottom: 10px; border-bottom: 3px solid #000; padding-bottom: 10px;}
-        
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 8px; border: 2px solid #000; font-family: var(--font-ui);
-            background: var(--c-bg);
-            font-size: 13px;
-        }
-        .form-group textarea { height: 60px; resize: none; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
 
         /* Toast */
         .toast {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            background: var(--c-success); color: #000;
+            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
+            background: var(--c-primary); color: #000;
             padding: 10px 20px; border: 2px solid #000;
             box-shadow: 4px 4px 0px #000;
             font-weight: bold; z-index: 2000;
-            animation: popUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
         }
+        .toast.hidden { display: none; }
         @keyframes popUp { from {transform: translate(-50%, 100%); opacity: 0;} to {transform: translate(-50%, 0); opacity: 1;} }
 
-        /* Focus Mode (Zen Mode) */
-        body.focus-mode #sidebar, body.focus-mode header, body.focus-mode footer, body.focus-mode .modal-overlay, body.focus-mode .toast, body.focus-mode .toolbar-grid, body.focus-mode #zen-toggle {
-            display: none;
+        /* Focus Mode */
+        body.focus-mode #sidebar, body.focus-mode header, body.focus-mode footer, 
+        body.focus-mode .modal-overlay, body.focus-mode .toast, 
+        body.focus-mode #zen-toggle-wrapper {
+            display: none !important;
         }
         body.focus-mode #workspace { padding: 0; background: #888; }
         body.focus-mode #paper { box-shadow: none; margin: 40px auto; width: 210mm; }
-        #zen-toggle { position: fixed; top: 60px; right: 20px; z-index: 100; display: none; }
-        body.focus-mode #zen-toggle { display: block; }
+        
+        #zen-toggle-wrapper { position: fixed; top: 70px; right: 20px; z-index: 100; display: none; }
+        body.focus-mode #zen-toggle-wrapper { display: block; }
 
         /* =========================================
-           PRINT / PDF ENGINE
+           6. PRINT ENGINE
            ========================================= */
         @media print {
             /* Hide UI */
             body { background: white; height: auto; overflow: visible; display: block; }
-            header, #sidebar, footer, .modal-overlay, .toast, .toolbar-grid, #zen-toggle, #mobile-menu-btn { display: none !important; }
+            header, #sidebar, footer, .modal-overlay, .toast, .toolbar-grid, #zen-toggle-wrapper, #mobile-menu-btn { display: none !important; }
             
             /* Show only paper content */
             #workspace { padding: 0; background: white; display: block; overflow: visible; }
@@ -332,40 +362,22 @@
                 border: none;
             }
 
-            /* FORCE PAGE MARGINS */
+            /* FORCE PAGE MARGINS - Use @page to override browser defaults */
             @page {
                 size: A4;
                 margin: 0; /* We handle margins inside #paper to avoid browser double margins */
             }
             
-            /* ABNT Margins (3cm Left/Top, 2cm Right/Bottom) */
-            .style-abnt #paper-wrapper, .style-abnt {
-                padding: 3cm 2cm 2cm 3cm !important;
-                width: 100% !important;
-            }
-
-            /* APA Margins (1 inch) */
-            .style-apa #paper-wrapper, .style-apa {
-                padding: 1in !important;
-                width: 100% !important;
-            }
-            
-            /* MLA Margins (1 inch) */
-            .style-mla #paper-wrapper, .style-mla {
-                padding: 1in !important;
-                width: 100% !important;
-            }
-            
             /* Ensure Cover Page breaks correctly */
-            #cover-page { page-break-after: always; border: none; min-height: auto; padding-top: 3cm;}
+            #cover-page { page-break-after: always; border: none; min-height: auto; padding-top: 3cm !important;}
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            #sidebar { position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); background: var(--c-panel);}
+            #sidebar { position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); background: var(--c-panel); box-shadow: 5px 0 0 #000;}
             #sidebar.mobile-active { transform: translateX(0); }
             #mobile-menu-btn { display: block !important; }
-            #zen-toggle { display: none !important; }
+            #zen-toggle-wrapper { display: none !important; }
         }
         #mobile-menu-btn { display: none; position: absolute; top: 10px; left: 10px; z-index: 60; }
     </style>
@@ -375,10 +387,10 @@
     <!-- HEADER -->
     <header>
         <button class="btn btn-icon" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-        <div class="logo"><i class="fas fa-graduation-cap"></i> THESIS.WEB <span style="font-size:10px; font-weight:normal; margin-left:5px; background:#000; color:#fff; padding:2px 4px;">PRO</span></div>
+        <div class="logo"><i class="fas fa-graduation-cap"></i> THESIS.WEB <span style="font-size:10px; font-weight:normal; margin-left:5px; background:#000; color:#fff; padding:2px 4px;">BETA</span></div>
         <div style="display:flex; gap:5px;">
             <button class="btn btn-sm" id="btn-guide" title="Open Guide"><i class="fas fa-book"></i> Guide</button>
-            <button class="btn btn-sm" id="btn-ref" title="Insert Reference"><i class="fas fa-book-open"></i> Refs</button>
+            <button class="btn btn-sm btn-accent" id="btn-ref" title="Insert Reference"><i class="fas fa-book-open"></i> Refs</button>
             <button class="btn btn-sm btn-primary" id="btn-save"><i class="fas fa-save"></i> Save</button>
             <button class="btn btn-sm" id="btn-print"><i class="fas fa-print"></i> PDF</button>
             <button class="btn btn-sm" id="btn-zen" title="Focus Mode"><i class="fas fa-expand"></i></button>
@@ -415,7 +427,6 @@
                     <button class="btn btn-sm" onclick="App.exec('underline')"><u>U</u></button>
                     <button class="btn btn-sm" onclick="App.exec('strikeThrough')"><s>S</s></button>
                 </div>
-                <div style="height:5px;"></div>
                 <div class="toolbar-grid">
                     <button class="btn btn-sm" onclick="App.exec('justifyLeft')"><i class="fas fa-align-left"></i></button>
                     <button class="btn btn-sm" onclick="App.exec('justifyCenter')"><i class="fas fa-align-center"></i></button>
@@ -423,25 +434,26 @@
                     <button class="btn btn-sm" onclick="App.exec('justifyFull')"><i class="fas fa-align-justify"></i></button>
                 </div>
                 <div style="margin-top:10px;">
-                    <button class="btn btn-sm" style="width:100%" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i> Bullet List</button>
-                    <button class="btn btn-sm" style="width:100%; margin-top:5px;" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i> Numbered List</button>
+                    <button class="btn btn-sm btn-full" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i> Bullet List</button>
+                    <button class="btn btn-sm btn-full" style="margin-top:5px;" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i> Numbered List</button>
                 </div>
             </div>
 
             <!-- Page Tools -->
             <div class="sidebar-section">
                 <span class="sidebar-title">3. Page Tools</span>
-                <button class="btn btn-sm btn-secondary" style="width:100%; margin-bottom:8px;" id="btn-toggle-cover" onclick="App.toggleCover()">
+                <button class="btn btn-sm btn-secondary btn-full" id="btn-toggle-cover" onclick="App.toggleCover()">
                     <i class="fas fa-file"></i> <span id="cover-btn-text">Insert Cover Page</span>
                 </button>
-                <small style="display:block; margin-bottom:8px; color:#666;">Auto-formats cover for selected standard.</small>
-                <button class="btn btn-sm btn-secondary" style="width:100%; margin-bottom:8px;" onclick="App.insertStructure('abstract')">
+                <small style="display:block; margin:8px 0; color:#666; line-height:1.2;">Auto-formats cover for selected standard.</small>
+                
+                <button class="btn btn-sm btn-secondary btn-full" style="margin-bottom:8px;" onclick="App.insertStructure('abstract')">
                     <i class="fas fa-heading"></i> Insert Abstract
                 </button>
-                <button class="btn btn-sm btn-secondary" style="width:100%;" onclick="App.insertStructure('references')">
+                <button class="btn btn-sm btn-secondary btn-full" onclick="App.insertStructure('references')">
                     <i class="fas fa-book-open"></i> Insert Ref. Header
                 </button>
-                <button class="btn btn-sm btn-danger" style="width:100%; margin-top:8px;" onclick="App.clearPaper()"><i class="fas fa-trash"></i> Clear Paper</button>
+                <button class="btn btn-sm btn-danger btn-full" style="margin-top:8px;" onclick="App.clearPaper()"><i class="fas fa-trash"></i> Clear Paper</button>
             </div>
 
             <!-- Checklist -->
@@ -465,13 +477,15 @@
         <!-- MAIN WORKSPACE -->
         <main id="workspace">
             <div id="paper" class="style-abnt">
-                <!-- Cover Page -->
+                <!-- Cover Page (Dynamic Content) -->
                 <div id="cover-page">
-                    <h2 contenteditable="true">INSTITUTION NAME</h2>
-                    <h3 contenteditable="true">Author Name</h3>
-                    <h1 contenteditable="true">Title of the Work</h1>
-                    <p style="margin-top:100px; text-indent:0;" contenteditable="true">City</p>
-                    <p style="text-indent:0;" contenteditable="true">Year</p>
+                    <h2 contenteditable="true" id="cover-inst">INSTITUTION NAME</h2>
+                    <h3 contenteditable="true" id="cover-author">Author Name</h3>
+                    <h1 contenteditable="true" id="cover-title">Title of the Work</h1>
+                    <div style="margin-top:100px; text-align:center; line-height:1.5; text-indent:0;">
+                        <p contenteditable="true">City</p>
+                        <p contenteditable="true">Year</p>
+                    </div>
                 </div>
 
                 <!-- Main Text Editor -->
@@ -489,28 +503,30 @@
     <footer>
         <div id="status-std">STD: ABNT (NBR 14724)</div>
         <div id="status-stats">Words: 0 | Chars: 0</div>
-        <div id="status-save"><i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved</div>
+        <div id="status-save"><i class="fas fa-check-circle" style="color:var(--c-success)"></i> Ready</div>
     </footer>
 
     <!-- FOCUS MODE TOGGLE -->
-    <button class="btn btn-icon" id="zen-toggle" onclick="App.toggleZen()">
-        <i class="fas fa-compress"></i> Exit Focus
-    </button>
+    <div id="zen-toggle-wrapper">
+        <button class="btn btn-icon" onclick="App.toggleZen()">
+            <i class="fas fa-compress"></i>
+        </button>
+    </div>
 
     <!-- GUIDE MODAL -->
     <div class="modal-overlay hidden" id="guide-modal">
         <div class="modal-content">
-            <div class="modal-header"><i class="fas fa-info-circle"></i> How to Use</div>
+            <div class="modal-header"><i class="fas fa-info-circle"></i> Quick Guide</div>
             <div style="font-size:12px; line-height:1.6; max-height:300px; overflow-y:auto;">
                 <b>1. Standard:</b> Choose ABNT, APA, or MLA from the sidebar. This sets fonts, margins, and spacing.
                 <br><br>
-                <b>2. Writing:</b> Type in the main area. Press <b>Enter</b> for new paragraphs. Use toolbar for formatting.
+                <b>2. Writing:</b> Type in the main area. Use toolbar for formatting (Bold, Italic, Align).
                 <br><br>
                 <b>3. References:</b> Click the <b>"Refs"</b> button. Fill in the form to generate a correctly formatted Bibliography entry.
                 <br><br>
-                <b>4. Export:</b> <b>"Save"</b> downloads an HTML file. <b>"PDF"</b> opens the print dialog.
+                <b>4. Export:</b> <b>"Save"</b> downloads an .html file. <b>"PDF"</b> opens the print dialog.
                 <br><br>
-                <i style="color:var(--c-danger)">Important for PDF:</i> In the print settings, uncheck "Headers and Footers" to remove the URL and date for a professional look.
+                <i style="color:var(--c-danger)">Important for PDF:</i> In print settings, uncheck "Headers and Footers" and ensure margins are set to "None" or "Default" (the app handles page margins).
             </div>
             <div style="text-align:right; margin-top:20px;">
                 <button class="btn btn-primary" onclick="App.closeModal('guide-modal')">Got it</button>
@@ -521,10 +537,10 @@
     <!-- REFERENCE GENERATOR MODAL -->
     <div class="modal-overlay hidden" id="ref-modal">
         <div class="modal-content">
-            <div class="modal-header">Bibliographic Reference</div>
+            <div class="modal-header">Reference Generator</div>
             
             <div class="form-group">
-                <label>Standard</label>
+                <label>Format Standard</label>
                 <select id="ref-std" onchange="App.updateRefPreview()">
                     <option value="abnt">ABNT (NBR 14724)</option>
                     <option value="apa">APA (7th Ed.)</option>
@@ -532,8 +548,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Author (Surname, Initial)</label>
-                <input type="text" id="ref-author" placeholder="Silva, J." oninput="App.updateRefPreview()">
+                <label>Author (Surname, Name)</label>
+                <input type="text" id="ref-author" placeholder="Silva, João" oninput="App.updateRefPreview()">
             </div>
             <div class="form-group">
                 <label>Title</label>
@@ -561,14 +577,14 @@
             </div>
 
             <!-- Live Preview -->
-            <div style="background:#eee; border:1px dashed #000; padding:10px; margin-bottom:10px; font-family:serif; font-size:12px;">
+            <div style="background:#eee; border:2px dashed #000; padding:10px; margin-bottom:10px; font-family:serif; font-size:12px;">
                 <label style="font-family:var(--font-ui); font-size:10px; display:block; margin-bottom:4px;">PREVIEW:</label>
-                <div id="ref-preview-output">...</div>
+                <div id="ref-preview-output" style="color:#000;">...</div>
             </div>
             
             <div class="modal-actions">
                 <button class="btn" onclick="App.closeModal('ref-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.insertReference()"><i class="fas fa-plus"></i> Insert</button>
+                <button class="btn btn-primary" onclick="App.insertReference()"><i class="fas fa-plus"></i> Insert Ref</button>
             </div>
         </div>
     </div>
@@ -576,19 +592,18 @@
     <!-- PRINT INSTRUCTION MODAL -->
     <div class="modal-overlay hidden" id="print-modal">
         <div class="modal-content" style="border-color: var(--c-accent);">
-            <div class="modal-header"><i class="fas fa-exclamation-triangle"></i> Before Printing</div>
+            <div class="modal-header"><i class="fas fa-exclamation-triangle"></i> Print Setup</div>
             <div style="font-size:13px; line-height:1.5;">
-                <p>To get a professional PDF without browser headers (URL, date), please follow these steps:</p>
+                <p>To get a professional PDF without browser junk (URLs, dates), please check these settings in the print dialog:</p>
                 <ol style="margin-left:20px; margin-top:10px;">
-                    <li>In the print dialog, look for <b>"More settings"</b>.</li>
-                    <li><b>Uncheck</b> the box that says <b>"Headers and footers"</b>.</li>
-                    <li>Ensure <b>Background graphics</b> is checked (if you want colors).</li>
-                    <li>Set margins to <b>"Default"</b> or <b>"None"</b> (The editor handles its own margins).</li>
+                    <li><b>More settings</b> -> Uncheck <b>"Headers and footers"</b>.</li>
+                    <li>Check <b>"Background graphics"</b> (if you want highlight colors).</li>
+                    <li>Set margins to <b>"Default"</b> or <b>"None"</b> (The editor handles the academic margins).</li>
                 </ol>
             </div>
             <div class="modal-actions">
                 <button class="btn" onclick="App.closeModal('print-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.confirmPrint()"><i class="fas fa-print"></i> Open Print Dialog</button>
+                <button class="btn btn-primary" onclick="App.confirmPrint()"><i class="fas fa-print"></i> Print Now</button>
             </div>
         </div>
     </div>
@@ -599,60 +614,71 @@
     <script>
         class ThesisApp {
             constructor() {
+                // DOM Elements
                 this.paper = document.getElementById('paper');
                 this.editor = document.getElementById('editor-area');
                 this.currentStandard = 'abnt';
                 
-                setTimeout(() => this.init(), 0);
+                // Debounce timer for auto-save
+                this.saveTimer = null;
             }
 
             init() {
-                console.log("System Loaded.");
+                console.log("Thesis.web System Initialized.");
                 this.loadState();
                 this.bindEvents();
                 this.updateStats();
                 Utils.toast('System Ready');
             }
 
-            // --- CORE FUNCTIONALITY ---
+            // --- CORE EDITOR FUNCTIONS ---
             exec(command, value = null) {
                 document.execCommand(command, false, value);
                 this.editor.focus();
-                this.autoSave();
+                this.triggerAutoSave();
             }
 
             bindEvents() {
+                // Editor Input Events
                 this.editor.addEventListener('input', () => {
                     this.updateStats();
-                    this.autoSave();
+                    this.triggerAutoSave();
                 });
 
+                // Global Buttons
                 document.getElementById('btn-save').onclick = () => this.downloadHTML();
-                document.getElementById('btn-print').onclick = () => {
-                    this.openModal('print-modal');
-                };
+                document.getElementById('btn-print').onclick = () => this.openModal('print-modal');
                 document.getElementById('btn-ref').onclick = () => this.openRefModal();
                 document.getElementById('btn-guide').onclick = () => this.openModal('guide-modal');
                 document.getElementById('btn-zen').onclick = () => this.toggleZen();
                 
+                // Mobile Menu
                 document.getElementById('mobile-menu-btn').onclick = () => {
                     document.getElementById('sidebar').classList.toggle('mobile-active');
                 };
+
+                // Close modals on overlay click
+                document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                    overlay.addEventListener('click', (e) => {
+                        if(e.target === overlay) this.closeModal(overlay.id);
+                    });
+                });
             }
 
-            // --- STANDARDS LOGIC ---
+            // --- ACADEMIC STANDARDS LOGIC ---
             setStandard(std) {
                 this.currentStandard = std;
                 
-                // UI Updates
+                // 1. Update Sidebar UI
                 document.querySelectorAll('.format-option').forEach(btn => btn.classList.remove('active'));
                 const activeBtn = document.querySelector(`.format-option[data-style="style-${std}"]`);
                 if(activeBtn) activeBtn.classList.add('active');
 
-                // Paper Class
+                // 2. Update Paper Class (This triggers CSS changes)
                 this.paper.className = '';
                 this.paper.classList.add(`style-${std}`);
 
+                // 3. Update Footer Status
                 const names = { 
                     abnt: 'ABNT (NBR 14724)', 
                     apa: 'APA (7th Ed)', 
@@ -660,50 +686,57 @@
                 };
                 document.getElementById('status-std').innerText = `STD: ${names[std]}`;
 
+                // 4. Update Dynamic Labels (Cover Page, Structures)
+                this.updateStandardLabels(std);
+
                 this.saveState();
                 Utils.toast(`Switched to ${names[std]}`);
             }
 
-            // --- COVER PAGE ---
+            updateStandardLabels(std) {
+                // Update Cover Page Defaults based on language/standard style
+                const inst = document.getElementById('cover-inst');
+                const title = document.getElementById('cover-title');
+
+                if (std === 'abnt') {
+                    if(inst.innerText === 'INSTITUTION NAME' || inst.innerText === 'University Name') inst.innerText = 'NOME DA INSTITUIÇÃO';
+                    // No strict title caps for ABNT usually, but layout is specific
+                } else {
+                    if(inst.innerText === 'NOME DA INSTITUIÇÃO') inst.innerText = 'University Name';
+                    if(std === 'apa') title.style.textDecoration = 'none';
+                }
+            }
+
+            // --- COVER PAGE LOGIC ---
             toggleCover() {
                 const cover = document.getElementById('cover-page');
                 const btnText = document.getElementById('cover-btn-text');
                 const btn = document.getElementById('btn-toggle-cover');
                 
-                // Check current computed style
-                const isHidden = cover.style.display === 'none' || cover.style.display === '';
+                const isHidden = getComputedStyle(cover).display === 'none';
                 
                 if (isHidden) {
                     cover.style.display = 'flex';
                     btnText.innerText = 'Remove Cover Page';
                     btn.classList.add('btn-danger');
+                    btn.classList.remove('btn-secondary');
                 } else {
                     cover.style.display = 'none';
                     btnText.innerText = 'Insert Cover Page';
                     btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-secondary');
                 }
-                this.autoSave();
-            }
-
-            clearPaper() {
-                if(confirm('Are you sure? This cannot be undone.')) {
-                    this.editor.innerHTML = '<h1>Start writing...</h1><p>Content cleared.</p>';
-                    this.updateStats();
-                    this.autoSave();
-                }
+                this.triggerAutoSave();
             }
 
             // --- REFERENCE GENERATOR ---
             openRefModal() {
+                // Set the dropdown to current app standard
                 document.getElementById('ref-std').value = this.currentStandard;
                 // Clear fields
-                document.getElementById('ref-author').value = '';
-                document.getElementById('ref-title').value = '';
-                document.getElementById('ref-subtitle').value = '';
-                document.getElementById('ref-edition').value = '';
-                document.getElementById('ref-city').value = '';
-                document.getElementById('ref-pub').value = '';
-                document.getElementById('ref-year').value = '';
+                ['ref-author','ref-title','ref-subtitle','ref-edition','ref-city','ref-pub','ref-year'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
                 this.updateRefPreview();
                 this.openModal('ref-modal');
             }
@@ -720,6 +753,7 @@
 
                 let html = '';
 
+                // Simplified Logic for common book citations
                 if (std === 'abnt') {
                     // ABNT: AUTHOR. <b>Title</b>: subtitle. Edition. City: Publisher, Year.
                     html = `${auth}. <b>${title}</b>${sub ? ': ' + sub : ''}${edition ? '. ' + edition : ''}. ${city}: ${pub}, ${year}.`;
@@ -735,25 +769,65 @@
             }
 
             insertReference() {
-                // Clone the preview html
                 const html = document.getElementById('ref-preview-output').innerHTML;
-                
-                // Create a paragraph
                 const p = document.createElement('p');
                 p.innerHTML = html;
                 
-                // Append to editor
+                // Ensure it has correct styling class
+                p.style.marginBottom = "0"; 
+                
                 this.editor.appendChild(p);
                 
-                // Scroll to bottom
-                this.editor.scrollTop = this.editor.scrollHeight;
+                // Move cursor to end
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(p);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
                 
                 this.closeModal('ref-modal');
-                this.autoSave();
+                this.triggerAutoSave();
                 Utils.toast('Reference Added');
             }
 
-            // --- PRINT WORKFLOW ---
+            // --- STRUCTURE HELPERS ---
+            insertStructure(type) {
+                const h2 = document.createElement('h2');
+                let label = '';
+                
+                if(type === 'abstract') {
+                    label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
+                    // Insert at top of editor, after cover logic is separate
+                    this.editor.insertBefore(h2, this.editor.firstChild);
+                    
+                    const p = document.createElement('p');
+                    p.innerHTML = '<br>';
+                    this.editor.insertBefore(p, this.editor.children[1]);
+                    
+                } else if (type === 'references') {
+                    label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
+                    this.editor.appendChild(h2);
+                    
+                    const p = document.createElement('p');
+                    p.innerHTML = '<br>';
+                    this.editor.appendChild(p);
+                }
+                
+                h2.innerText = label;
+                this.triggerAutoSave();
+                Utils.toast(`${label} Section Added`);
+            }
+
+            clearPaper() {
+                if(confirm('Are you sure? This will wipe all text and cannot be undone.')) {
+                    this.editor.innerHTML = '<p>Start writing...</p>';
+                    this.updateStats();
+                    this.triggerAutoSave();
+                }
+            }
+
+            // --- EXPORT & PRINT ---
             confirmPrint() {
                 this.closeModal('print-modal');
                 setTimeout(() => {
@@ -761,55 +835,27 @@
                 }, 300);
             }
 
-            // --- STRUCTURE HELPERS ---
-            insertStructure(type) {
-                if(type === 'abstract') {
-                    const h2 = document.createElement('h2');
-                    const label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
-                    h2.innerText = label;
-                    
-                    const p = document.createElement('p');
-                    p.innerHTML = '<br>';
-                    
-                    this.editor.insertBefore(h2, this.editor.firstChild);
-                    this.editor.insertBefore(p, this.editor.children[1]);
-                    this.autoSave();
-                } else if (type === 'references') {
-                    const h2 = document.createElement('h2');
-                    const label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
-                    h2.innerText = label;
-
-                    const p = document.createElement('p');
-                    p.innerHTML = '<br>';
-                    
-                    this.editor.appendChild(h2);
-                    this.editor.appendChild(p);
-                    this.autoSave();
-                }
-            }
-
-            // --- EXPORT HTML ---
             downloadHTML() {
                 const stdName = this.currentStandard.toUpperCase();
                 const date = new Date().toISOString().slice(0,10);
-                const content = this.paper.outerHTML;
                 
-                // Inline minimal CSS for the downloaded file to look good locally
-                let css = '';
-                if (this.currentStandard === 'abnt') {
-                    css = `body { font-family: Arial, sans-serif; padding: 3cm 2cm 2cm 3cm; }
-                           h1 { font-size: 14pt; font-weight: bold; text-align: center; }
-                           p { font-size: 12pt; line-height: 1.5; text-align: justify; text-indent: 1.25cm; margin: 0; }`;
-                } else if (this.currentStandard === 'apa') {
-                    css = `body { font-family: 'Times New Roman', serif; padding: 1in; }
-                           h1 { font-size: 12pt; font-weight: bold; text-align: center; }
-                           p { font-size: 12pt; line-height: 2; text-align: left; margin: 0 0 10px 0; text-indent: 0.5in; }
-                           p:first-of-type { text-indent: 0; }`;
-                } else {
-                    css = `body { font-family: 'Times New Roman', serif; padding: 1in; }
-                           h1 { font-size: 14pt; font-weight: bold; }
-                           p { font-size: 12pt; line-height: 1; text-align: left; margin: 0 0 10px 0; }`;
-                }
+                // We clone the paper to clean it up if necessary, or just take outerHTML
+                let content = this.paper.outerHTML;
+                
+                // Generate minimal CSS for the downloaded file
+                // We use the existing styles but simplified for the standalone file
+                let css = `
+                    body { font-family: Arial, sans-serif; line-height: 1.5; }
+                    .style-apa, .style-mla { font-family: "Times New Roman", serif; }
+                    #paper { width: 210mm; margin: 0 auto; }
+                    .style-abnt #editor-area { padding: 3cm 2cm 2cm 3cm; font-size: 12pt; text-align: justify; }
+                    .style-apa #editor-area { padding: 1in; font-size: 12pt; line-height: 2; }
+                    .style-mla #editor-area { padding: 1in; font-size: 12pt; }
+                    #cover-page { min-height: 297mm; border-bottom: 1px solid #ccc; margin-bottom: 20px; display:flex; flex-direction:column; justify-content:center; align-items:center; page-break-after: always;}
+                    h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 10px; }
+                    h2 { font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
+                    p { margin-bottom: 0; }
+                `;
 
                 const htmlFull = `
 <!DOCTYPE html>
@@ -832,54 +878,69 @@
                 a.href = URL.createObjectURL(blob);
                 a.download = `Thesis_${date}_${stdName.toLowerCase()}.html`;
                 a.click();
-                Utils.toast('HTML File Downloaded');
+                Utils.toast('HTML Downloaded');
             }
 
             // --- UTILITIES ---
             updateStats() {
                 const text = this.editor.innerText || '';
-                const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+                // Better word count regex
+                const words = text.trim().split(/[\s\n]+/).filter(w => w.length > 0 && w.match(/[a-zA-Z0-9\u00C0-\u00FF]/)).length;
                 const chars = text.length;
                 document.getElementById('status-stats').innerText = `Words: ${words} | Chars: ${chars}`;
             }
 
-            autoSave() {
-                // Save paper state
-                const content = this.paper.outerHTML;
-                localStorage.setItem('thesis-content', content);
-                localStorage.setItem('thesis-std', this.currentStandard);
-                
+            triggerAutoSave() {
                 const status = document.getElementById('status-save');
                 status.innerHTML = '<i class="fas fa-pen"></i> Saving...';
-                setTimeout(() => {
+                
+                if(this.saveTimer) clearTimeout(this.saveTimer);
+                
+                this.saveTimer = setTimeout(() => {
+                    this.saveState();
                     status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
-                }, 500);
+                }, 1000);
+            }
+
+            saveState() {
+                localStorage.setItem('thesis-content', this.paper.outerHTML);
+                localStorage.setItem('thesis-std', this.currentStandard);
+                localStorage.setItem('thesis-checklist', document.getElementById('sidebar').innerHTML);
             }
 
             loadState() {
-                const saved = localStorage.getItem('thesis-content');
                 const savedStd = localStorage.getItem('thesis-std');
-                
-                if(saved) {
-                    // Replace paper content entirely
-                    // We use a temporary div to parse the HTML safely
-                    const temp = document.createElement('div');
-                    temp.innerHTML = saved;
-                    const newPaper = temp.firstElementChild;
-                    
-                    // Preserve ID
-                    newPaper.id = 'paper';
-                    this.paper.parentNode.replaceChild(newPaper, this.paper);
-                    this.paper = newPaper; // update reference
-                    this.editor = document.getElementById('editor-area'); // update editor reference
-                }
-                
                 if(savedStd) {
                     this.setStandard(savedStd);
                 } else {
                     this.setStandard('abnt');
                 }
                 
+                const saved = localStorage.getItem('thesis-content');
+                if(saved) {
+                    const temp = document.createElement('div');
+                    temp.innerHTML = saved;
+                    const newPaper = temp.firstElementChild;
+                    
+                    // Only swap if valid
+                    if(newPaper && newPaper.id === 'paper') {
+                        newPaper.id = 'paper-loaded'; // temporary id
+                        this.paper.parentNode.replaceChild(newPaper, this.paper);
+                        newPaper.id = 'paper'; // restore id
+                        this.paper = newPaper; // update ref
+                        this.editor = document.getElementById('editor-area'); // update ref
+                    }
+                }
+                
+                // Restore checklist visual state (simple innerHTML swap)
+                // Note: In a real app we'd bind state, but for UI persistence this works
+                /*
+                const savedChecklist = localStorage.getItem('thesis-checklist');
+                if(savedChecklist) {
+                     // Logic to re-check boxes could go here
+                }
+                */
+               
                 this.updateStats();
             }
 
@@ -896,23 +957,26 @@
 
             toggleZen() {
                 document.body.classList.toggle('focus-mode');
+                Utils.toast(document.body.classList.contains('focus-mode') ? 'Zen Mode On' : 'Zen Mode Off');
             }
         }
 
-        // Utility wrapper
+        // Utility Wrapper
         const Utils = {
             toast: (msg) => {
                 const t = document.getElementById('toast-msg');
                 t.innerText = msg;
                 t.classList.remove('hidden');
-                setTimeout(() => t.classList.add('hidden'), 3000);
+                setTimeout(() => t.classList.add('hidden'), 2500);
             }
         };
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        // Bootstrap
+        window.addEventListener('DOMContentLoaded', () => {
             window.App = new ThesisApp();
+            window.App.init();
         });
+
     </script>
 </body>
 </html>
