@@ -36,6 +36,11 @@
             --shadow-active: 2px 2px 0px var(--c-border);
             
             --font-ui: 'Courier New', Courier, monospace;
+            
+            /* Document Dimensions */
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-gap: 20px; /* The visual gap between sheets on screen */
         }
 
         /* Dark Mode Override */
@@ -186,48 +191,83 @@
             /* Graph paper grid pattern */
             background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
             background-size: 20px 20px;
-            background-color: #e0e0e0;
+            background-color: var(--c-bg);
             overflow: auto;
-            padding: 40px;
+            padding: 40px 20px;
             display: flex; 
-            justify-content: center;
+            flex-direction: column;
+            align-items: center; /* Center the paper stack */
         }
 
-        /* THE A4 PAPER SHEET */
+        /* THE A4 PAPER STACK CONTAINER */
         #paper {
-            width: 210mm; 
-            min-height: 297mm; 
-            background: white;
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            width: var(--page-width); 
+            /* Min-height removed to allow expansion, but content defines height */
+            background: transparent; 
+            box-shadow: none; /* Shadow handled by page backgrounds */
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: all 0.3s ease;
             margin-bottom: 40px;
-            padding: 0; /* Padding handled by specific style classes */
         }
 
-        /* EDITOR AREA */
+        /* EDITOR AREA - Multi-Page Logic */
         #editor-area {
             flex: 1;
             outline: none;
             white-space: pre-wrap;
             word-wrap: break-word;
-            padding: 0;
-            min-height: 200px;
+            padding: 0; 
+            min-height: calc(var(--page-height) * 1); /* At least one page */
+            width: 100%;
+            
+            /* THE MAGIC: Visual Infinite Stack */
+            background-color: #fff;
+            /* 
+               Gradient Logic:
+               1. White (Paper) from 0 to (PageHeight - 3px)
+               2. Black (Border) from (PageHeight - 3px) to PageHeight
+               3. Transparent (Gap) from PageHeight to (PageHeight + Gap)
+               4. Repeat
+            */
+            background-image: 
+                linear-gradient(to bottom, 
+                    #fff 0px, 
+                    #fff calc(var(--page-height) - 3px), 
+                    #000 calc(var(--page-height) - 3px), 
+                    #000 var(--page-height), 
+                    transparent var(--page-height), 
+                    transparent calc(var(--page-height) + var(--page-gap))
+                );
+            background-size: 100% calc(var(--page-height) + var(--page-gap));
+            background-repeat: repeat-y;
+            background-attachment: local; /* Scrolls with content */
+            
+            color: #000; /* Always black text on paper */
+            position: relative;
         }
 
         /* Cover Page */
         #cover-page {
-            min-height: 297mm;
+            height: var(--page-height); 
             display: none; /* Hidden by default */
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            page-break-after: always;
-            border-bottom: 1px solid #ddd; /* Visual separator in editor only */
-            padding-bottom: 20px;
+            margin-bottom: 0;
+            
+            /* Match the paper look */
+            background-color: #fff;
+            width: var(--page-width);
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            
+            /* Ensure separation from the next page */
+            margin-bottom: var(--page-gap);
+            
+            /* Reset for specific standards */
+            padding: 0; 
         }
 
         /* FOOTER */
@@ -241,37 +281,49 @@
            4. ACADEMIC STYLES (The Magic)
            ========================================= */
         
-        /* ABNT (Brazil - NBR 14724) */
-        .style-abnt {
-            font-family: Arial, sans-serif;
-            color: black;
+        /* Common Paragraph Rules for Pagination */
+        #editor-area p, #editor-area li {
+            /* Keep text inside lines */
+            orphans: 3;
+            widows: 3;
         }
-        /* Margins for Screen Preview */
-        .style-abnt #editor-area, .style-abnt #cover-page { padding: 3cm 2cm 2cm 3cm; }
+        
+        /* Print Helper: Avoid breaking paragraphs mid-sentence if possible */
+        @media print {
+            #editor-area p, #editor-area h1, #editor-area h2, #editor-area li {
+                break-inside: avoid;
+            }
+        }
+
+        /* ABNT (Brazil - NBR 14724) */
+        .style-abnt #editor-area, .style-abnt #cover-page {
+            /* Margins simulated via padding */
+            padding: 3cm 2cm 2cm 3cm;
+        }
         
         .style-abnt #editor-area, .style-abnt p, .style-abnt li {
+            font-family: Arial, sans-serif;
             font-size: 12pt;
             line-height: 1.5;
             text-align: justify;
             margin-bottom: 0; 
             text-indent: 1.25cm;
         }
-        .style-abnt p:first-of-type, .style-abnt h1 + p { text-indent: 1.25cm; }
-        .style-abnt h1 { font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0 10px 0; text-indent: 0; }
-        .style-abnt h2 { font-size: 12pt; font-weight: bold; text-align: left; margin: 10px 0; text-indent: 0; }
+        /* Fix indent for first paragraph */
+        .style-abnt p:first-of-type { text-indent: 1.25cm; }
+        
+        .style-abnt h1 { font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0 10px 0; text-indent: 0; }
+        .style-abnt h2 { font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; text-align: left; margin: 10px 0; text-indent: 0; }
         
         /* Cover specific */
         .style-abnt #cover-page h1 { font-size: 16pt; margin-bottom: 40px; font-weight: bold; text-align: center; }
         .style-abnt #cover-page h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 120px; text-align: center; }
 
         /* APA (US/Canada - 7th Ed) */
-        .style-apa {
-            font-family: 'Times New Roman', serif;
-            color: black;
-        }
         .style-apa #editor-area, .style-apa #cover-page { padding: 1in; }
         
         .style-apa #editor-area, .style-apa p, .style-apa li {
+            font-family: 'Times New Roman', serif;
             font-size: 12pt;
             line-height: 2; /* Double spacing */
             text-align: left;
@@ -281,13 +333,10 @@
         .style-apa #cover-page h2 { font-size: 14pt; margin-bottom: 40px; text-align: center;}
         
         /* MLA (Humanities - 9th Ed) */
-        .style-mla {
-            font-family: 'Times New Roman', serif;
-            color: black;
-        }
         .style-mla #editor-area, .style-mla #cover-page { padding: 1in; }
         
         .style-mla #editor-area, .style-mla p {
+            font-family: 'Times New Roman', serif;
             font-size: 12pt;
             line-height: 1;
             text-align: left;
@@ -347,7 +396,7 @@
         body.focus-mode #zen-toggle-wrapper { display: block; }
 
         /* =========================================
-           6. PRINT ENGINE
+           6. PRINT ENGINE (The critical part)
            ========================================= */
         @media print {
             /* Hide UI */
@@ -356,20 +405,45 @@
             
             /* Show only paper content */
             #workspace { padding: 0; background: white; display: block; overflow: visible; }
+            
             #paper {
                 box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto;
-                page-break-after: auto;
                 border: none;
+            }
+
+            /* 
+               Remove the visual page separator background for print 
+               because the browser handles actual physical pages.
+            */
+            #editor-area {
+                background-image: none !important;
+                background: white !important;
+                width: 100%;
             }
 
             /* FORCE PAGE MARGINS - Use @page to override browser defaults */
             @page {
                 size: A4;
-                margin: 0; /* We handle margins inside #paper to avoid browser double margins */
+                margin: 0; /* We handle margins inside #editor-area to avoid browser double margins */
             }
             
             /* Ensure Cover Page breaks correctly */
-            #cover-page { page-break-after: always; border: none; min-height: auto; padding-top: 3cm !important;}
+            #cover-page { 
+                page-break-after: always; 
+                border: none; 
+                box-shadow: none;
+                margin: 0;
+                min-height: auto;
+                height: auto;
+                padding-top: 3cm !important; /* Force standard print padding */
+            }
+            
+            /* Handle the bottom of the last page */
+            #editor-area::after {
+                content: "";
+                display: block;
+                height: 20px; /* little buffer */
+            }
         }
 
         /* Mobile Responsive */
@@ -492,8 +566,11 @@
                 <div id="editor-area" contenteditable="true" spellcheck="false">
                     <h1>Introduction</h1>
                     <p>Start writing your academic work here. The text will automatically adjust to the selected standard (ABNT, APA, or MLA).</p>
-                    <p>Use the sidebar to change formatting. Margins are handled automatically for print/PDF export.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <p>Notice how the editor creates a visual "stack" of pages. As you type past the first page, a new page will appear below. This mimics a real document.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
                 </div>
             </div>
         </main>
@@ -520,7 +597,7 @@
             <div style="font-size:12px; line-height:1.6; max-height:300px; overflow-y:auto;">
                 <b>1. Standard:</b> Choose ABNT, APA, or MLA from the sidebar. This sets fonts, margins, and spacing.
                 <br><br>
-                <b>2. Writing:</b> Type in the main area. Use toolbar for formatting (Bold, Italic, Align).
+                <b>2. Writing:</b> Type in the main area. The editor now simulates a stack of pages. When you fill one page, text flows to the next.
                 <br><br>
                 <b>3. References:</b> Click the <b>"Refs"</b> button. Fill in the form to generate a correctly formatted Bibliography entry.
                 <br><br>

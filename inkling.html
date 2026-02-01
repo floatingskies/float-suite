@@ -7,7 +7,7 @@
     
     <!-- PWA Meta -->
     <meta name="theme-color" content="#FFDE59">
-    <meta name="description" content="Robust Vector Graphics Editor with Google Fonts">
+    <meta name="description" content="Robust Vector Graphics Editor">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,9 +29,9 @@
             --c-text: #000000;
             
             /* Accents */
-            --c-primary: #FFDE59;   /* Acid Yellow */
-            --c-secondary: #FF90E8; /* Hot Pink */
-            --c-accent: #23C9FF;    /* Cyan */
+            --c-primary: #FFDE59;   
+            --c-secondary: #FF90E8;
+            --c-accent: #23C9FF;    
             --c-danger: #FF4D4D;
             
             /* Structural */
@@ -52,7 +52,7 @@
             --c-primary: #bfa300;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--c-bg);
@@ -81,6 +81,8 @@
             transition: all 0.05s;
             display: flex; align-items: center; justify-content: center; gap: 6px;
             font-size: 11px;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .btn:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0px var(--c-border); }
         .btn:active, .btn.active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--c-border); background: var(--c-secondary); }
@@ -97,6 +99,7 @@
             z-index: 10;
             display: flex;
             flex-direction: column;
+            user-select: none;
         }
 
         .panel-header {
@@ -109,10 +112,11 @@
             font-size: 12px;
         }
 
-        input[type="color"] { width: 100%; height: 30px; border: 2px solid var(--c-border); cursor: pointer; padding: 0; }
+        input[type="color"] { width: 100%; height: 30px; border: 2px solid var(--c-border); cursor: pointer; padding: 0; user-select: none; }
         input[type="number"], input[type="text"], select, textarea {
             width: 100%; border: 2px solid var(--c-border); padding: 6px;
             background: var(--c-bg); font-family: var(--font-ui); font-weight: bold; font-size: 11px;
+            user-select: text; -webkit-user-select: text;
         }
         input[type="range"] { width: 100%; accent-color: var(--c-accent); cursor: pointer; }
 
@@ -125,10 +129,11 @@
             background: var(--c-panel);
             display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
             z-index: 100;
+            flex-shrink: 0;
         }
-        .logo { font-size: 18px; font-weight: 900; letter-spacing: -1px; }
+        .logo { font-size: 18px; font-weight: 900; letter-spacing: -1px; pointer-events: none; }
 
-        #workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
+        #workspace { flex: 1; display: flex; overflow: hidden; position: relative; min-height: 0; }
 
         /* LEFT TOOLBAR */
         #toolbar {
@@ -152,6 +157,7 @@
             position: relative;
             overflow: hidden;
             cursor: default;
+            user-select: none;
         }
         
         #artboard-container {
@@ -160,6 +166,7 @@
             top: 0; left: 0;
             transform-origin: 0 0;
             display: flex; align-items: center; justify-content: center;
+            pointer-events: none; 
         }
 
         #artboard {
@@ -168,13 +175,14 @@
             border: var(--border-width) solid var(--c-border);
             box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
             position: relative;
-            overflow: hidden;
+            overflow: visible; 
             flex-shrink: 0;
+            pointer-events: all;
         }
         
-        svg { width: 100%; height: 100%; display: block; }
+        svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
-        .vector-element { cursor: pointer; vector-effect: non-scaling-stroke; }
+        .vector-element { cursor: pointer; vector-effect: non-scaling-stroke; pointer-events: all; }
         .vector-element:hover { stroke: var(--c-accent); stroke-width: 2px; stroke-dasharray: 2,2; opacity: 0.9; }
         .vector-element.selected { stroke: var(--c-accent) !important; stroke-width: 2px !important; stroke-dasharray: none; outline: 1px dashed var(--c-accent); outline-offset: 2px;}
         
@@ -195,6 +203,7 @@
             flex-direction: column;
             gap: 0;
             background: var(--c-panel);
+            flex-shrink: 0;
         }
         .prop-section { padding: 10px; border-bottom: 1px solid #ccc; }
         .prop-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
@@ -228,7 +237,7 @@
             z-index: 90;
         }
 
-        /* STATUS BAR (NEW) */
+        /* STATUS BAR */
         #status-bar {
             height: 25px;
             background: var(--c-panel);
@@ -238,6 +247,7 @@
             font-size: 11px;
             font-weight: bold;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
         /* TOAST */
@@ -293,28 +303,28 @@
     <header>
         <div class="logo"><i class="fas fa-bezier-curve"></i> INKLING.WEB</div>
         
-        <div style="display:flex; gap:5px; align-items: center;">
+        <div style="display:flex; gap:5px; align-items: center; overflow-x: auto; max-width: 60%;">
             <!-- History Group -->
-            <div style="display:flex; gap:2px;">
+            <div style="display:flex; gap:2px; flex-shrink: 0;">
                 <button class="btn btn-sm" id="btn-undo" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i></button>
                 <button class="btn btn-sm" id="btn-redo" title="Redo (Ctrl+Y)"><i class="fas fa-redo"></i></button>
             </div>
             
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px;"></div>
+            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
 
             <!-- File Group -->
-            <button class="btn btn-sm" id="btn-import"><i class="fas fa-file-import"></i> Import</button>
-            <button class="btn btn-sm btn-primary" id="btn-save-project"><i class="fas fa-save"></i> Save</button>
+            <button class="btn btn-sm" id="btn-import" title="Import SVG/JSON"><i class="fas fa-file-import"></i> Import</button>
+            <button class="btn btn-sm btn-primary" id="btn-save-project" title="Save Project JSON"><i class="fas fa-save"></i> Save</button>
 
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px;"></div>
+            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
 
             <!-- Export Group -->
-            <button class="btn btn-sm" id="btn-export-svg"><i class="fas fa-code"></i> SVG</button>
-            <button class="btn btn-sm" id="btn-export-png"><i class="fas fa-image"></i> PNG</button>
+            <button class="btn btn-sm" id="btn-export-svg" title="Export SVG"><i class="fas fa-code"></i> SVG</button>
+            <button class="btn btn-sm" id="btn-export-png" title="Export PNG"><i class="fas fa-image"></i> PNG</button>
             
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px;"></div>
+            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
 
-            <button class="btn btn-sm btn-danger" id="btn-clear"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-sm btn-danger" id="btn-clear" title="Clear Canvas"><i class="fas fa-trash"></i></button>
         </div>
 
         <button class="btn btn-sm mobile-toggle" id="btn-toggle-props"><i class="fas fa-bars"></i></button>
@@ -479,9 +489,9 @@
     <!-- MODAL: ABOUT/INFO -->
     <div class="modal hidden" id="about-modal">
         <div class="modal-content">
-            <h2 style="border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:10px;">INKLING.WEB v4</h2>
+            <h2 style="border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:10px;">INKLING.WEB v4.2</h2>
             <p style="font-family:monospace; line-height:1.6; margin-bottom: 15px;">
-                <b>NEW:</b> Robust Import/Save logic.<br>
+                <b>FIXED:</b> Download triggers now append to body for compatibility.<br>
                 <b>CONTROLS:</b><br>
                 • Double Click Text: Edit<br>
                 • Drag: Move Objects<br>
@@ -498,10 +508,6 @@
     <input type="file" id="file-input" accept=".svg,.json" style="display:none;">
 
     <script>
-        /**
-         * INKLING ENGINE v4.1 - ROBUST EDITION
-         */
-
         const GoogleFonts = [
             { name: 'Roboto', family: 'Roboto' },
             { name: 'Inter', family: 'Inter' },
@@ -521,13 +527,38 @@
             uid: () => 'id-' + Math.random().toString(36).substr(2, 6),
             toast: (msg) => {
                 const t = document.getElementById('toast-msg');
+                if(!t) return;
                 t.innerText = msg;
                 t.classList.add('visible');
                 setTimeout(() => t.classList.remove('visible'), 2500);
             },
-            setStatus: (msg) => document.getElementById('status-text').innerText = msg,
+            setStatus: (msg) => {
+                const el = document.getElementById('status-text');
+                if(el) el.innerText = msg;
+            },
+            // ROBUST DOWNLOAD HELPER
+            downloadFile: (data, fileName, mimeType) => {
+                try {
+                    const blob = new Blob([data], { type: mimeType });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                } catch(e) {
+                    console.error("Download failed:", e);
+                    alert("Download failed: " + e.message);
+                }
+            },
             getMousePos: (evt) => {
                 const artboard = document.getElementById('artboard');
+                if(!artboard) return {x:0, y:0};
                 const rect = artboard.getBoundingClientRect();
                 const container = document.getElementById('artboard-container');
                 const style = window.getComputedStyle(container);
@@ -548,32 +579,43 @@
 
         class Inkling {
             constructor() {
-                this.svg = document.getElementById('main-svg');
-                this.layer = document.getElementById('drawing-layer');
-                this.selectedIds = [];
-                this.tool = 'select';
-                this.isDrawing = false;
-                this.isPanning = false;
-                this.isSpacePressed = false;
-                
-                this.startPos = {x:0, y:0};
-                this.currentShape = null;
-                this.penPoints = [];
-                
-                this.dragStartMatrix = null; 
-                this.dragStartMouse = {x:0, y:0};
-                this.initialAttrs = {};
+                try {
+                    this.svg = document.getElementById('main-svg');
+                    this.layer = document.getElementById('drawing-layer');
+                    
+                    if(!this.svg || !this.layer) {
+                        throw new Error("Critical DOM elements missing");
+                    }
 
-                this.zoom = 1;
-                this.pan = {x: 0, y: 0};
-                this.snapEnabled = false;
-                this.gridSize = 20;
+                    this.selectedIds = [];
+                    this.tool = 'select';
+                    this.isDrawing = false;
+                    this.isPanning = false;
+                    this.isSpacePressed = false;
+                    
+                    this.startPos = {x:0, y:0};
+                    this.currentShape = null;
+                    this.penPoints = [];
+                    
+                    this.dragStartMatrix = null; 
+                    this.dragStartMouse = {x:0, y:0};
+                    this.initialAttrs = {};
 
-                this.history = [];
-                this.redo = [];
-                this.maxHistory = 40;
+                    this.zoom = 1;
+                    this.pan = {x: 0, y: 0};
+                    this.snapEnabled = false;
+                    this.gridSize = 20;
 
-                this.init();
+                    this.history = [];
+                    this.redo = [];
+                    this.maxHistory = 40;
+
+                    this.init();
+                    console.log("Inkling initialized successfully.");
+                } catch(e) {
+                    alert("Error initializing Inkling: " + e.message);
+                    console.error(e);
+                }
             }
 
             init() {
@@ -584,14 +626,16 @@
                 this.bindGlobal();
                 this.saveState();
                 
-                if(!localStorage.getItem('inkling_visited_v4')) {
-                    document.getElementById('about-modal').classList.remove('hidden');
-                    localStorage.setItem('inkling_visited_v4', 'true');
+                if(!localStorage.getItem('inkling_visited_v42')) {
+                    const modal = document.getElementById('about-modal');
+                    if(modal) modal.classList.remove('hidden');
+                    localStorage.setItem('inkling_visited_v42', 'true');
                 }
             }
 
             populateFontList() {
                 const select = document.getElementById('inp-font-family');
+                if(!select) return;
                 GoogleFonts.forEach(font => {
                     const opt = document.createElement('option');
                     opt.value = font.family;
@@ -608,23 +652,32 @@
                 const btn = document.getElementById(`tool-${t}`);
                 if(btn) btn.classList.add('active');
                 if(t !== 'select') this.deselectAll();
-                document.getElementById('viewport').style.cursor = t === 'select' ? 'default' : 'crosshair';
+                const vp = document.getElementById('viewport');
+                if(vp) vp.style.cursor = t === 'select' ? 'default' : 'crosshair';
             }
 
             // --- TOOLBAR BINDING ---
             bindToolbar() {
                 ['select', 'rect', 'circle', 'line', 'pen', 'text'].forEach(t => {
-                    document.getElementById(`tool-${t}`).onclick = () => this.setTool(t);
+                    const btn = document.getElementById(`tool-${t}`);
+                    if(btn) btn.onclick = () => this.setTool(t);
                 });
-                document.getElementById('btn-snap').onclick = (e) => {
+
+                const snapBtn = document.getElementById('btn-snap');
+                if(snapBtn) snapBtn.onclick = (e) => {
                     this.snapEnabled = !this.snapEnabled;
                     e.currentTarget.classList.toggle('active', this.snapEnabled);
                 };
-                document.getElementById('btn-grid').onclick = (e) => {
-                    document.getElementById('grid-overlay').classList.toggle('visible');
+
+                const gridBtn = document.getElementById('btn-grid');
+                if(gridBtn) gridBtn.onclick = (e) => {
+                    const go = document.getElementById('grid-overlay');
+                    if(go) go.classList.toggle('visible');
                     e.currentTarget.classList.toggle('active');
                 };
-                document.getElementById('btn-clear').onclick = () => {
+
+                const clearBtn = document.getElementById('btn-clear');
+                if(clearBtn) clearBtn.onclick = () => {
                     if(confirm('Delete all artwork?')) {
                         this.saveState();
                         this.layer.innerHTML = '';
@@ -632,24 +685,32 @@
                         Utils.toast('Canvas Cleared');
                     }
                 };
-                document.getElementById('btn-theme').onclick = () => document.body.toggleAttribute('data-theme');
-                document.getElementById('btn-toggle-props').onclick = () => {
-                    document.getElementById('properties').classList.toggle('open');
+
+                const themeBtn = document.getElementById('btn-theme');
+                if(themeBtn) themeBtn.onclick = () => document.body.toggleAttribute('data-theme');
+
+                const toggleProps = document.getElementById('btn-toggle-props');
+                if(toggleProps) toggleProps.onclick = () => {
+                    const props = document.getElementById('properties');
+                    if(props) props.classList.toggle('open');
                 };
             }
 
             // --- CORE LOGIC (Drawing/Selecting) ---
             bindCanvas() {
+                if(!this.svg) return;
                 const svg = this.svg;
                 
                 svg.addEventListener('mousedown', (e) => {
                     if(e.button !== 0) return;
-                    document.getElementById('context-menu').style.display = 'none';
+                    const menu = document.getElementById('context-menu');
+                    if(menu) menu.style.display = 'none';
 
                     if(this.isSpacePressed) {
                         this.isPanning = true;
                         this.startPos = { x: e.clientX, y: e.clientY };
-                        document.getElementById('viewport').style.cursor = 'grabbing';
+                        const vp = document.getElementById('viewport');
+                        if(vp) vp.style.cursor = 'grabbing';
                         return;
                     }
 
@@ -696,13 +757,20 @@
 
                 // Keyboard Shortcuts
                 window.addEventListener('keydown', (e) => {
-                    if(e.code === 'Space') { this.isSpacePressed = true; document.getElementById('viewport').style.cursor = 'grab'; }
+                    if(e.code === 'Space') { 
+                        this.isSpacePressed = true; 
+                        const vp = document.getElementById('viewport');
+                        if(vp) vp.style.cursor = 'grab'; 
+                    }
                     if((e.ctrlKey || e.metaKey)) {
                         if(e.key === 'z') { e.preventDefault(); this.undo(); }
                         if(e.key === 'y') { e.preventDefault(); this.redo(); }
                         if(e.key === 'd') { e.preventDefault(); this.duplicate(); }
                         if(e.key === 'g') { e.preventDefault(); this.group(); }
-                        if(e.key === 's') { e.preventDefault(); document.getElementById('btn-save-project').click(); }
+                        if(e.key === 's') { e.preventDefault(); 
+                            const saveBtn = document.getElementById('btn-save-project');
+                            if(saveBtn) saveBtn.click(); 
+                        }
                     }
                     if(e.key === 'Delete' || e.key === 'Backspace') {
                         if(document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') this.delete();
@@ -712,31 +780,46 @@
                 });
 
                 window.addEventListener('keyup', (e) => {
-                    if(e.code === 'Space') { this.isSpacePressed = false; this.isPanning = false; document.getElementById('viewport').style.cursor = this.tool === 'select' ? 'default' : 'crosshair'; }
+                    if(e.code === 'Space') { 
+                        this.isSpacePressed = false; 
+                        this.isPanning = false; 
+                        const vp = document.getElementById('viewport');
+                        if(vp) vp.style.cursor = this.tool === 'select' ? 'default' : 'crosshair'; 
+                    }
                 });
 
                 // Zoom (Mouse)
-                document.getElementById('viewport').addEventListener('wheel', (e) => {
-                    if(e.ctrlKey || e.metaKey) {
-                        e.preventDefault();
-                        const delta = -Math.sign(e.deltaY) * 0.1;
-                        this.setZoom(this.zoom + delta);
-                    }
-                }, {passive:false});
+                const vp = document.getElementById('viewport');
+                if(vp) {
+                    vp.addEventListener('wheel', (e) => {
+                        if(e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            const delta = -Math.sign(e.deltaY) * 0.1;
+                            this.setZoom(this.zoom + delta);
+                        }
+                    }, {passive:false});
+                }
 
                 // Zoom Buttons
-                document.getElementById('zoom-in').onclick = () => this.setZoom(this.zoom + 0.1);
-                document.getElementById('zoom-out').onclick = () => this.setZoom(this.zoom - 0.1);
-                document.getElementById('zoom-reset').onclick = () => this.setZoom(1);
+                const zIn = document.getElementById('zoom-in');
+                if(zIn) zIn.onclick = () => this.setZoom(this.zoom + 0.1);
+                
+                const zOut = document.getElementById('zoom-out');
+                if(zOut) zOut.onclick = () => this.setZoom(this.zoom - 0.1);
+                
+                const zReset = document.getElementById('zoom-reset');
+                if(zReset) zReset.onclick = () => this.setZoom(1);
 
                 // Context Menu
                 svg.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     if(this.selectedIds.length === 0) return;
                     const menu = document.getElementById('context-menu');
-                    menu.style.display = 'flex';
-                    menu.style.left = e.clientX + 'px';
-                    menu.style.top = e.clientY + 'px';
+                    if(menu) {
+                        menu.style.display = 'flex';
+                        menu.style.left = e.clientX + 'px';
+                        menu.style.top = e.clientY + 'px';
+                    }
                 });
             }
 
@@ -768,7 +851,8 @@
                 
                 // Update Coordinate Status
                 const pos = Utils.getMousePos(e);
-                document.getElementById('coord-text').innerText = `X: ${Math.round(pos.x)} Y: ${Math.round(pos.y)}`;
+                const cText = document.getElementById('coord-text');
+                if(cText) cText.innerText = `X: ${Math.round(pos.x)} Y: ${Math.round(pos.y)}`;
 
                 if (!this.isDrawing) return;
                 const dx = pos.x - this.dragStartMouse.x;
@@ -886,23 +970,28 @@
                 const typoSec = document.getElementById('typo-section');
 
                 if(this.selectedIds.length === 0) {
-                    noSel.style.display = 'block';
-                    controls.style.display = 'none';
+                    if(noSel) noSel.style.display = 'block';
+                    if(controls) controls.style.display = 'none';
                     return;
                 }
                 
-                noSel.style.display = 'none';
-                controls.style.display = 'block';
+                if(noSel) noSel.style.display = 'none';
+                if(controls) controls.style.display = 'block';
 
                 const el = document.getElementById(this.selectedIds[0]);
-                const isText = el.tagName === 'text';
-                typoSec.style.display = isText ? 'block' : 'none';
+                const isText = el && el.tagName === 'text';
+                if(typoSec) typoSec.style.display = isText ? 'block' : 'none';
 
                 if(el) {
-                    document.getElementById('inp-fill').value = Utils.rgbToHex(el.getAttribute('fill') || '#000000');
-                    document.getElementById('inp-stroke').value = Utils.rgbToHex(el.getAttribute('stroke') || '#000000');
-                    document.getElementById('inp-stroke-width').value = el.getAttribute('stroke-width') || 1;
-                    document.getElementById('inp-opacity').value = el.getAttribute('opacity') || 1;
+                    const setVal = (id, val) => {
+                        const e = document.getElementById(id);
+                        if(e) e.value = val;
+                    };
+
+                    setVal('inp-fill', Utils.rgbToHex(el.getAttribute('fill') || '#000000'));
+                    setVal('inp-stroke', Utils.rgbToHex(el.getAttribute('stroke') || '#000000'));
+                    setVal('inp-stroke-width', el.getAttribute('stroke-width') || 1);
+                    setVal('inp-opacity', el.getAttribute('opacity') || 1);
 
                     // Transform
                     const list = el.transform.baseVal;
@@ -911,16 +1000,17 @@
                         tx = list.getItem(0).matrix.e;
                         ty = list.getItem(0).matrix.f;
                     }
-                    document.getElementById('inp-x').value = Math.round(tx);
-                    document.getElementById('inp-y').value = Math.round(ty);
+                    setVal('inp-x', Math.round(tx));
+                    setVal('inp-y', Math.round(ty));
 
                     if(isText) {
-                        document.getElementById('inp-text-content').value = el.textContent;
+                        setVal('inp-text-content', el.textContent);
                         const style = window.getComputedStyle(el);
                         const fontFam = style.fontFamily.replace(/"/g, '');
-                        document.getElementById('inp-font-family').value = fontFam;
-                        document.getElementById('inp-font-size').value = parseInt(style.fontSize);
-                        document.getElementById('inp-font-weight').value = style.fontWeight === '700' || style.fontWeight === 'bold' ? '700' : '400';
+                        setVal('inp-font-family', fontFam);
+                        setVal('inp-font-size', parseInt(style.fontSize));
+                        const weight = (style.fontWeight === '700' || style.fontWeight === 'bold') ? '700' : '400';
+                        setVal('inp-font-weight', weight);
                     }
                 }
             }
@@ -934,11 +1024,20 @@
                     });
                 };
 
-                document.getElementById('inp-fill').oninput = (e) => setAttr('fill', e.target.value);
-                document.getElementById('btn-no-fill').onclick = () => setAttr('fill', 'none');
-                document.getElementById('inp-stroke').oninput = (e) => setAttr('stroke', e.target.value);
-                document.getElementById('inp-stroke-width').oninput = (e) => setAttr('stroke-width', e.target.value);
-                document.getElementById('inp-opacity').oninput = (e) => setAttr('opacity', e.target.value);
+                const fillInp = document.getElementById('inp-fill');
+                if(fillInp) fillInp.oninput = (e) => setAttr('fill', e.target.value);
+
+                const noFillBtn = document.getElementById('btn-no-fill');
+                if(noFillBtn) noFillBtn.onclick = () => setAttr('fill', 'none');
+
+                const strokeInp = document.getElementById('inp-stroke');
+                if(strokeInp) strokeInp.oninput = (e) => setAttr('stroke', e.target.value);
+
+                const strokeWidthInp = document.getElementById('inp-stroke-width');
+                if(strokeWidthInp) strokeWidthInp.oninput = (e) => setAttr('stroke-width', e.target.value);
+
+                const opacityInp = document.getElementById('inp-opacity');
+                if(opacityInp) opacityInp.oninput = (e) => setAttr('opacity', e.target.value);
 
                 const updateText = () => {
                     const val = document.getElementById('inp-text-content').value;
@@ -948,7 +1047,8 @@
                         if(el.tagName === 'text') el.textContent = val;
                     });
                 };
-                document.getElementById('inp-text-content').oninput = updateText;
+                const textInp = document.getElementById('inp-text-content');
+                if(textInp) textInp.oninput = updateText;
 
                 const updateFont = (prop, val) => {
                     this.saveState();
@@ -957,13 +1057,20 @@
                         if(el.tagName === 'text') el.style[prop] = val;
                     });
                 };
-                document.getElementById('inp-font-family').onchange = (e) => updateFont('fontFamily', e.target.value);
-                document.getElementById('inp-font-size').onchange = (e) => updateFont('fontSize', e.target.value + 'px');
-                document.getElementById('inp-font-weight').onchange = (e) => updateFont('fontWeight', e.target.value);
+                const famSel = document.getElementById('inp-font-family');
+                if(famSel) famSel.onchange = (e) => updateFont('fontFamily', e.target.value);
+                
+                const sizeInp = document.getElementById('inp-font-size');
+                if(sizeInp) sizeInp.onchange = (e) => updateFont('fontSize', e.target.value + 'px');
+                
+                const wSel = document.getElementById('inp-font-weight');
+                if(wSel) wSel.onchange = (e) => updateFont('fontWeight', e.target.value);
 
                 const updateTransform = () => {
-                    const x = parseFloat(document.getElementById('inp-x').value) || 0;
-                    const y = parseFloat(document.getElementById('inp-y').value) || 0;
+                    const xVal = document.getElementById('inp-x');
+                    const yVal = document.getElementById('inp-y');
+                    const x = parseFloat(xVal ? xVal.value : 0) || 0;
+                    const y = parseFloat(yVal ? yVal.value : 0) || 0;
                     this.saveState();
                     this.selectedIds.forEach(id => {
                         const el = document.getElementById(id);
@@ -979,20 +1086,42 @@
                         this.initialAttrs[id] = { tx: x, ty: y };
                     });
                 };
-                document.getElementById('inp-x').onchange = updateTransform;
-                document.getElementById('inp-y').onchange = updateTransform;
+                const xInp = document.getElementById('inp-x');
+                const yInp = document.getElementById('inp-y');
+                if(xInp) xInp.onchange = updateTransform;
+                if(yInp) yInp.onchange = updateTransform;
 
-                document.getElementById('btn-dup').onclick = () => this.duplicate();
-                document.getElementById('btn-del').onclick = () => this.delete();
-                document.getElementById('btn-group').onclick = () => this.group();
-                document.getElementById('btn-ungroup').onclick = () => this.ungroup();
-                document.getElementById('btn-front').onclick = () => this.bringFront();
-                document.getElementById('btn-back').onclick = () => this.sendBack();
+                // Action Buttons
+                const dupBtn = document.getElementById('btn-dup');
+                if(dupBtn) dupBtn.onclick = () => this.duplicate();
 
-                document.getElementById('ctx-dup').onclick = () => { this.duplicate(); document.getElementById('context-menu').style.display='none'; };
-                document.getElementById('ctx-del').onclick = () => { this.delete(); document.getElementById('context-menu').style.display='none'; };
-                document.getElementById('ctx-front').onclick = () => { this.bringFront(); document.getElementById('context-menu').style.display='none'; };
-                document.getElementById('ctx-back').onclick = () => { this.sendBack(); document.getElementById('context-menu').style.display='none'; };
+                const delBtn = document.getElementById('btn-del');
+                if(delBtn) delBtn.onclick = () => this.delete();
+
+                const groupBtn = document.getElementById('btn-group');
+                if(groupBtn) groupBtn.onclick = () => this.group();
+
+                const ungroupBtn = document.getElementById('btn-ungroup');
+                if(ungroupBtn) ungroupBtn.onclick = () => this.ungroup();
+
+                const frontBtn = document.getElementById('btn-front');
+                if(frontBtn) frontBtn.onclick = () => this.bringFront();
+
+                const backBtn = document.getElementById('btn-back');
+                if(backBtn) backBtn.onclick = () => this.sendBack();
+
+                // Context Menu
+                const ctxDup = document.getElementById('ctx-dup');
+                if(ctxDup) ctxDup.onclick = () => { this.duplicate(); document.getElementById('context-menu').style.display='none'; };
+                
+                const ctxDel = document.getElementById('ctx-del');
+                if(ctxDel) ctxDel.onclick = () => { this.delete(); document.getElementById('context-menu').style.display='none'; };
+                
+                const ctxFront = document.getElementById('ctx-front');
+                if(ctxFront) ctxFront.onclick = () => { this.bringFront(); document.getElementById('context-menu').style.display='none'; };
+                
+                const ctxBack = document.getElementById('ctx-back');
+                if(ctxBack) ctxBack.onclick = () => { this.sendBack(); document.getElementById('context-menu').style.display='none'; };
             }
 
             createText(x, y) {
@@ -1014,14 +1143,20 @@
             editText(el) {
                 this.selectElement(el);
                 const input = document.getElementById('inp-text-content');
-                input.focus();
-                input.select();
-                if(window.innerWidth < 900) document.getElementById('properties').classList.add('open');
+                if(input) {
+                    input.focus();
+                    input.select();
+                }
+                if(window.innerWidth < 900) {
+                    const props = document.getElementById('properties');
+                    if(props) props.classList.add('open');
+                }
                 Utils.toast("Edit text in sidebar");
             }
 
             renderLayers() {
                 const list = document.getElementById('layers-list');
+                if(!list) return;
                 list.innerHTML = '';
                 Array.from(this.layer.children).reverse().forEach(el => {
                     const div = document.createElement('div');
@@ -1147,179 +1282,211 @@
             // --- GLOBAL & IMPORT/EXPORT (ROBUST) ---
             bindGlobal() {
                 // SAVE PROJECT (JSON)
-                document.getElementById('btn-save-project').onclick = () => {
-                    Utils.setStatus('Saving Project...');
-                    setTimeout(() => {
-                        const data = {
-                            version: 4.1,
-                            zoom: this.zoom,
-                            pan: this.pan,
-                            svgContent: this.layer.innerHTML
-                        };
-                        const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
-                        const a = document.createElement('a');
-                        a.href = URL.createObjectURL(blob);
-                        a.download = 'inkling-project.json';
-                        a.click();
-                        Utils.toast('Project Saved');
-                        Utils.setStatus('Ready');
-                    }, 100);
-                };
+                const saveBtn = document.getElementById('btn-save-project');
+                if(saveBtn) {
+                    saveBtn.onclick = () => {
+                        Utils.setStatus('Saving Project...');
+                        setTimeout(() => {
+                            try {
+                                const data = {
+                                    version: 4.2,
+                                    zoom: this.zoom,
+                                    pan: this.pan,
+                                    svgContent: this.layer.innerHTML
+                                };
+                                Utils.downloadFile(JSON.stringify(data), 'inkling-project.json', 'application/json');
+                                Utils.toast('Project Saved');
+                            } catch(e) {
+                                alert("Save failed: " + e.message);
+                            }
+                            Utils.setStatus('Ready');
+                        }, 100);
+                    };
+                }
 
                 // IMPORT (JSON & SVG)
-                document.getElementById('btn-import').onclick = () => document.getElementById('file-input').click();
-                document.getElementById('file-input').onchange = (e) => {
-                    const file = e.target.files[0];
-                    if(!file) return;
-                    const reader = new FileReader();
-                    
-                    if(file.name.endsWith('.svg')) {
-                        Utils.setStatus('Importing SVG...');
-                        reader.onload = (ev) => {
-                            this.saveState();
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(ev.target.result, 'image/svg+xml');
-                            const children = Array.from(doc.documentElement.children);
-                            
-                            const g = this.createSVG('g', { id: Utils.uid() });
-                            g.classList.add('vector-element');
-                            
-                            children.forEach(c => {
-                                if(c.tagName !== 'defs') {
-                                    const imported = document.importNode(c, true);
-                                    imported.classList.add('vector-element');
-                                    const recursive = (node) => {
-                                        node.classList.add('vector-element');
-                                        Array.from(node.children).forEach(recursive);
-                                    };
-                                    recursive(imported);
-                                    g.appendChild(imported);
-                                }
-                            });
-                            
-                            // Center imported SVG
-                            try {
-                                const bbox = g.getBBox();
-                                const trans = this.svg.createSVGTransform();
-                                trans.setTranslate(400 - (bbox.x + bbox.width/2), 300 - (bbox.y + bbox.height/2));
-                                g.transform.baseVal.appendItem(trans);
-                            } catch(err) { console.warn('BBox calculation failed', err); }
+                const importBtn = document.getElementById('btn-import');
+                if(importBtn) {
+                    importBtn.onclick = () => {
+                        const fi = document.getElementById('file-input');
+                        if(fi) fi.click();
+                    };
+                }
 
-                            this.selectElement(g);
-                            Utils.toast('SVG Imported');
-                            Utils.setStatus('Ready');
-                        };
-                        reader.readAsText(file);
-                    } else if (file.name.endsWith('.json')) {
-                        Utils.setStatus('Loading Project...');
-                        reader.onload = (ev) => {
-                            try {
-                                const data = JSON.parse(ev.target.result);
-                                
-                                // Restore state
-                                if(data.zoom) this.setZoom(data.zoom);
-                                if(data.pan) { this.pan = data.pan; this.updateTransform(); }
-                                
-                                // Restore Content
-                                this.layer.innerHTML = data.svgContent;
-                                Array.from(this.layer.children).forEach(c => {
-                                    if(c.classList) c.classList.add('vector-element');
-                                });
-                                
-                                // Reset history
-                                this.history = [];
-                                this.redo = [];
-                                this.saveState(); // Save this loaded state as new base
-                                
-                                this.deselectAll();
-                                Utils.toast('Project Loaded');
+                const fi = document.getElementById('file-input');
+                if(fi) {
+                    fi.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if(!file) return;
+                        const reader = new FileReader();
+                        
+                        if(file.name.endsWith('.svg')) {
+                            Utils.setStatus('Importing SVG...');
+                            reader.onload = (ev) => {
+                                try {
+                                    this.saveState();
+                                    const parser = new DOMParser();
+                                    const doc = parser.parseFromString(ev.target.result, 'image/svg+xml');
+                                    const children = Array.from(doc.documentElement.children);
+                                    
+                                    const g = this.createSVG('g', { id: Utils.uid() });
+                                    g.classList.add('vector-element');
+                                    
+                                    children.forEach(c => {
+                                        if(c.tagName !== 'defs') {
+                                            const imported = document.importNode(c, true);
+                                            g.appendChild(imported);
+                                        }
+                                    });
+                                    
+                                    try {
+                                        const bbox = g.getBBox();
+                                        const trans = this.svg.createSVGTransform();
+                                        trans.setTranslate(400 - (bbox.x + bbox.width/2), 300 - (bbox.y + bbox.height/2));
+                                        g.transform.baseVal.appendItem(trans);
+                                    } catch(err) { console.warn('BBox calculation failed', err); }
+
+                                    this.deselectAll();
+                                    this.selectElement(g);
+                                    this.renderLayers();
+                                    Utils.toast('SVG Imported');
+                                } catch(err) {
+                                    Utils.toast('Import Failed');
+                                    console.error(err);
+                                }
                                 Utils.setStatus('Ready');
-                            } catch(e) {
-                                alert('Invalid Project File');
-                                Utils.setStatus('Error');
-                            }
-                        };
-                        reader.readAsText(file);
-                    }
-                    e.target.value = '';
-                };
+                            };
+                            reader.readAsText(file);
+                        } else if (file.name.endsWith('.json')) {
+                            Utils.setStatus('Loading Project...');
+                            reader.onload = (ev) => {
+                                try {
+                                    const data = JSON.parse(ev.target.result);
+                                    
+                                    if(data.zoom) this.setZoom(data.zoom);
+                                    if(data.pan) { this.pan = data.pan; this.updateTransform(); }
+                                    
+                                    this.layer.innerHTML = data.svgContent;
+                                    this.reapplyClasses(this.layer);
+                                    
+                                    this.history = [];
+                                    this.redo = [];
+                                    this.saveState(); 
+                                    
+                                    this.deselectAll();
+                                    Utils.toast('Project Loaded');
+                                } catch(e) {
+                                    alert('Invalid Project File');
+                                    console.error(e);
+                                }
+                                Utils.setStatus('Ready');
+                            };
+                            reader.readAsText(file);
+                        }
+                        e.target.value = '';
+                    };
+                }
 
                 // EXPORT SVG
-                document.getElementById('btn-export-svg').onclick = () => {
-                    Utils.setStatus('Exporting SVG...');
-                    const serializer = new XMLSerializer();
-                    let source = serializer.serializeToString(this.svg);
-                    
-                    // Inject Google Fonts
-                    const fontCSS = `<style>
-                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap');
-                        text { font-family: inherit; }
-                    </style>`;
-                    
-                    source = source.replace('</defs>', `${fontCSS}</defs>`);
+                const expSvgBtn = document.getElementById('btn-export-svg');
+                if(expSvgBtn) {
+                    expSvgBtn.onclick = () => {
+                        Utils.setStatus('Exporting SVG...');
+                        try {
+                            const serializer = new XMLSerializer();
+                            let source = serializer.serializeToString(this.svg);
+                            
+                            const fontCSS = `<style>
+                                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap');
+                                text { font-family: inherit; }
+                            </style>`;
+                            
+                            source = source.replace('</defs>', `${fontCSS}</defs>`);
 
-                    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-                        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-                    }
-                    const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = "inkling-art.svg";
-                    a.click();
-                    Utils.toast('SVG Exported');
-                    Utils.setStatus('Ready');
-                };
-
-                // EXPORT PNG
-                document.getElementById('btn-export-png').onclick = () => {
-                    Utils.setStatus('Rendering PNG...');
-                    const serializer = new XMLSerializer();
-                    const svgData = serializer.serializeToString(this.svg);
-                    
-                    const viewBox = this.svg.viewBox.baseVal;
-                    const canvas = document.createElement('canvas');
-                    // 2x Scale for high res
-                    canvas.width = viewBox.width * 2;
-                    canvas.height = viewBox.height * 2;
-                    
-                    const ctx = canvas.getContext('2d');
-                    
-                    // White Background
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.scale(2, 2);
-
-                    const img = new Image();
-                    const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                    const url = URL.createObjectURL(svgBlob);
-                    
-                    img.onload = () => {
-                        ctx.drawImage(img, 0, 0);
-                        const a = document.createElement('a');
-                        a.download = 'inkling-art.png';
-                        a.href = canvas.toDataURL('image/png');
-                        a.click();
-                        URL.revokeObjectURL(url);
-                        Utils.toast('PNG Exported');
+                            if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+                                source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+                            }
+                            
+                            Utils.downloadFile(source, 'inkling-art.svg', 'image/svg+xml;charset=utf-8');
+                            Utils.toast('SVG Exported');
+                        } catch(e) {
+                            alert("Export Failed: " + e.message);
+                        }
                         Utils.setStatus('Ready');
                     };
-                    img.onerror = () => {
-                        alert('Error rendering PNG. (This sometimes happens with complex fonts)');
-                        Utils.setStatus('Error');
+                }
+
+                // EXPORT PNG
+                const expPngBtn = document.getElementById('btn-export-png');
+                if(expPngBtn) {
+                    expPngBtn.onclick = () => {
+                        Utils.setStatus('Rendering PNG...');
+                        try {
+                            const serializer = new XMLSerializer();
+                            const svgData = serializer.serializeToString(this.svg);
+                            
+                            const viewBox = this.svg.viewBox.baseVal;
+                            const canvas = document.createElement('canvas');
+                            canvas.width = viewBox.width * 2;
+                            canvas.height = viewBox.height * 2;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            ctx.scale(2, 2);
+
+                            const img = new Image();
+                            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                            const url = URL.createObjectURL(svgBlob);
+                            
+                            img.onload = () => {
+                                try {
+                                    ctx.drawImage(img, 0, 0);
+                                    const pngUrl = canvas.toDataURL('image/png');
+                                    
+                                    // Create a temporary link for download
+                                    const a = document.createElement('a');
+                                    a.href = pngUrl;
+                                    a.download = "inkling-art.png";
+                                    a.style.display = 'none';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                    
+                                    URL.revokeObjectURL(url);
+                                    Utils.toast('PNG Exported');
+                                    Utils.setStatus('Ready');
+                                } catch(e) {
+                                    alert('Canvas Render Error: ' + e.message);
+                                    Utils.setStatus('Error');
+                                }
+                            };
+                            img.onerror = () => {
+                                alert('Error rendering PNG (Image Load Failed). Check console.');
+                                console.error("Image error");
+                                Utils.setStatus('Error');
+                            };
+                            img.src = url;
+                        } catch(e) {
+                            alert("Export Error: " + e.message);
+                            Utils.setStatus('Error');
+                        }
                     };
-                    img.src = url;
-                };
+                }
             }
 
             setZoom(l) {
                 this.zoom = Math.max(0.2, Math.min(l, 5));
-                document.getElementById('zoom-reset').innerText = Math.round(this.zoom * 100) + '%';
+                const zr = document.getElementById('zoom-reset');
+                if(zr) zr.innerText = Math.round(this.zoom * 100) + '%';
                 this.updateTransform();
             }
 
             updateTransform() {
                 const container = document.getElementById('artboard-container');
-                container.style.transform = `translate(${this.pan.x}px, ${this.pan.y}px) scale(${this.zoom})`;
+                if(container) {
+                    container.style.transform = `translate(${this.pan.x}px, ${this.pan.y}px) scale(${this.zoom})`;
+                }
             }
 
             // --- HISTORY ---
@@ -1337,7 +1504,7 @@
                 if(this.history.length <= 1) return;
                 this.redo.push(this.history.pop());
                 this.layer.innerHTML = this.history[this.history.length - 1];
-                this.reapplyClasses();
+                this.reapplyClasses(this.layer);
                 this.deselectAll();
                 this.updateHistoryUI();
             }
@@ -1347,30 +1514,47 @@
                 const next = this.redo.pop();
                 this.history.push(next);
                 this.layer.innerHTML = next;
-                this.reapplyClasses();
+                this.reapplyClasses(this.layer);
                 this.deselectAll();
                 this.updateHistoryUI();
             }
 
-            reapplyClasses() {
-                Array.from(this.layer.children).forEach(el => el.classList.add('vector-element'));
+            reapplyClasses(node) {
+                if(!node) return;
+                Array.from(node.children).forEach(child => {
+                    const tag = child.tagName.toLowerCase();
+                    if(['g', 'path', 'rect', 'circle', 'ellipse', 'line', 'text', 'image', 'polyline', 'polygon'].includes(tag)) {
+                        child.classList.add('vector-element');
+                    }
+                    if(tag === 'g') {
+                        this.reapplyClasses(child);
+                    }
+                });
             }
 
             updateHistoryUI() {
                 const btnUndo = document.getElementById('btn-undo');
                 const btnRedo = document.getElementById('btn-redo');
                 
-                btnUndo.disabled = this.history.length <= 1;
-                btnUndo.classList.toggle('disabled', this.history.length <= 1);
+                if(btnUndo) {
+                    btnUndo.disabled = this.history.length <= 1;
+                    btnUndo.classList.toggle('disabled', this.history.length <= 1);
+                }
                 
-                btnRedo.disabled = this.redo.length === 0;
-                btnRedo.classList.toggle('disabled', this.redo.length === 0);
+                if(btnRedo) {
+                    btnRedo.disabled = this.redo.length === 0;
+                    btnRedo.classList.toggle('disabled', this.redo.length === 0);
+                }
             }
         }
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
-            window.App = new Inkling();
+            try {
+                window.App = new Inkling();
+            } catch(e) {
+                alert("Fatal Error loading Inkling: " + e.message);
+            }
         });
     </script>
 </body>

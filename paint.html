@@ -49,7 +49,7 @@
             --c-primary: #bfa300;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; -webkit-user-select: none; }
         
         body {
             background-color: var(--c-bg);
@@ -175,12 +175,13 @@
             position: relative;
             display: flex; align-items: center; justify-content: center;
             cursor: crosshair; /* Default cursor */
+            touch-action: none; /* Critical for mobile drawing */
         }
         
         /* Custom Cursors */
         .viewport[data-cursor="move"] { cursor: grab; }
         .viewport[data-cursor="move"].grabbing { cursor: grabbing; }
-        .viewport[data-cursor="clone"] { cursor: cell; } /* Cell icon works well for clone source */
+        .viewport[data-cursor="clone"] { cursor: cell; } 
         
         /* THE CANVAS WRAPPER */
         #canvas-wrapper {
@@ -189,12 +190,13 @@
             background: #ffffff; 
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             transform-origin: 0 0; 
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.2); /* Subtle border */
         }
 
         /* Canvases */
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; image-rendering: pixelated; }
         canvas.active-canvas { pointer-events: auto; }
-        #preview-canvas { z-index: 999; pointer-events: none; }
+        #preview-canvas { z-index: 999; pointer-events: none; mix-blend-mode: normal; }
 
         /* RIGHT PANELS */
         .panels {
@@ -315,9 +317,21 @@
             position: absolute;
             pointer-events: none;
             border: 1px solid black;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             display: none;
             z-index: 1001;
+        }
+        #clone-source-indicator {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--c-accent);
+            border: 1px solid #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 0 5px #000;
         }
 
     </style>
@@ -326,7 +340,7 @@
 
     <!-- TOP BAR -->
     <div class="topbar">
-        <div class="logo">PAINT<span style="color:var(--c-primary)">.WEB</span> PRO</div>
+        <div class="logo">PAINT<span style="color:var(--c-primary)">.WEB</span> V2.0</div>
 
         <div class="res-group">
             <select id="res-select">
@@ -378,7 +392,6 @@
             <div class="tool-sep"></div>
             <button class="btn btn-icon active" data-tool="brush" title="Brush (B)"><i class="fas fa-paint-brush"></i></button>
             <button class="btn btn-icon" data-tool="eraser" title="Eraser (E)"><i class="fas fa-eraser"></i></button>
-            <!-- NEW: CLONE STAMP -->
             <button class="btn btn-icon" data-tool="clone" title="Clone Stamp (Alt+Click to source, C)"><i class="fas fa-stamp"></i></button>
             <div class="tool-sep"></div>
             <button class="btn btn-icon" data-tool="fill" title="Fill Bucket (G)"><i class="fas fa-fill-drip"></i></button>
@@ -400,8 +413,9 @@
                 <!-- Layers and Preview Canvas injected here -->
             </div>
             <input type="text" id="text-tool-input" placeholder="Type here...">
-            <!-- Clone Stamp Source Indicator -->
+            <!-- Clone Stamp UI -->
             <div id="clone-cursor-ui"></div>
+            <div id="clone-source-indicator"></div>
         </main>
 
         <!-- RIGHT PANEL -->
@@ -504,8 +518,10 @@
 
     <script>
         /**
-         * PAINT.WEB PRO
-         * Features: Clone Stamp, AVIF Export, Layer Thumbnails.
+         * PAINT.WEB V2.0 - FIXED COORDINATES
+         * Fixes:
+         * 1. Drawing coordinates now account for Layer Offset (l.x, l.y).
+         * 2. Shape preview ensures beginPath() is called every frame.
          */
 
         // --- UTILS ---
@@ -527,9 +543,12 @@
                 this.stack = [];
                 this.redoStack = [];
                 this.limit = limit;
+                this.isRestoring = false;
             }
 
             save(layers, w, h) {
+                if(this.isRestoring) return;
+                
                 const state = {
                     w, h,
                     layers: layers.map(l => ({
@@ -546,7 +565,9 @@
             }
 
             async restore(stateStr) {
+                this.isRestoring = true;
                 const state = JSON.parse(stateStr);
+                
                 if (state.w !== App.width || state.h !== App.height) {
                     App.resizeCanvas(state.w, state.h, false);
                 }
@@ -582,11 +603,13 @@
                 App.activeLayerId = state.activeId;
                 App.renderLayerList();
                 App.renderLayerDOM();
-                App.updateLayerThumb(App.activeLayerId); // Refresh thumb on undo/redo
+                App.updateLayerThumb(App.activeLayerId);
+                
+                this.isRestoring = false;
             }
 
             async undo() {
-                if (this.stack.length === 0) return;
+                if (this.stack.length === 0 || this.isRestoring) return;
                 const current = JSON.stringify({
                     w: App.width, h: App.height,
                     layers: App.layers.map(l => ({...l, data: l.canvas.toDataURL()})),
@@ -601,7 +624,7 @@
             }
 
             async redo() {
-                if (this.redoStack.length === 0) return;
+                if (this.redoStack.length === 0 || this.isRestoring) return;
                 const current = JSON.stringify({
                     w: App.width, h: App.height,
                     layers: App.layers.map(l => ({...l, data: l.canvas.toDataURL()})),
@@ -634,10 +657,10 @@
             pan: {x: 0, y: 0},
             history: new HistorySystem(),
             
-            // Clone Stamp State
             cloneState: {
                 active: false,
                 srcX: 0, srcY: 0,
+                snapshot: null,
                 altDown: false
             },
 
@@ -653,6 +676,7 @@
                 previewCtx: null,
                 textInput: document.getElementById('text-tool-input'),
                 cloneCursor: document.getElementById('clone-cursor-ui'),
+                sourceIndicator: document.getElementById('clone-source-indicator'),
                 overlay: document.getElementById('modal-overlay'),
                 openModal: (id) => {
                     document.querySelectorAll('.modal-box').forEach(b => b.classList.add('hidden'));
@@ -720,7 +744,6 @@
                 });
             },
 
-            // --- LAYERS ---
             addLayer(name, fill = null) {
                 const id = Utils.uid();
                 const canvas = document.createElement('canvas');
@@ -795,12 +818,10 @@
                     div.className = `layer-item ${l.id === this.activeLayerId ? 'active' : ''}`;
                     const vis = l.visible ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
                     
-                    // Thumbnail Canvas (Small)
                     const thumbC = document.createElement('canvas');
-                    thumbC.width = l.canvas.width / 10; // optimize size
+                    thumbC.width = l.canvas.width / 10; 
                     thumbC.height = l.canvas.height / 10;
                     thumbC.id = `thumb-${l.id}`;
-                    // Draw current state
                     const tCtx = thumbC.getContext('2d');
                     tCtx.drawImage(l.canvas, 0, 0, thumbC.width, thumbC.height);
 
@@ -808,10 +829,8 @@
                     thumbDiv.className = 'layer-thumb';
                     thumbDiv.appendChild(thumbC);
 
-                    div.innerHTML = `
-                        <div class="layer-vis">${vis}</div>
-                    `;
-                    div.insertBefore(thumbDiv, div.children[1]); // Insert after visibility icon
+                    div.innerHTML = `<div class="layer-vis">${vis}</div>`;
+                    div.insertBefore(thumbDiv, div.children[1]); 
                     
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'layer-name';
@@ -841,7 +860,7 @@
                 }
             },
 
-            // --- DRAWING ---
+            // --- DRAWING LOGIC ---
             getCoords(e) {
                 const rect = this.ui.wrapper.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -860,10 +879,15 @@
                         this.tool = b.dataset.tool;
                         this.ui.textInput.style.display = 'none';
                         
-                        // Update Cursor
                         if(this.tool === 'move') this.ui.viewport.setAttribute('data-cursor', 'move');
                         else if(this.tool === 'clone') this.ui.viewport.setAttribute('data-cursor', 'clone');
                         else this.ui.viewport.setAttribute('data-cursor', 'crosshair');
+                        
+                        if(this.tool !== 'clone') {
+                            this.cloneState.active = false;
+                            this.ui.sourceIndicator.style.display = 'none';
+                            this.ui.cloneCursor.style.display = 'none';
+                        }
                     };
                 });
 
@@ -877,75 +901,99 @@
                     if(!l || !l.visible) return;
                     
                     const pos = this.getCoords(e);
+                    // FIX: Account for layer offset if the layer was moved
+                    const drawX = pos.x - l.x;
+                    const drawY = pos.y - l.y;
+
                     this.isDrawing = true;
-                    this.startX = pos.x;
+                    this.startX = pos.x; // Keep raw wrapper coords for calculations
                     this.startY = pos.y;
 
-                    // CLONE STAMP LOGIC: Alt Click to set source
                     if (this.tool === 'clone' && e.altKey) {
                         this.cloneState.active = true;
-                        this.cloneState.srcX = pos.x;
-                        this.cloneState.srcY = pos.y;
+                        this.cloneState.srcX = drawX;
+                        this.cloneState.srcY = drawY;
+                        
+                        this.ui.sourceIndicator.style.left = (this.pan.x + pos.x * this.zoom) + 'px';
+                        this.ui.sourceIndicator.style.top = (this.pan.y + pos.y * this.zoom) + 'px';
+                        this.ui.sourceIndicator.style.display = 'block';
+                        
                         Utils.toast("Source Sampled");
                         this.isDrawing = false;
                         return;
                     }
 
-                    // Regular Drawing Setup
-                    if(['brush', 'eraser', 'clone'].includes(this.tool)) {
+                    if(['brush', 'eraser'].includes(this.tool)) {
                         l.ctx.beginPath();
-                        l.ctx.moveTo(pos.x, pos.y);
+                        l.ctx.moveTo(drawX, drawY);
                         l.ctx.lineCap = 'round';
                         l.ctx.lineJoin = 'round';
                         l.ctx.lineWidth = this.brushSize;
                         
                         if(this.tool === 'eraser') l.ctx.globalCompositeOperation = 'destination-out';
-                        else if(this.tool === 'clone') {
-                            // Clone setup happens in Move
-                            l.ctx.globalCompositeOperation = 'source-over';
-                        } else {
+                        else {
                             l.ctx.globalCompositeOperation = 'source-over';
                             l.ctx.strokeStyle = this.color;
                         }
-                    } else {
+                    } 
+                    else if (this.tool === 'clone') {
+                        if(!this.cloneState.active) return Utils.toast("Alt+Click to set source first!");
+                        
+                        this.cloneState.snapshot = document.createElement('canvas');
+                        this.cloneState.snapshot.width = this.width;
+                        this.cloneState.snapshot.height = this.height;
+                        this.cloneState.snapshot.getContext('2d').drawImage(l.canvas, 0, 0);
+                        
+                        l.ctx.beginPath();
+                        l.ctx.lineCap = 'round';
+                        l.ctx.lineJoin = 'round';
+                        l.ctx.lineWidth = this.brushSize;
+                        l.ctx.globalCompositeOperation = 'source-over';
+                    }
+                    else {
                         this.snapshot = l.ctx.getImageData(0, 0, this.width, this.height);
                     }
 
                     if(this.tool === 'move') {
                         this.ui.viewport.classList.add('grabbing');
                     } else if (this.tool === 'picker') {
-                        const p = l.ctx.getImageData(pos.x, pos.y, 1, 1).data;
+                        // Picker needs to pick from the canvas, considering offset
+                        const p = l.ctx.getImageData(Math.floor(drawX), Math.floor(drawY), 1, 1).data;
                         const hex = "#" + ((1 << 24) + (p[0] << 16) + (p[1] << 8) + p[2]).toString(16).slice(1);
                         this.setColor(hex);
                         this.isDrawing = false;
                     } else if (this.tool === 'fill') {
-                        this.floodFill(Math.floor(pos.x), Math.floor(pos.y), this.hexToRgb(this.color));
+                        this.floodFill(Math.floor(drawX), Math.floor(drawY), this.hexToRgb(this.color));
                         this.history.save(this.layers, this.width, this.height);
                         this.updateLayerThumb(this.activeLayerId);
                         this.isDrawing = false;
                     } else if (this.tool === 'text') {
-                        this.showTextInput(pos.x, pos.y);
+                        this.showTextInput(drawX, drawY);
                         this.isDrawing = false;
                     }
                 };
 
                 const move = (e) => {
                     const l = this.getLayer(this.activeLayerId);
-                    const pos = this.getCoords(e);
+                    if(!l) return;
 
-                    // Update Clone Cursor UI
-                    if (this.tool === 'clone' && this.cloneState.active) {
-                        const size = this.brushSize;
-                        // Calculate visual offset for the source indicator
-                        const srcScreenX = (this.cloneState.srcX - pos.x);
-                        const srcScreenY = (this.cloneState.srcY - pos.y);
-                        
-                        this.ui.cloneCursor.style.display = 'block';
-                        this.ui.cloneCursor.style.width = size + 'px';
-                        this.ui.cloneCursor.style.height = size + 'px';
-                        this.ui.cloneCursor.style.left = (pos.x + srcScreenX - size/2) + 'px';
-                        this.ui.cloneCursor.style.top = (pos.y + srcScreenY - size/2) + 'px';
-                        this.ui.cloneCursor.style.transform = `scale(${this.zoom})`;
+                    const pos = this.getCoords(e);
+                    // FIX: Calculate draw coordinates relative to layer offset
+                    const drawX = pos.x - l.x;
+                    const drawY = pos.y - l.y;
+
+                    // Update Clone UI
+                    if (this.tool === 'clone') {
+                        if(this.cloneState.active) {
+                            this.ui.cloneCursor.style.display = 'block';
+                            const size = this.brushSize;
+                            this.ui.cloneCursor.style.width = size + 'px';
+                            this.ui.cloneCursor.style.height = size + 'px';
+                            this.ui.cloneCursor.style.left = (this.pan.x + pos.x * this.zoom - size/2) + 'px';
+                            this.ui.cloneCursor.style.top = (this.pan.y + pos.y * this.zoom - size/2) + 'px';
+                        } else {
+                            this.ui.cloneCursor.style.display = 'none';
+                        }
                     } else {
                         this.ui.cloneCursor.style.display = 'none';
                     }
@@ -960,15 +1008,10 @@
                         this.renderLayerDOM(); 
                     } 
                     else if (['brush', 'eraser'].includes(this.tool)) {
-                        l.ctx.lineTo(pos.x, pos.y);
+                        l.ctx.lineTo(drawX, drawY);
                         l.ctx.stroke();
                     }
                     else if (this.tool === 'clone') {
-                        if(!this.cloneState.active) return Utils.toast("Alt+Click to set source first!");
-                        
-                        // Clone Logic: Draw from source to dest
-                        // For simplicity in 2D context without complex masking:
-                        // We draw a small rectangle from the source layer (or same layer) at the offset.
                         const dx = pos.x - this.startX;
                         const dy = pos.y - this.startY;
                         
@@ -976,12 +1019,14 @@
                         const srcY = this.cloneState.srcY + dy;
                         const r = this.brushSize / 2;
 
-                        // Hard edge clone for performance in single-file:
                         l.ctx.save();
                         l.ctx.beginPath();
-                        l.ctx.arc(pos.x, pos.y, r, 0, Math.PI*2);
+                        l.ctx.arc(drawX, drawY, r, 0, Math.PI*2);
                         l.ctx.clip();
-                        l.ctx.drawImage(l.canvas, srcX - r, srcY - r, r*2, r*2, pos.x - r, pos.y - r, r*2, r*2);
+                        l.ctx.drawImage(this.cloneState.snapshot, 
+                            srcX - r, srcY - r, r*2, r*2, 
+                            drawX - r, drawY - r, r*2, r*2
+                        );
                         l.ctx.restore();
                         
                         this.startX = pos.x;
@@ -989,22 +1034,29 @@
                     }
                     else if (['line', 'rect', 'circle'].includes(this.tool)) {
                         this.ui.previewCtx.clearRect(0,0,this.width, this.height);
-                        this.ui.previewCtx.beginPath();
+                        // FIX: Ensure path is isolated for each frame
+                        this.ui.previewCtx.beginPath(); 
                         this.ui.previewCtx.strokeStyle = this.color;
                         this.ui.previewCtx.fillStyle = this.color;
                         this.ui.previewCtx.lineWidth = this.brushSize;
                         this.ui.previewCtx.lineCap = 'round';
 
                         if(this.tool === 'line') {
-                            this.ui.previewCtx.moveTo(this.startX, this.startY);
-                            this.ui.previewCtx.lineTo(pos.x, pos.y);
+                            const startDX = this.startX - l.x;
+                            const startDY = this.startY - l.y;
+                            this.ui.previewCtx.moveTo(startDX, startDY);
+                            this.ui.previewCtx.lineTo(drawX, drawY);
                             this.ui.previewCtx.stroke();
                         } else if (this.tool === 'rect') {
-                            this.ui.previewCtx.strokeRect(this.startX, this.startY, pos.x - this.startX, pos.y - this.startY);
+                            const startDX = this.startX - l.x;
+                            const startDY = this.startY - l.y;
+                            this.ui.previewCtx.strokeRect(startDX, startDY, pos.x - this.startX, pos.y - this.startY);
                         } else if (this.tool === 'circle') {
-                            const r = Math.sqrt(Math.pow(pos.x - this.startX, 2) + Math.pow(pos.y - this.startY, 2));
+                            const startDX = this.startX - l.x;
+                            const startDY = this.startY - l.y;
+                            const r = Math.sqrt(Math.pow(drawX - startDX, 2) + Math.pow(drawY - startDY, 2));
                             this.ui.previewCtx.beginPath();
-                            this.ui.previewCtx.arc(this.startX, this.startY, r, 0, 2 * Math.PI);
+                            this.ui.previewCtx.arc(startDX, startDY, r, 0, 2 * Math.PI);
                             this.ui.previewCtx.stroke();
                         }
                     }
@@ -1036,12 +1088,10 @@
                 window.addEventListener('mousemove', move);
                 window.addEventListener('mouseup', end);
                 
-                // Touch support basic
                 wrapper.addEventListener('touchstart', (e) => { if(e.touches.length===1) start(e); }, {passive: false});
                 window.addEventListener('touchmove', (e) => { if(this.isDrawing && e.touches.length===1) { e.preventDefault(); move(e); } }, {passive: false});
                 window.addEventListener('touchend', end);
 
-                // Zoom
                 this.ui.viewport.addEventListener('wheel', (e) => {
                     if(e.ctrlKey) {
                         e.preventDefault();
@@ -1051,10 +1101,8 @@
                     }
                 }, {passive: false});
 
-                // Color
                 document.getElementById('native-color-picker').oninput = (e) => this.setColor(e.target.value);
 
-                // Sliders
                 document.querySelectorAll('.adj-slider').forEach(el => {
                     el.oninput = () => {
                         const l = this.getLayer(this.activeLayerId);
@@ -1077,7 +1125,6 @@
                 });
             },
 
-            // --- ALGORITHMS ---
             floodFill(startX, startY, fillColor) {
                 const l = this.getLayer(this.activeLayerId);
                 const ctx = l.ctx;
@@ -1100,11 +1147,15 @@
                 };
 
                 const stack = [[startX, startY]];
+                let count = 0; 
+                const MAX = w*h; 
+
                 while(stack.length) {
                     const [x, y] = stack.pop();
                     const pos = (y * w + x) * 4;
                     if(x >= 0 && x < w && y >= 0 && y < h && match(pos)) {
                         color(pos);
+                        if(++count > MAX) break;
                         stack.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
                     }
                 }
@@ -1190,7 +1241,6 @@
                     }
                 }
                 else if(type === 'pixelate') {
-                    // Simple pixelate
                     const size = 10;
                     for(let y=0; y<h; y+=size) {
                         for(let x=0; x<w; x+=size) {
@@ -1207,12 +1257,20 @@
                         }
                     }
                 }
-                // ... (Keep Sepia, Noise from previous logic or add simple versions)
                 else if(type === 'noise') {
                     for(let i=0; i<d.length; i+=4) { const r = (0.5-Math.random())*50; d[i]+=r; d[i+1]+=r; d[i+2]+=r; }
                 }
                 else if (type === 'sharpen') { this.applyConvolution(l, [0,-1,0, -1,5,-1, 0,-1,0]); return; }
                 else if (type === 'emboss') { this.applyConvolution(l, [-2,-1,0, -1,1,1, 0,1,2]); return; }
+                else if (type === 'edge') { this.applyConvolution(l, [-1,-1,-1, -1,8,-1, -1,-1,-1]); return; }
+                else if (type === 'sepia') {
+                     for(let i=0; i<d.length; i+=4) {
+                        const r=d[i], g=d[i+1], b=d[i+2];
+                        d[i]= (r*.393)+(g*.769)+(b*.189);
+                        d[i+1]= (r*.349)+(g*.686)+(b*.168);
+                        d[i+2]= (r*.272)+(g*.534)+(b*.131);
+                    }
+                }
 
                 l.ctx.putImageData(imgData, 0, 0);
                 this.history.save(this.layers, this.width, this.height);
@@ -1251,7 +1309,6 @@
                 layer.ctx.putImageData(dst, 0, 0);
             },
 
-            // --- EXPORT: PNG, JPG, WEBP, AVIF ---
             exportImage() {
                 const fmt = document.getElementById('exp-fmt').value;
                 const name = document.getElementById('exp-name').value || 'artwork';
@@ -1270,7 +1327,9 @@
                     if(l.visible) {
                         ctx.save();
                         ctx.globalAlpha = l.opacity;
-                        if (l.canvas.style.filter && l.canvas.style.filter !== 'none') ctx.filter = l.canvas.style.filter;
+                        if (l.canvas.style.filter && l.canvas.style.filter !== 'none') {
+                            ctx.filter = l.canvas.style.filter;
+                        }
                         ctx.drawImage(l.canvas, l.x, l.y);
                         ctx.restore();
                     }
@@ -1279,10 +1338,8 @@
                 try {
                     const dataUrl = c.toDataURL(fmt, q);
                     const a = document.createElement('a');
-                    // Handle extension mapping
                     let ext = fmt.split('/')[1];
                     if(ext === 'jpeg') ext = 'jpg';
-                    
                     a.download = `${name}.${ext}`;
                     a.href = dataUrl;
                     a.click();
@@ -1314,7 +1371,6 @@
             }
         };
 
-        // --- GLOBAL BINDINGS ---
         window.onload = () => {
             App.init();
             
@@ -1325,7 +1381,6 @@
             document.getElementById('btn-merge-down').onclick = () => App.mergeDown();
             document.getElementById('btn-export').onclick = () => App.ui.openModal('modal-settings');
 
-            // Resolution
             document.getElementById('res-select').onchange = (e) => {
                 const v = e.target.value;
                 document.getElementById('custom-res').style.display = v === 'custom' ? 'flex' : 'none';
@@ -1340,7 +1395,6 @@
                 if(w>50 && h>50) App.resizeCanvas(w,h);
             };
 
-            // File Import
             document.getElementById('file-input').onchange = (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
@@ -1362,7 +1416,6 @@
                 reader.readAsDataURL(file);
             };
 
-            // Keyboard Shortcuts
             document.addEventListener('keydown', (e) => {
                 if(e.target.tagName === 'INPUT') return;
                 const k = e.key.toLowerCase();
