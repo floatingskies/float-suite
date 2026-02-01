@@ -1,64 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inkling.web - Professional SVG Editor</title>
+    <title>Inkling.Web - Vector Editor Pro</title>
     
-    <!-- PWA Meta -->
-    <meta name="theme-color" content="#FFDE59">
-    <meta name="description" content="Robust Vector Graphics Editor">
-
-    <!-- Icons -->
+    <meta name="theme-color" content="#121212">
+    <meta name="description" content="Advanced SVG Vector Editor">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts Pre-load -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap');
     </style>
 
     <style>
-        /* =========================================
-           NEO-BRUTALIST VARIABLES & RESET
-           ========================================= */
         :root {
-            /* Palette */
-            --c-bg: #e5e5e5;
-            --c-panel: #ffffff;
-            --c-border: #000000;
-            --c-text: #000000;
+            --c-bg: #121212;
+            --c-panel: #1e1e1e;
+            --c-surface: #2a2a2a;
+            --c-border: #444; 
+            --c-text: #e0e0e0;
             
-            /* Accents */
-            --c-primary: #FFDE59;   
+            --c-primary: #FFDE59;
             --c-secondary: #FF90E8;
-            --c-accent: #23C9FF;    
+            --c-accent: #23C9FF;
             --c-danger: #FF4D4D;
             
-            /* Structural */
-            --border-width: 3px;
-            --shadow-hard: 4px 4px 0px var(--c-border);
-            --shadow-active: 2px 2px 0px var(--c-border);
+            --border-width: 2px;
+            --shadow-hard: 4px 4px 0px #000;
+            --shadow-active: 2px 2px 0px #000;
             
-            --font-ui: 'Courier New', Courier, monospace;
-            --sidebar-w: 280px;
+            --font-ui: 'Roboto Mono', monospace;
+            --sidebar-w: 300px;
             --header-h: 50px;
         }
 
-        [data-theme="dark"] {
-            --c-bg: #1a1a1a;
-            --c-panel: #222222;
-            --c-text: #ffffff;
-            --c-border: #ffffff;
-            --c-primary: #bfa300;
+        [data-theme="light"] {
+            --c-bg: #e5e5e5;
+            --c-panel: #ffffff;
+            --c-text: #000000;
+            --c-border: #000000;
+            --c-surface: #f4f4f4;
+            --shadow-hard: 4px 4px 0px rgba(0,0,0,0.2);
+            --shadow-active: 2px 2px 0px rgba(0,0,0,0.2);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
         body {
             background-color: var(--c-bg);
             color: var(--c-text);
             font-family: var(--font-ui);
-            font-size: 13px;
+            font-size: 12px;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -66,36 +59,32 @@
             flex-direction: column;
         }
 
-        /* =========================================
-           UI COMPONENTS
-           ========================================= */
         .btn {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
-            box-shadow: 2px 2px 0px var(--c-border);
-            padding: 6px 12px;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            padding: 5px 10px;
             font-family: var(--font-ui);
             font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.05s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            font-size: 11px;
+            transition: transform 0.1s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: 10px;
             user-select: none;
-            -webkit-user-select: none;
+            color: var(--c-text);
         }
-        .btn:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0px var(--c-border); }
-        .btn:active, .btn.active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--c-border); background: var(--c-secondary); }
+        .btn:hover { transform: translate(-1px, -1px); border-color: var(--c-accent); color: var(--c-accent); }
+        .btn:active, .btn.active { transform: translate(2px, 2px); box-shadow: none; background: var(--c-surface); }
         
-        .btn-primary { background: var(--c-primary); }
+        .btn-primary { background: var(--c-primary); color: #000; border-color: #000; }
         .btn-danger { background: var(--c-danger); color: #fff; }
-        .btn-icon { width: 34px; height: 34px; padding: 0; }
-        .btn-sm { padding: 4px 8px; font-size: 10px; }
-        .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; border: 1px solid #ccc; }
+        .btn-icon { width: 32px; height: 32px; padding: 0; font-size: 12px; }
+        .btn-sm { padding: 3px 6px; font-size: 9px; }
 
         .panel {
             background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
+            border-right: var(--border-width) solid var(--c-border);
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -103,60 +92,52 @@
         }
 
         .panel-header {
-            background: var(--c-primary);
+            background: var(--c-surface);
             border-bottom: var(--border-width) solid var(--c-border);
             padding: 6px 10px;
             font-weight: 900;
             text-transform: uppercase;
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        input[type="color"] { width: 100%; height: 30px; border: 2px solid var(--c-border); cursor: pointer; padding: 0; user-select: none; }
-        input[type="number"], input[type="text"], select, textarea {
-            width: 100%; border: 2px solid var(--c-border); padding: 6px;
-            background: var(--c-bg); font-family: var(--font-ui); font-weight: bold; font-size: 11px;
-            user-select: text; -webkit-user-select: text;
+        input[type="color"] { width: 100%; height: 30px; border: 1px solid var(--c-border); cursor: pointer; padding: 0; background: none; }
+        input[type="number"], input[type="text"], select {
+            width: 100%; border: 1px solid var(--c-border); padding: 4px;
+            background: var(--c-bg); font-family: var(--font-ui); font-size: 11px;
+            color: var(--c-text);
         }
-        input[type="range"] { width: 100%; accent-color: var(--c-accent); cursor: pointer; }
+        input[type="range"] { width: 100%; accent-color: var(--c-accent); cursor: pointer; height: 4px; background: var(--c-surface); }
 
-        /* =========================================
-           LAYOUT
-           ========================================= */
         header {
             height: var(--header-h);
             border-bottom: var(--border-width) solid var(--c-border);
             background: var(--c-panel);
             display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
-            z-index: 100;
-            flex-shrink: 0;
+            z-index: 100; flex-shrink: 0;
         }
-        .logo { font-size: 18px; font-weight: 900; letter-spacing: -1px; pointer-events: none; }
+        .logo { font-size: 16px; font-weight: 900; letter-spacing: -0.5px; color: var(--c-primary); }
 
         #workspace { flex: 1; display: flex; overflow: hidden; position: relative; min-height: 0; }
 
-        /* LEFT TOOLBAR */
         #toolbar {
-            width: 60px;
+            width: 50px;
             border-right: var(--border-width) solid var(--c-border);
-            padding: 8px;
-            gap: 6px;
+            padding: 5px;
+            gap: 5px;
             display: flex; flex-direction: column;
             overflow-y: auto;
-            flex-shrink: 0;
             align-items: center;
             background: var(--c-panel);
         }
 
-        /* CENTER VIEWPORT */
         #viewport {
             flex: 1;
-            background-color: #bbb;
-            background-image: radial-gradient(#888 1px, transparent 1px);
+            background-color: #080808;
+            background-image: radial-gradient(#222 1px, transparent 1px);
             background-size: 20px 20px;
             position: relative;
             overflow: hidden;
-            cursor: default;
             user-select: none;
         }
         
@@ -171,9 +152,9 @@
 
         #artboard {
             width: 800px; height: 600px;
-            background: #fff;
-            border: var(--border-width) solid var(--c-border);
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            box-shadow: 0 0 0 1px #333;
             position: relative;
             overflow: visible; 
             flex-shrink: 0;
@@ -182,33 +163,81 @@
         
         svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
-        .vector-element { cursor: pointer; vector-effect: non-scaling-stroke; pointer-events: all; }
-        .vector-element:hover { stroke: var(--c-accent); stroke-width: 2px; stroke-dasharray: 2,2; opacity: 0.9; }
-        .vector-element.selected { stroke: var(--c-accent) !important; stroke-width: 2px !important; stroke-dasharray: none; outline: 1px dashed var(--c-accent); outline-offset: 2px;}
-        
-        text { cursor: text; }
-        
-        #grid-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 5; display: none;
+        .vector-element { cursor: move; vector-effect: non-scaling-stroke; pointer-events: all; }
+        .vector-element:hover { stroke: var(--c-accent); stroke-width: 1px; stroke-dasharray: 4,2; }
+        .vector-element.selected { 
+            stroke: var(--c-primary) !important; 
+            stroke-width: 1px !important; 
+            stroke-dasharray: none; 
         }
-        #grid-overlay.visible { display: block; background-image: linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px); background-size: 20px 20px; opacity: 0.5; }
 
-        /* RIGHT PROPERTIES */
+        /* GIZMO UI */
+        #gizmo-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: visible;
+            z-index: 999;
+        }
+        .gizmo-box {
+            fill: none;
+            stroke: var(--c-primary);
+            stroke-width: 1px;
+            vector-effect: non-scaling-stroke;
+        }
+        .gizmo-handle {
+            fill: var(--c-bg);
+            stroke: var(--c-primary);
+            stroke-width: 1px;
+            cursor: pointer;
+            pointer-events: all;
+        }
+        .gizmo-handle:hover { fill: var(--c-primary); }
+        .gizmo-rotate-line {
+            stroke: var(--c-primary);
+            stroke-width: 1px;
+            pointer-events: none;
+        }
+        .gizmo-rotate-handle {
+            fill: var(--c-secondary);
+            stroke: #000;
+            stroke-width: 1px;
+            cursor: grab;
+            pointer-events: all;
+        }
+
+        /* NODE EDITOR UI */
+        #node-editor-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .path-node {
+            width: 10px; height: 10px;
+            background: var(--c-primary);
+            border: 2px solid #000;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: move;
+            pointer-events: all;
+            z-index: 1001;
+        }
+        .path-node:hover { background: #fff; transform: translate(-50%, -50%) scale(1.2); }
+
         #properties {
             width: var(--sidebar-w);
             border-left: var(--border-width) solid var(--c-border);
             padding: 0;
             display: flex;
             flex-direction: column;
-            gap: 0;
             background: var(--c-panel);
             flex-shrink: 0;
         }
-        .prop-section { padding: 10px; border-bottom: 1px solid #ccc; }
+        .prop-section { padding: 10px; border-bottom: 1px solid #333; }
         .prop-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
-        .prop-label { font-weight: bold; font-size: 11px; min-width: 40px; }
-        .full-width { width: 100%; }
+        .prop-label { font-weight: bold; font-size: 10px; min-width: 60px; color: #888; }
 
         #layers-list {
             flex: 1;
@@ -219,713 +248,767 @@
         .layer-item {
             padding: 6px;
             background: var(--c-panel);
-            border: 2px solid transparent;
-            margin-bottom: 4px;
+            border: 1px solid #333;
+            margin-bottom: 2px;
             cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-            font-size: 11px;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 10px;
+            user-select: none;
+            color: var(--c-text);
         }
-        .layer-item:hover { background: #ddd; }
-        .layer-item.active { background: var(--c-primary); border-color: #000; font-weight: bold; }
+        .layer-item:hover { background: var(--c-surface); }
+        .layer-item.active { background: var(--c-surface); border-color: var(--c-primary); border-left-width: 3px; }
+        .layer-controls { display: flex; gap: 4px; margin-left: auto; }
+        .layer-btn { opacity: 0.5; cursor: pointer; font-size: 10px; padding: 2px; }
+        .layer-btn:hover { opacity: 1; color: var(--c-primary); }
+        .layer-btn.hidden { visibility: hidden; }
 
-        .zoom-controls {
-            position: absolute; bottom: 20px; right: 20px;
-            background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-            padding: 4px; display: flex; gap: 4px;
-            box-shadow: 3px 3px 0px var(--c-border);
-            z-index: 90;
-        }
-
-        /* STATUS BAR */
-        #status-bar {
-            height: 25px;
-            background: var(--c-panel);
-            border-top: var(--border-width) solid var(--c-border);
-            display: flex; align-items: center;
-            padding: 0 10px;
-            font-size: 11px;
-            font-weight: bold;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        /* TOAST */
         .toast {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            background: var(--c-text); color: var(--c-bg);
-            padding: 12px 24px; border: 2px solid var(--c-primary);
-            box-shadow: 4px 4px 0px #000; font-weight: bold; z-index: 2000;
-            font-size: 14px;
-            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            background: var(--c-primary); color: #000;
+            padding: 10px 20px; border: 2px solid var(--c-border);
+            box-shadow: 4px 4px 0px #000; font-weight: bold; z-index: 3000;
+            font-size: 12px; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
         }
         .toast.visible { opacity: 1; }
-        
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 3000;
-        }
-        .modal.hidden { display: none; }
-        .modal-content {
-            background: var(--c-panel); border: var(--border-width) solid var(--c-border);
-            padding: 20px; width: 90%; max-width: 400px;
-            box-shadow: 10px 10px 0px #000;
-        }
 
         #context-menu {
-            position: absolute;
-            background: var(--c-panel);
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 2000;
-            flex-direction: column;
-            min-width: 150px;
+            position: absolute; background: var(--c-panel); border: 1px solid var(--c-border);
+            box-shadow: 2px 2px 0px #000; display: none; z-index: 2000;
+            flex-direction: column; min-width: 140px;
         }
-        .ctx-item { padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 12px; border-bottom: 1px solid #eee; }
-        .ctx-item:hover { background: var(--c-primary); color: #000; }
-        .ctx-item:last-child { border-bottom: none; }
-
-        @media (max-width: 900px) {
-            #properties { position: absolute; right: 0; height: 100%; z-index: 200; transform: translateX(100%); transition: 0.3s; }
-            #properties.open { transform: translateX(0); }
-            .mobile-toggle { display: block !important; }
-        }
-        .mobile-toggle { display: none; position: absolute; top: 10px; right: 10px; z-index: 201; }
-
+        .ctx-item { padding: 8px; cursor: pointer; font-size: 11px; border-bottom: 1px solid #333; }
+        .ctx-item:hover { background: var(--c-surface); color: var(--c-primary); }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <!-- HEADER -->
     <header>
-        <div class="logo"><i class="fas fa-bezier-curve"></i> INKLING.WEB</div>
-        
-        <div style="display:flex; gap:5px; align-items: center; overflow-x: auto; max-width: 60%;">
-            <!-- History Group -->
-            <div style="display:flex; gap:2px; flex-shrink: 0;">
+        <div class="logo"><i class="fas fa-bezier-curve"></i> INKLING PRO</div>
+        <div style="display:flex; gap:5px; align-items: center;">
+            <div style="display:flex; gap:2px;">
                 <button class="btn btn-sm" id="btn-undo" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i></button>
                 <button class="btn btn-sm" id="btn-redo" title="Redo (Ctrl+Y)"><i class="fas fa-redo"></i></button>
             </div>
-            
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
-
-            <!-- File Group -->
-            <button class="btn btn-sm" id="btn-import" title="Import SVG/JSON"><i class="fas fa-file-import"></i> Import</button>
-            <button class="btn btn-sm btn-primary" id="btn-save-project" title="Save Project JSON"><i class="fas fa-save"></i> Save</button>
-
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
-
-            <!-- Export Group -->
-            <button class="btn btn-sm" id="btn-export-svg" title="Export SVG"><i class="fas fa-code"></i> SVG</button>
-            <button class="btn btn-sm" id="btn-export-png" title="Export PNG"><i class="fas fa-image"></i> PNG</button>
-            
-            <div style="width:2px; height:20px; background:var(--c-border); margin:0 5px; flex-shrink: 0;"></div>
-
-            <button class="btn btn-sm btn-danger" id="btn-clear" title="Clear Canvas"><i class="fas fa-trash"></i></button>
+            <div style="width:1px; height:15px; background:#333; margin:0 5px;"></div>
+            <button class="btn btn-sm" id="btn-import" title="Import SVG"><i class="fas fa-file-import"></i></button>
+            <button class="btn btn-sm" id="btn-save-project" title="Save JSON"><i class="fas fa-save"></i></button>
+            <div style="width:1px; height:15px; background:#333; margin:0 5px;"></div>
+            <button class="btn btn-sm" id="btn-export-svg" title="Export SVG"><i class="fas fa-code"></i></button>
+            <button class="btn btn-sm btn-danger" id="btn-clear"><i class="fas fa-trash"></i></button>
         </div>
-
-        <button class="btn btn-sm mobile-toggle" id="btn-toggle-props"><i class="fas fa-bars"></i></button>
     </header>
 
     <div id="workspace">
-        
-        <!-- LEFT TOOLBAR -->
         <nav class="panel" id="toolbar">
             <button class="btn btn-icon active" id="tool-select" title="Select (V)"><i class="fas fa-mouse-pointer"></i></button>
-            <button class="btn btn-icon" id="tool-rect" title="Rectangle (R)"><i class="far fa-square"></i></button>
+            <button class="btn btn-icon" id="tool-rect" title="Rect (R)"><i class="far fa-square"></i></button>
             <button class="btn btn-icon" id="tool-circle" title="Circle (C)"><i class="far fa-circle"></i></button>
+            <button class="btn btn-icon" id="tool-polygon" title="Polygon"><i class="fas fa-draw-polygon"></i></button>
             <button class="btn btn-icon" id="tool-line" title="Line (L)"><i class="fas fa-slash"></i></button>
-            <button class="btn btn-icon" id="tool-pen" title="Freehand (P)"><i class="fas fa-pencil-alt"></i></button>
+            <button class="btn btn-icon" id="tool-pen" title="Pen (P)"><i class="fas fa-pen-nib"></i></button>
             <button class="btn btn-icon" id="tool-text" title="Text (T)"><i class="fas fa-font"></i></button>
-            
-            <div style="height:1px; background:var(--c-border); width:80%; margin: 5px 0;"></div>
-            
-            <button class="btn btn-sm" id="btn-snap" title="Toggle Snap"><i class="fas fa-magnet"></i></button>
-            <button class="btn btn-sm" id="btn-grid" title="Toggle Grid"><i class="fas fa-border-all"></i></button>
-            <div style="flex:1"></div>
+            <div style="height:1px; background:#333; width:80%; margin:5px 0;"></div>
             <button class="btn btn-sm" id="btn-theme"><i class="fas fa-adjust"></i></button>
         </nav>
 
-        <!-- CENTER VIEWPORT -->
         <main id="viewport">
             <div id="artboard-container">
                 <div id="artboard">
+                    <!-- MAIN SVG -->
                     <svg id="main-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-                        <defs>
-                            <!-- Fonts will be injected here on export -->
-                        </defs>
+                        <defs></defs>
                         <g id="drawing-layer"></g>
                     </svg>
                     
-                    <div id="grid-overlay"></div>
-                </div>
-            </div>
+                    <!-- GIZMO LAYER (Transform) -->
+                    <svg id="gizmo-layer" viewBox="0 0 800 600" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;">
+                        <g id="gizmo-group" style="display: none;">
+                            <rect id="gizmo-box" class="gizmo-box" x="0" y="0" width="0" height="0"></rect>
+                            <line id="gizmo-rotate-line" class="gizmo-rotate-line" x1="0" y1="0" x2="0" y2="-25"></line>
+                            <circle id="gizmo-rotate" class="gizmo-rotate-handle" cx="0" cy="-25" r="4"></circle>
+                            <!-- Handles: TL, TR, BR, BL -->
+                            <rect class="gizmo-handle" data-handle="tl" x="-4" y="-4" width="8" height="8"></rect>
+                            <rect class="gizmo-handle" data-handle="tr" x="-4" y="-4" width="8" height="8"></rect>
+                            <rect class="gizmo-handle" data-handle="bl" x="-4" y="-4" width="8" height="8"></rect>
+                            <rect class="gizmo-handle" data-handle="br" x="-4" y="-4" width="8" height="8"></rect>
+                        </g>
+                    </svg>
 
-            <div class="zoom-controls">
-                <button class="btn btn-sm btn-icon" id="zoom-out"><i class="fas fa-minus"></i></button>
-                <button class="btn btn-sm" id="zoom-reset" style="width:40px;">100%</button>
-                <button class="btn btn-sm btn-icon" id="zoom-in"><i class="fas fa-plus"></i></button>
+                    <!-- NODE EDITOR LAYER (DOM Overlay) -->
+                    <div id="node-editor-layer"></div>
+                </div>
             </div>
         </main>
 
-        <!-- RIGHT PROPERTIES -->
         <aside class="panel" id="properties">
-            <div class="panel-header"><span>Properties</span> <i class="fas fa-sliders-h"></i></div>
+            <div class="panel-header"><span>Properties</span></div>
             
-            <div id="no-selection-msg" style="padding:20px; color:#888; text-align:center; font-style:italic;">
-                Select an object to edit.
-            </div>
-
             <div id="prop-controls" style="display:none;">
-                
-                <!-- Typography Section -->
-                <div class="prop-section" id="typo-section" style="display:none;">
-                    <div class="prop-label" style="margin-bottom:5px; border-bottom:1px dashed #000;">Typography</div>
-                    
+                <div class="prop-section">
+                    <div class="prop-label" style="margin-bottom:5px; color:var(--c-primary)">TRANSFORM</div>
                     <div class="prop-row">
-                        <span class="prop-label">Content</span>
-                        <input type="text" id="inp-text-content" class="full-width">
+                        <span class="prop-label">X</span> <input type="number" id="inp-x">
+                        <span class="prop-label">Y</span> <input type="number" id="inp-y">
                     </div>
-
                     <div class="prop-row">
-                        <span class="prop-label">Font</span>
-                        <select id="inp-font-family">
-                            <option value="sans-serif">System Sans</option>
-                        </select>
-                    </div>
-
-                    <div class="prop-row">
-                        <span class="prop-label">Size</span>
-                        <input type="number" id="inp-font-size" min="4" max="200" value="24">
-                    </div>
-
-                    <div class="prop-row">
-                        <span class="prop-label">Style</span>
-                        <select id="inp-font-weight">
-                            <option value="400">Normal</option>
-                            <option value="700">Bold</option>
-                            <option value="italic">Italic</option>
-                            <option value="900">Black</option>
-                        </select>
+                        <span class="prop-label">Rotate</span> <input type="number" id="inp-rot" value="0">
                     </div>
                 </div>
 
-                <!-- Common Appearance -->
                 <div class="prop-section">
-                    <div class="prop-label" style="margin-bottom:5px;">Appearance</div>
+                    <div class="prop-label" style="margin-bottom:5px;">APPEARANCE</div>
                     <div class="prop-row">
-                        <span class="prop-label">Fill</span>
-                        <div style="display:flex; gap:4px; width:60%;">
-                            <input type="color" id="inp-fill">
-                            <button class="btn btn-sm" id="btn-no-fill" title="None"><i class="fas fa-ban"></i></button>
+                        <span class="prop-label">Fill</span> <input type="color" id="inp-fill">
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Stroke</span> 
+                        <div style="display:flex; gap:4px; flex:1;">
+                            <input type="color" id="inp-stroke">
+                            <input type="number" id="inp-stroke-width" min="0" max="50" style="width:50px;">
                         </div>
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">Stroke</span>
-                        <div style="display:flex; gap:4px; width:60%;">
-                            <input type="color" id="inp-stroke" value="#000000">
-                            <input type="number" id="inp-stroke-width" value="2" min="0" max="50" style="width:50px;">
-                        </div>
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Opacity</span>
-                        <input type="range" id="inp-opacity" min="0" max="1" step="0.1" value="1" style="width:60%;">
+                        <span class="prop-label">Opacity</span> <input type="range" id="inp-opacity" min="0" max="1" step="0.1">
                     </div>
                 </div>
 
-                <!-- Actions -->
+                <div class="prop-section" id="path-actions" style="display:none;">
+                    <div class="prop-label" style="margin-bottom:5px; color:var(--c-secondary)">PATH TOOLS</div>
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <button class="btn btn-sm btn-primary" id="btn-edit-nodes" style="flex:1"><i class="fas fa-bezier-curve"></i> Edit Nodes</button>
+                    </div>
+                    <div style="font-size:9px; color:#888;">Click to edit path points.</div>
+                </div>
+
                 <div class="prop-section">
-                    <div class="prop-label" style="margin-bottom:5px;">Actions</div>
+                    <div class="prop-label" style="margin-bottom:5px;">ACTIONS</div>
                     <div style="display:flex; gap:4px; flex-wrap:wrap;">
                         <button class="btn btn-sm" id="btn-dup" title="Duplicate"><i class="fas fa-copy"></i></button>
                         <button class="btn btn-sm" id="btn-del" title="Delete"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm" id="btn-group" title="Group (Ctrl+G)"><i class="fas fa-object-group"></i></button>
-                        <button class="btn btn-sm" id="btn-ungroup" title="Ungroup"><i class="fas fa-object-ungroup"></i></button>
-                    </div>
-                </div>
-
-                <div class="prop-section">
-                    <div class="prop-label" style="margin-bottom:5px;">Transform</div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px;">
-                        <button class="btn btn-sm" id="btn-align-h" title="Center X"><i class="fas fa-arrows-alt-h"></i></button>
-                        <button class="btn btn-sm" id="btn-align-v" title="Center Y"><i class="fas fa-arrows-alt-v"></i></button>
-                    </div>
-                    <div class="prop-row" style="margin-top:8px;">
-                        <span class="prop-label">Pos X</span>
-                        <input type="number" id="inp-x" style="width:60%;">
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Pos Y</span>
-                        <input type="number" id="inp-y" style="width:60%;">
+                        <button class="btn btn-sm" id="btn-front" title="To Front"><i class="fas fa-layer-group"></i></button>
+                        <button class="btn btn-sm" id="btn-back" title="To Back"><i class="fas fa-layer-group"></i></button>
+                        <button class="btn btn-sm" id="btn-clip" title="Clip (Mask)"><i class="fas fa-mask"></i></button>
                     </div>
                 </div>
             </div>
 
-            <div class="panel-header">Layers</div>
+            <div class="panel-header">LAYERS</div>
             <div id="layers-list"></div>
         </aside>
     </div>
 
-    <!-- STATUS BAR -->
-    <div id="status-bar">
-        <span id="status-text">Ready</span>
-        <span id="coord-text">X: 0 Y: 0</span>
-    </div>
-
-    <!-- TOAST -->
-    <div class="toast" id="toast-msg">Action Successful</div>
-
-    <!-- CONTEXT MENU -->
-    <div id="context-menu">
-        <div class="ctx-item" id="ctx-dup"><i class="fas fa-copy"></i> Duplicate</div>
-        <div class="ctx-item" id="ctx-del"><i class="fas fa-trash"></i> Delete</div>
-        <div class="ctx-item" id="ctx-front"><i class="fas fa-arrow-up"></i> To Front</div>
-        <div class="ctx-item" id="ctx-back"><i class="fas fa-arrow-down"></i> To Back</div>
-    </div>
-
-    <!-- MODAL: ABOUT/INFO -->
-    <div class="modal hidden" id="about-modal">
-        <div class="modal-content">
-            <h2 style="border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:10px;">INKLING.WEB v4.2</h2>
-            <p style="font-family:monospace; line-height:1.6; margin-bottom: 15px;">
-                <b>FIXED:</b> Download triggers now append to body for compatibility.<br>
-                <b>CONTROLS:</b><br>
-                • Double Click Text: Edit<br>
-                • Drag: Move Objects<br>
-                • Space + Drag: Pan Canvas<br>
-                • Ctrl + Scroll: Zoom
-            </p>
-            <div style="text-align:right;">
-                <button class="btn btn-primary" onclick="document.getElementById('about-modal').classList.add('hidden')">Start Creating</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- HIDDEN INPUTS -->
+    <div class="toast" id="toast">Action</div>
+    <div id="context-menu"></div>
     <input type="file" id="file-input" accept=".svg,.json" style="display:none;">
 
     <script>
-        const GoogleFonts = [
-            { name: 'Roboto', family: 'Roboto' },
-            { name: 'Inter', family: 'Inter' },
-            { name: 'Montserrat', family: 'Montserrat' },
-            { name: 'Open Sans', family: 'Open Sans' },
-            { name: 'Lato', family: 'Lato' },
-            { name: 'Oswald', family: 'Oswald' },
-            { name: 'Playfair Display', family: 'Playfair Display' },
-            { name: 'Raleway', family: 'Raleway' },
-            { name: 'Pacifico', family: 'Pacifico' },
-            { name: 'Permanent Marker', family: 'Permanent Marker' },
-            { name: 'Press Start 2P', family: 'Press Start 2P' },
-            { name: 'Roboto Mono', family: 'Roboto Mono' }
-        ];
-
         const Utils = {
-            uid: () => 'id-' + Math.random().toString(36).substr(2, 6),
+            uid: () => 'id-' + Math.random().toString(36).substr(2, 5),
             toast: (msg) => {
-                const t = document.getElementById('toast-msg');
-                if(!t) return;
-                t.innerText = msg;
-                t.classList.add('visible');
-                setTimeout(() => t.classList.remove('visible'), 2500);
+                const t = document.getElementById('toast');
+                t.innerText = msg; t.classList.add('visible');
+                setTimeout(() => t.classList.remove('visible'), 2000);
             },
-            setStatus: (msg) => {
-                const el = document.getElementById('status-text');
-                if(el) el.innerText = msg;
-            },
-            // ROBUST DOWNLOAD HELPER
-            downloadFile: (data, fileName, mimeType) => {
-                try {
-                    const blob = new Blob([data], { type: mimeType });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }, 100);
-                } catch(e) {
-                    console.error("Download failed:", e);
-                    alert("Download failed: " + e.message);
-                }
-            },
-            getMousePos: (evt) => {
+            getMousePos: (e) => {
                 const artboard = document.getElementById('artboard');
-                if(!artboard) return {x:0, y:0};
                 const rect = artboard.getBoundingClientRect();
                 const container = document.getElementById('artboard-container');
                 const style = window.getComputedStyle(container);
                 const matrix = new DOMMatrix(style.transform);
                 const scale = matrix.a; 
-                const x = (evt.clientX - rect.left) / scale;
-                const y = (evt.clientY - rect.top) / scale;
-                return { x, y };
+                
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                return {
+                    x: (clientX - rect.left) / scale,
+                    y: (clientY - rect.top) / scale
+                };
             },
-            rgbToHex: (col) => {
-                if(!col || col === 'none') return '#ffffff';
-                if(col.startsWith('#')) return col;
+            rgbToHex: (c) => {
+                if(!c || c === 'none') return '#ffffff';
+                if(c.startsWith('#')) return c;
                 const ctx = document.createElement('canvas').getContext('2d');
-                ctx.fillStyle = col;
+                ctx.fillStyle = c;
                 return ctx.fillStyle;
             }
         };
 
+        // Classe GIZMO CORRIGIDA
+        class Gizmo {
+            constructor(svg, editor) {
+                this.svg = svg;
+                this.editor = editor;
+                this.group = document.getElementById('gizmo-group');
+                this.box = document.getElementById('gizmo-box');
+                this.rotHandle = document.getElementById('gizmo-rotate');
+                this.handles = document.querySelectorAll('.gizmo-handle');
+                this.active = false;
+                this.mode = null; 
+                this.handle = null;
+                this.startState = {};
+                
+                this.handles.forEach(h => {
+                    h.onmousedown = (e) => this.startDrag(e, 'resize', h.dataset.handle);
+                    h.ontouchstart = (e) => this.startDrag(e, 'resize', h.dataset.handle);
+                });
+                this.rotHandle.onmousedown = (e) => this.startDrag(e, 'rotate');
+                this.rotHandle.ontouchstart = (e) => this.startDrag(e, 'rotate');
+            }
+
+            show(el) {
+                if(!el) { this.hide(); return; }
+                
+                this.target = el;
+                this.bbox = el.getBBox();
+                this.tx = 0; this.ty = 0; this.r = 0;
+
+                // Get existing transforms
+                const list = el.transform.baseVal;
+                if(list.numberOfItems > 0) {
+                    const t = list.getItem(0);
+                    if(t.type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                        this.tx = t.matrix.e; this.ty = t.matrix.f;
+                    }
+                }
+                if(list.numberOfItems > 1) {
+                     for(let i=0; i<list.numberOfItems; i++) {
+                         if(list.getItem(i).type === SVGTransform.SVG_TRANSFORM_ROTATE) {
+                             this.r = list.getItem(i).angle;
+                         }
+                     }
+                }
+
+                this.updateVisuals();
+                this.group.style.display = 'block';
+                this.active = true;
+            }
+
+            updateVisuals() {
+                const x = this.bbox.x + this.tx;
+                const y = this.bbox.y + this.ty;
+                const w = this.bbox.width;
+                const h = this.bbox.height;
+                const cx = x + w/2;
+                const cy = y + h/2;
+
+                this.box.setAttribute('x', x);
+                this.box.setAttribute('y', y);
+                this.box.setAttribute('width', w);
+                this.box.setAttribute('height', h);
+                this.box.setAttribute('transform', `rotate(${this.r} ${cx} ${cy})`);
+
+                const rotH = document.getElementById('gizmo-rotate');
+                rotH.setAttribute('cx', cx);
+                rotH.setAttribute('cy', y - 30);
+
+                const positions = {
+                    'tl': {x: x, y: y},
+                    'tr': {x: x+w, y: y},
+                    'br': {x: x+w, y: y+h},
+                    'bl': {x: x, y: y+h}
+                };
+
+                this.handles.forEach(h => {
+                    const pos = positions[h.dataset.handle];
+                    h.setAttribute('x', pos.x - 4); // Offset for handle center
+                    h.setAttribute('y', pos.y - 4);
+                });
+            }
+
+            hide() {
+                this.group.style.display = 'none';
+                this.active = false;
+                this.target = null;
+            }
+
+            startDrag(e, mode, handle) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.mode = mode;
+                this.handle = handle;
+                this.startPos = Utils.getMousePos(e);
+                
+                const el = this.target;
+                const list = el.transform.baseVal;
+                let tx = 0, ty = 0, r = 0;
+                if(list.numberOfItems > 0) {
+                    const t = list.getItem(0);
+                    if(t.type === SVGTransform.SVG_TRANSFORM_TRANSLATE) { tx = t.matrix.e; ty = t.matrix.f; }
+                }
+                
+                this.startState = { 
+                    tx, ty, r, 
+                    bbox: el.getBBox(),
+                    // Save initial attributes for precise resizing
+                    attrs: this.getInitialAttrs(el) 
+                };
+
+                const move = (ev) => this.doDrag(ev);
+                const end = () => {
+                    window.removeEventListener('mousemove', move);
+                    window.removeEventListener('mouseup', end);
+                    window.removeEventListener('touchmove', move);
+                    window.removeEventListener('touchend', end);
+                    this.editor.saveState();
+                };
+
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', end);
+                window.addEventListener('touchmove', move, {passive:false});
+                window.addEventListener('touchend', end);
+            }
+
+            getInitialAttrs(el) {
+                const t = el.tagName;
+                const attrs = {};
+                if(t === 'rect') {
+                    attrs.x = parseFloat(el.getAttribute('x')) || 0;
+                    attrs.y = parseFloat(el.getAttribute('y')) || 0;
+                    attrs.w = parseFloat(el.getAttribute('width'));
+                    attrs.h = parseFloat(el.getAttribute('height'));
+                } else if (t === 'circle') {
+                    attrs.r = parseFloat(el.getAttribute('r'));
+                    attrs.cx = parseFloat(el.getAttribute('cx'));
+                    attrs.cy = parseFloat(el.getAttribute('cy'));
+                } else if (t === 'ellipse') {
+                    attrs.rx = parseFloat(el.getAttribute('rx'));
+                    attrs.ry = parseFloat(el.getAttribute('ry'));
+                    attrs.cx = parseFloat(el.getAttribute('cx'));
+                    attrs.cy = parseFloat(el.getAttribute('cy'));
+                } else if (t === 'line') {
+                    attrs.x1 = parseFloat(el.getAttribute('x1'));
+                    attrs.y1 = parseFloat(el.getAttribute('y1'));
+                    attrs.x2 = parseFloat(el.getAttribute('x2'));
+                    attrs.y2 = parseFloat(el.getAttribute('y2'));
+                }
+                return attrs;
+            }
+
+            doDrag(e) {
+                const pos = Utils.getMousePos(e);
+                const dx = pos.x - this.startPos.x;
+                const dy = pos.y - this.startPos.y;
+
+                const el = this.target;
+                const tag = el.tagName;
+
+                if (this.mode === 'rotate') {
+                    const cx = this.startState.bbox.x + this.startState.tx + this.startState.bbox.width/2;
+                    const cy = this.startState.bbox.y + this.startState.ty + this.startState.bbox.height/2;
+                    const startAngle = Math.atan2(this.startPos.y - cy, this.startPos.x - cx);
+                    const curAngle = Math.atan2(pos.y - cy, pos.x - cx);
+                    const deg = (curAngle - startAngle) * 180 / Math.PI;
+                    const newRot = this.startState.r + deg;
+                    
+                    let rotTransform = null;
+                    const list = el.transform.baseVal;
+                    for(let i=0; i<list.numberOfItems; i++) {
+                        if(list.getItem(i).type === SVGTransform.SVG_TRANSFORM_ROTATE) {
+                            rotTransform = list.getItem(i); break;
+                        }
+                    }
+                    if(!rotTransform) {
+                        rotTransform = this.svg.createSVGTransform();
+                        list.appendItem(rotTransform);
+                    }
+                    rotTransform.setRotate(newRot, cx, cy);
+                    this.r = newRot;
+                
+                } else if (this.mode === 'resize') {
+                    const init = this.startState.attrs;
+
+                    // LOGIC DE REDIMENSIONAMENTO ATRIBUTO POR ATRIBUTO
+                    if (tag === 'rect') {
+                        let nx = init.x, ny = init.y, nw = init.w, nh = init.h;
+
+                        if (this.handle === 'br') {
+                            nw = init.w + dx;
+                            nh = init.h + dy;
+                        } else if (this.handle === 'bl') {
+                            nx = init.x + dx;
+                            nw = init.w - dx;
+                            nh = init.h + dy;
+                        } else if (this.handle === 'tr') {
+                            ny = init.y + dy;
+                            nw = init.w + dx;
+                            nh = init.h - dy;
+                        } else if (this.handle === 'tl') {
+                            nx = init.x + dx;
+                            ny = init.y + dy;
+                            nw = init.w - dx;
+                            nh = init.h - dy;
+                        }
+
+                        // Evitar largura negativa (espelhamento visual básico)
+                        if(nw > 1) { el.setAttribute('x', nx); el.setAttribute('width', nw); }
+                        if(nh > 1) { el.setAttribute('y', ny); el.setAttribute('height', nh); }
+
+                    } else if (tag === 'circle') {
+                        let nr = init.r + Math.abs(dx); // Simples: usa a distância X para redimensionar
+                        if(nr > 1) el.setAttribute('r', nr);
+                    
+                    } else if (tag === 'ellipse') {
+                        let nrx = init.rx + (this.handle.includes('r') || this.handle.includes('l') ? dx : 0);
+                        let nry = init.ry + (this.handle.includes('b') || this.handle.includes('t') ? dy : 0);
+                        
+                        // Ajuste de posição para ancores
+                        if (this.handle === 'l' || this.handle === 'bl' || this.handle === 'tl') {
+                            el.setAttribute('cx', init.cx + dx);
+                            nrx = init.rx - dx;
+                        }
+                        if (this.handle === 't' || this.handle === 'tl' || this.handle === 'tr') {
+                            el.setAttribute('cy', init.cy + dy);
+                            nry = init.ry - dy;
+                        }
+
+                        if(nrx > 1) el.setAttribute('rx', nrx);
+                        if(nry > 1) el.setAttribute('ry', nry);
+
+                    } else if (tag === 'line') {
+                        // Redimensionar linha move as pontas
+                        if (this.handle === 'br' || this.handle === 'tr') {
+                            el.setAttribute('x2', init.x2 + dx);
+                            el.setAttribute('y2', (this.handle === 'br' ? init.y2 + dy : init.y2));
+                        } else {
+                            el.setAttribute('x2', init.x2); // Mantém fixo o oposto
+                            el.setAttribute('y2', init.y2); 
+                        }
+                        
+                        if (this.handle === 'tl' || this.handle === 'bl') {
+                            el.setAttribute('x1', init.x1 + dx);
+                            el.setAttribute('y1', (this.handle === 'bl' ? init.y1 + dy : init.y1));
+                        } else if (this.handle === 'tr' || this.handle === 'br') {
+                             // Mantém x1,y1 fixos se estamos no BR/TR
+                        } else {
+                             el.setAttribute('x1', init.x1);
+                             el.setAttribute('y1', init.y1);
+                        }
+
+                    } else {
+                        // Fallback para Path, Image, Text: Usar Transform Scale
+                        // Isso redimensiona visualmente sem mudar atributos complexos
+                        const sx = 1 + (dx / this.startState.bbox.width);
+                        const sy = 1 + (dy / this.startState.bbox.height);
+                        
+                        // Aplicar escala é complexo sem matrizes completas.
+                        // Como fallback simples, movemos o translate para simular o redimensionamento visual
+                        // (Nota: não redimensiona de verdade, apenas move a caixa visualmente se não for primitivo simples)
+                        // Para um demo funcional, vamos ignorar resize complexo e focar nos primitivos acima.
+                    }
+                }
+
+                this.updateVisuals();
+                this.editor.updatePropUI();
+            }
+        }
+
+        class NodeEditor {
+            constructor(editor) {
+                this.editor = editor;
+                this.container = document.getElementById('node-editor-layer');
+                this.active = false;
+                this.pathEl = null;
+                this.points = []; 
+            }
+
+            activate(el) {
+                this.deactivate();
+                if(!el || el.tagName !== 'path') {
+                    Utils.toast("Selecione um elemento Path");
+                    return;
+                }
+                this.pathEl = el;
+                this.active = true;
+                this.parsePath();
+                this.renderNodes();
+                Utils.toast("Editor de Nós Ativo");
+            }
+
+            deactivate() {
+                this.container.innerHTML = '';
+                this.active = false;
+                this.pathEl = null;
+            }
+
+            parsePath() {
+                const d = this.pathEl.getAttribute('d');
+                if(!d) return;
+                const commands = d.match(/[a-zA-Z][^a-zA-Z]*/g) || [];
+                this.points = [];
+                
+                commands.forEach(cmd => {
+                    const type = cmd[0];
+                    const coords = cmd.slice(1).trim().split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
+                    
+                    if(type === 'M' || type === 'L') {
+                        this.points.push({ type, x: coords[0], y: coords[1], cmdIndex: this.points.length });
+                    } else if (type === 'C') {
+                        this.points.push({ type: 'C_cp1', x: coords[0], y: coords[1], isControl: true });
+                        this.points.push({ type: 'C_cp2', x: coords[2], y: coords[3], isControl: true });
+                        this.points.push({ type: 'C_end', x: coords[4], y: coords[5], isControl: false });
+                    } else if (type === 'Z') {}
+                });
+            }
+
+            renderNodes() {
+                this.container.innerHTML = '';
+                this.points.forEach((p, i) => {
+                    if(p.isControl) return; 
+
+                    const dot = document.createElement('div');
+                    dot.className = 'path-node';
+                    dot.style.left = p.x + 'px';
+                    dot.style.top = p.y + 'px';
+                    dot.title = `Ponto ${i}`;
+                    
+                    dot.onmousedown = (e) => this.startDragNode(e, i, dot);
+                    dot.ontouchstart = (e) => this.startDragNode(e, i, dot);
+                    
+                    this.container.appendChild(dot);
+                });
+            }
+
+            startDragNode(e, index, dot) {
+                e.stopPropagation();
+                e.preventDefault();
+                const startPos = Utils.getMousePos(e);
+                
+                const move = (ev) => {
+                    const pos = Utils.getMousePos(ev);
+                    const dx = pos.x - startPos.x;
+                    const dy = pos.y - startPos.y;
+                    
+                    const newPx = this.points[index].x + dx;
+                    const newPy = this.points[index].y + dy;
+                    
+                    dot.style.left = newPx + 'px';
+                    dot.style.top = newPy + 'px';
+                    
+                    this.points[index].x = newPx;
+                    this.points[index].y = newPy;
+                    
+                    this.updatePath();
+                };
+
+                const end = () => {
+                    window.removeEventListener('mousemove', move);
+                    window.removeEventListener('mouseup', end);
+                    window.removeEventListener('touchmove', move);
+                    window.removeEventListener('touchend', end);
+                    this.editor.saveState();
+                };
+
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', end);
+                window.addEventListener('touchmove', move, {passive:false});
+                window.addEventListener('touchend', end);
+            }
+
+            updatePath() {
+                let d = "";
+                let i = 0;
+                while(i < this.points.length) {
+                    const p = this.points[i];
+                    if(p.type === 'M') {
+                        d += `M ${p.x} ${p.y} `;
+                    } else if (p.type === 'L') {
+                        d += `L ${p.x} ${p.y} `;
+                    }
+                    i++;
+                }
+                this.pathEl.setAttribute('d', d);
+            }
+        }
+
         class Inkling {
             constructor() {
-                try {
-                    this.svg = document.getElementById('main-svg');
-                    this.layer = document.getElementById('drawing-layer');
-                    
-                    if(!this.svg || !this.layer) {
-                        throw new Error("Critical DOM elements missing");
-                    }
+                this.svg = document.getElementById('main-svg');
+                this.layer = document.getElementById('drawing-layer');
+                this.selectedIds = [];
+                this.tool = 'select';
+                this.history = [];
+                this.redoStack = [];
+                
+                this.isDrawing = false;
+                this.startPos = {x:0, y:0};
+                this.currentShape = null;
 
-                    this.selectedIds = [];
-                    this.tool = 'select';
-                    this.isDrawing = false;
-                    this.isPanning = false;
-                    this.isSpacePressed = false;
-                    
-                    this.startPos = {x:0, y:0};
-                    this.currentShape = null;
-                    this.penPoints = [];
-                    
-                    this.dragStartMatrix = null; 
-                    this.dragStartMouse = {x:0, y:0};
-                    this.initialAttrs = {};
+                this.zoom = 1;
+                this.pan = {x:0, y:0};
+                this.dragStartState = {};
 
-                    this.zoom = 1;
-                    this.pan = {x: 0, y: 0};
-                    this.snapEnabled = false;
-                    this.gridSize = 20;
+                this.gizmo = new Gizmo(this.svg, this);
+                this.nodeEditor = new NodeEditor(this);
 
-                    this.history = [];
-                    this.redo = [];
-                    this.maxHistory = 40;
-
-                    this.init();
-                    console.log("Inkling initialized successfully.");
-                } catch(e) {
-                    alert("Error initializing Inkling: " + e.message);
-                    console.error(e);
-                }
+                this.init();
             }
 
             init() {
-                this.populateFontList();
                 this.bindToolbar();
                 this.bindCanvas();
                 this.bindProperties();
                 this.bindGlobal();
-                this.saveState();
-                
-                if(!localStorage.getItem('inkling_visited_v42')) {
-                    const modal = document.getElementById('about-modal');
-                    if(modal) modal.classList.remove('hidden');
-                    localStorage.setItem('inkling_visited_v42', 'true');
-                }
+                this.centerView();
             }
 
-            populateFontList() {
-                const select = document.getElementById('inp-font-family');
-                if(!select) return;
-                GoogleFonts.forEach(font => {
-                    const opt = document.createElement('option');
-                    opt.value = font.family;
-                    opt.innerText = font.name;
-                    select.appendChild(opt);
-                });
+            centerView() {
+                const vp = document.getElementById('viewport');
+                const pad = 40;
+                const s = Math.min((vp.clientWidth-pad)/800, (vp.clientHeight-pad)/600);
+                this.zoom = Math.min(s, 1);
+                this.pan.x = (vp.clientWidth - 800*this.zoom)/2;
+                this.pan.y = (vp.clientHeight - 600*this.zoom)/2;
+                this.updateTransform();
             }
 
-            snap(val) { return this.snapEnabled ? Math.round(val / this.gridSize) * this.gridSize : val; }
+            updateTransform() {
+                const c = document.getElementById('artboard-container');
+                c.style.transform = `translate(${this.pan.x}px, ${this.pan.y}px) scale(${this.zoom})`;
+            }
 
             setTool(t) {
                 this.tool = t;
+                this.nodeEditor.deactivate();
                 document.querySelectorAll('#toolbar .btn').forEach(b => b.classList.remove('active'));
                 const btn = document.getElementById(`tool-${t}`);
                 if(btn) btn.classList.add('active');
-                if(t !== 'select') this.deselectAll();
-                const vp = document.getElementById('viewport');
-                if(vp) vp.style.cursor = t === 'select' ? 'default' : 'crosshair';
-            }
-
-            // --- TOOLBAR BINDING ---
-            bindToolbar() {
-                ['select', 'rect', 'circle', 'line', 'pen', 'text'].forEach(t => {
-                    const btn = document.getElementById(`tool-${t}`);
-                    if(btn) btn.onclick = () => this.setTool(t);
-                });
-
-                const snapBtn = document.getElementById('btn-snap');
-                if(snapBtn) snapBtn.onclick = (e) => {
-                    this.snapEnabled = !this.snapEnabled;
-                    e.currentTarget.classList.toggle('active', this.snapEnabled);
-                };
-
-                const gridBtn = document.getElementById('btn-grid');
-                if(gridBtn) gridBtn.onclick = (e) => {
-                    const go = document.getElementById('grid-overlay');
-                    if(go) go.classList.toggle('visible');
-                    e.currentTarget.classList.toggle('active');
-                };
-
-                const clearBtn = document.getElementById('btn-clear');
-                if(clearBtn) clearBtn.onclick = () => {
-                    if(confirm('Delete all artwork?')) {
-                        this.saveState();
-                        this.layer.innerHTML = '';
-                        this.deselectAll();
-                        Utils.toast('Canvas Cleared');
-                    }
-                };
-
-                const themeBtn = document.getElementById('btn-theme');
-                if(themeBtn) themeBtn.onclick = () => document.body.toggleAttribute('data-theme');
-
-                const toggleProps = document.getElementById('btn-toggle-props');
-                if(toggleProps) toggleProps.onclick = () => {
-                    const props = document.getElementById('properties');
-                    if(props) props.classList.toggle('open');
-                };
-            }
-
-            // --- CORE LOGIC (Drawing/Selecting) ---
-            bindCanvas() {
-                if(!this.svg) return;
-                const svg = this.svg;
                 
-                svg.addEventListener('mousedown', (e) => {
-                    if(e.button !== 0) return;
+                if(t !== 'select') this.deselectAll();
+            }
+
+            bindToolbar() {
+                ['select','rect','circle','polygon','line','pen','text'].forEach(t => {
+                    const b = document.getElementById(`tool-${t}`);
+                    if(b) b.onclick = () => this.setTool(t);
+                });
+                document.getElementById('btn-theme').onclick = () => document.body.toggleAttribute('data-theme');
+            }
+
+            bindCanvas() {
+                const start = (e) => {
+                    if(e.target.closest('#gizmo-layer')) return;
                     const menu = document.getElementById('context-menu');
                     if(menu) menu.style.display = 'none';
 
-                    if(this.isSpacePressed) {
-                        this.isPanning = true;
-                        this.startPos = { x: e.clientX, y: e.clientY };
-                        const vp = document.getElementById('viewport');
-                        if(vp) vp.style.cursor = 'grabbing';
-                        return;
-                    }
-
                     const pos = Utils.getMousePos(e);
-                    const sx = this.snap(pos.x);
-                    const sy = this.snap(pos.y);
-                    this.startPos = { x: sx, y: sy }; 
-                    this.dragStartMouse = { x: pos.x, y: pos.y };
+                    this.startPos = pos;
+                    this.isDrawing = true;
 
                     if (this.tool === 'select') {
-                        if (e.target.classList.contains('vector-element')) {
-                            if(!e.shiftKey && !this.selectedIds.includes(e.target.id)) this.deselectAll();
-                            if(!this.selectedIds.includes(e.target.id)) this.selectElement(e.target);
-                            this.isDrawing = true;
-                            this.initDragState();
+                        let target = e.target;
+                        while(target && target !== this.svg && !target.classList.contains('vector-element')) target = target.parentNode;
+                        
+                        if (target && target.classList.contains('vector-element')) {
+                            if(!e.shiftKey) this.deselectAll();
+                            if(!this.selectedIds.includes(target.id)) this.selectElement(target);
+                            this.initDrag();
                         } else {
                             this.deselectAll();
                         }
-                    } else if (this.tool === 'text') {
-                        this.createText(sx, sy);
-                        this.isDrawing = false;
-                    } else if (this.tool === 'pen') {
-                        this.isDrawing = true;
-                        this.penPoints = [sx, sy];
-                        this.currentShape = this.createSVG('path', { d: `M ${sx} ${sy}`, fill: 'none', stroke: '#000', 'stroke-width': 2 });
                     } else {
-                        this.isDrawing = true;
-                        if (this.tool === 'rect') {
-                            this.currentShape = this.createSVG('rect', { x: sx, y: sy, width: 0, height: 0, fill: '#FFDE59', stroke: '#000', 'stroke-width': 2 });
-                        } else if (this.tool === 'circle') {
-                            this.currentShape = this.createSVG('circle', { cx: sx, cy: sy, r: 0, fill: '#23C9FF', stroke: '#000', 'stroke-width': 2 });
-                        } else if (this.tool === 'line') {
-                            this.currentShape = this.createSVG('line', { x1: sx, y1: sy, x2: sx, y2: sy, stroke: '#000', 'stroke-width': 2 });
+                        this.createShape(pos);
+                    }
+                };
+
+                const move = (e) => {
+                    const pos = Utils.getMousePos(e);
+                    if (!this.isDrawing) return;
+                    if(e.touches) e.preventDefault();
+
+                    if (this.tool === 'select' && this.selectedIds.length > 0) {
+                        this.doDrag(pos);
+                    } else if (this.currentShape) {
+                        this.updateShape(pos);
+                    }
+                };
+
+                const end = () => {
+                    if(this.isDrawing) {
+                        if(this.tool === 'select' && this.selectedIds.length > 0) {
+                            this.saveState();
+                        } else if (this.currentShape) {
+                            this.finalizeShape();
                         }
                     }
-                });
+                    this.isDrawing = false;
+                    this.currentShape = null;
+                };
 
-                svg.addEventListener('dblclick', (e) => {
-                    if(e.target.tagName === 'text') this.editText(e.target);
-                });
-
-                window.addEventListener('mousemove', (e) => this.onMouseMove(e));
-                window.addEventListener('mouseup', (e) => this.onMouseUp(e));
-
-                // Keyboard Shortcuts
-                window.addEventListener('keydown', (e) => {
-                    if(e.code === 'Space') { 
-                        this.isSpacePressed = true; 
-                        const vp = document.getElementById('viewport');
-                        if(vp) vp.style.cursor = 'grab'; 
-                    }
-                    if((e.ctrlKey || e.metaKey)) {
-                        if(e.key === 'z') { e.preventDefault(); this.undo(); }
-                        if(e.key === 'y') { e.preventDefault(); this.redo(); }
-                        if(e.key === 'd') { e.preventDefault(); this.duplicate(); }
-                        if(e.key === 'g') { e.preventDefault(); this.group(); }
-                        if(e.key === 's') { e.preventDefault(); 
-                            const saveBtn = document.getElementById('btn-save-project');
-                            if(saveBtn) saveBtn.click(); 
-                        }
-                    }
-                    if(e.key === 'Delete' || e.key === 'Backspace') {
-                        if(document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') this.delete();
-                    }
-                    if(e.key === ']') { this.bringFront(); }
-                    if(e.key === '[') { this.sendBack(); }
-                });
-
-                window.addEventListener('keyup', (e) => {
-                    if(e.code === 'Space') { 
-                        this.isSpacePressed = false; 
-                        this.isPanning = false; 
-                        const vp = document.getElementById('viewport');
-                        if(vp) vp.style.cursor = this.tool === 'select' ? 'default' : 'crosshair'; 
-                    }
-                });
-
-                // Zoom (Mouse)
-                const vp = document.getElementById('viewport');
-                if(vp) {
-                    vp.addEventListener('wheel', (e) => {
-                        if(e.ctrlKey || e.metaKey) {
-                            e.preventDefault();
-                            const delta = -Math.sign(e.deltaY) * 0.1;
-                            this.setZoom(this.zoom + delta);
-                        }
-                    }, {passive:false});
-                }
-
-                // Zoom Buttons
-                const zIn = document.getElementById('zoom-in');
-                if(zIn) zIn.onclick = () => this.setZoom(this.zoom + 0.1);
+                this.svg.addEventListener('mousedown', start);
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', end);
                 
-                const zOut = document.getElementById('zoom-out');
-                if(zOut) zOut.onclick = () => this.setZoom(this.zoom - 0.1);
-                
-                const zReset = document.getElementById('zoom-reset');
-                if(zReset) zReset.onclick = () => this.setZoom(1);
-
-                // Context Menu
-                svg.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    if(this.selectedIds.length === 0) return;
-                    const menu = document.getElementById('context-menu');
-                    if(menu) {
-                        menu.style.display = 'flex';
-                        menu.style.left = e.clientX + 'px';
-                        menu.style.top = e.clientY + 'px';
-                    }
-                });
+                this.svg.addEventListener('touchstart', start, {passive:false});
+                window.addEventListener('touchmove', move, {passive:false});
+                window.addEventListener('touchend', end);
             }
 
-            initDragState() {
-                this.initialAttrs = {};
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(!el) return;
-                    const list = el.transform.baseVal;
-                    let tx = 0, ty = 0;
-                    if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                        tx = list.getItem(0).matrix.e;
-                        ty = list.getItem(0).matrix.f;
-                    }
-                    this.initialAttrs[id] = { tx, ty };
-                });
-            }
-
-            onMouseMove(e) {
-                if (this.isPanning) {
-                    const dx = e.clientX - this.startPos.x;
-                    const dy = e.clientY - this.startPos.y;
-                    this.pan.x += dx;
-                    this.pan.y += dy;
-                    this.startPos = { x: e.clientX, y: e.clientY };
-                    this.updateTransform();
-                    return;
-                }
+            createShape(pos) {
+                const fill = this.tool === 'line' || this.tool === 'pen' ? 'none' : 'var(--c-primary)';
+                const stroke = '#fff';
                 
-                // Update Coordinate Status
-                const pos = Utils.getMousePos(e);
-                const cText = document.getElementById('coord-text');
-                if(cText) cText.innerText = `X: ${Math.round(pos.x)} Y: ${Math.round(pos.y)}`;
-
-                if (!this.isDrawing) return;
-                const dx = pos.x - this.dragStartMouse.x;
-                const dy = pos.y - this.dragStartMouse.y;
-
-                if (this.tool === 'select' && this.selectedIds.length > 0) {
-                    this.moveSelected(dx, dy);
+                if(this.tool === 'rect') {
+                    this.currentShape = this.createSVG('rect', {x:pos.x, y:pos.y, width:0, height:0, fill, stroke, 'stroke-width':2});
+                } else if (this.tool === 'circle') {
+                    this.currentShape = this.createSVG('circle', {cx:pos.x, cy:pos.y, r:0, fill, stroke, 'stroke-width':2});
+                } else if (this.tool === 'line') {
+                    this.currentShape = this.createSVG('line', {x1:pos.x, y1:pos.y, x2:pos.x, y2:pos.y, stroke, 'stroke-width':2});
+                } else if (this.tool === 'polygon') {
+                    this.currentShape = this.createSVG('polygon', {points:"", fill, stroke, 'stroke-width':2});
+                    this.polyPoints = [pos];
                 } else if (this.tool === 'pen') {
-                    this.penPoints.push(pos.x, pos.y);
-                    const d = `M ${this.penPoints.join(' L ')}`;
+                    this.currentShape = this.createSVG('path', {d:`M ${pos.x} ${pos.y}`, fill:'none', stroke, 'stroke-width':2});
+                    this.penPoints = [pos];
+                } else if (this.tool === 'text') {
+                    this.createText(pos);
+                    this.isDrawing = false;
+                }
+            }
+
+            updateShape(pos) {
+                if(this.tool === 'rect') {
+                    const w = pos.x - this.startPos.x;
+                    const h = pos.y - this.startPos.y;
+                    this.currentShape.setAttribute('x', w<0 ? pos.x : this.startPos.x);
+                    this.currentShape.setAttribute('y', h<0 ? pos.y : this.startPos.y);
+                    this.currentShape.setAttribute('width', Math.abs(w));
+                    this.currentShape.setAttribute('height', Math.abs(h));
+                } else if (this.tool === 'circle') {
+                    const r = Math.sqrt(Math.pow(pos.x - this.startPos.x, 2) + Math.pow(pos.y - this.startPos.y, 2));
+                    this.currentShape.setAttribute('r', r);
+                } else if (this.tool === 'line') {
+                    this.currentShape.setAttribute('x2', pos.x);
+                    this.currentShape.setAttribute('y2', pos.y);
+                } else if (this.tool === 'polygon') {
+                    this.polyPoints.push(pos);
+                    const pts = this.polyPoints.map(p => `${p.x},${p.y}`).join(' ');
+                    this.currentShape.setAttribute('points', pts);
+                } else if (this.tool === 'pen') {
+                    this.penPoints.push(pos);
+                    const d = this.penPoints.map((p, i) => (i===0?`M ${p.x} ${p.y}`:`L ${p.x} ${p.y}`)).join(' ');
                     this.currentShape.setAttribute('d', d);
-                } else if (this.currentShape) {
-                    if (this.tool === 'rect') {
-                        const w = pos.x - this.startPos.x;
-                        const h = pos.y - this.startPos.y;
-                        this.currentShape.setAttribute('x', w < 0 ? pos.x : this.startPos.x);
-                        this.currentShape.setAttribute('y', h < 0 ? pos.y : this.startPos.y);
-                        this.currentShape.setAttribute('width', Math.abs(w));
-                        this.currentShape.setAttribute('height', Math.abs(h));
-                    } else if (this.tool === 'circle') {
-                        const r = Math.sqrt(Math.pow(pos.x - this.startPos.x, 2) + Math.pow(pos.y - this.startPos.y, 2));
-                        this.currentShape.setAttribute('r', r);
-                    } else if (this.tool === 'line') {
-                        this.currentShape.setAttribute('x2', pos.x);
-                        this.currentShape.setAttribute('y2', pos.y);
-                    }
                 }
             }
 
-            moveSelected(dx, dy) {
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(!el) return;
-                    const init = this.initialAttrs[id];
-                    const list = el.transform.baseVal;
-                    let translate = null;
-                    
-                    if(list.numberOfItems === 0) {
-                        translate = this.svg.createSVGTransform();
-                        list.appendItem(translate);
-                    } else if (list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                        translate = list.getItem(0);
-                    } else {
-                        translate = this.svg.createSVGTransform();
-                        list.insertItemBefore(translate, 0);
-                    }
-                    translate.setTranslate(init.tx + dx, init.ty + dy);
-                });
+            finalizeShape() {
+                this.currentShape.id = Utils.uid();
+                this.currentShape.classList.add('vector-element');
+                this.selectElement(this.currentShape);
+                this.setTool('select');
+                this.saveState();
             }
 
-            onMouseUp(e) {
-                if(this.isPanning) { this.isPanning = false; return; }
-                if(!this.isDrawing) return;
-                
-                this.isDrawing = false;
-
-                if(this.tool === 'select') {
-                    if(this.selectedIds.length > 0) this.saveState();
-                } else if (this.currentShape) {
-                    this.saveState();
-                    this.currentShape.id = Utils.uid();
-                    this.currentShape.classList.add('vector-element');
-                    this.selectElement(this.currentShape);
-                    this.setTool('select');
-                } else if(this.tool === 'pen') {
-                    this.saveState();
-                    this.currentShape.id = Utils.uid();
-                    this.currentShape.classList.add('vector-element');
-                    this.currentShape = null; 
-                    this.penPoints = [];
-                    this.setTool('select');
-                }
-                this.currentShape = null;
+            createText(pos) {
+                const t = this.createSVG('text', {x:pos.x, y:pos.y, fill:'#fff', 'font-size':'20px'});
+                t.textContent = "Text";
+                t.id = Utils.uid();
+                t.classList.add('vector-element');
+                this.selectElement(t);
+                this.setTool('select');
+                this.saveState();
             }
 
             createSVG(tag, attrs) {
@@ -935,88 +1018,66 @@
                 return el;
             }
 
-            // --- SELECTION & UI ---
             selectElement(el) {
                 if(!el) return;
-                if(this.selectedIds.includes(el.id)) return;
-                
-                const list = el.transform.baseVal;
-                let tx = 0, ty = 0;
-                if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                    tx = list.getItem(0).matrix.e;
-                    ty = list.getItem(0).matrix.f;
-                }
-                this.initialAttrs[el.id] = { tx, ty };
-                this.selectedIds.push(el.id);
+                this.selectedIds = [el.id];
+                document.querySelectorAll('.vector-element').forEach(e => e.classList.remove('selected'));
                 el.classList.add('selected');
+                
+                this.gizmo.show(el);
                 this.updatePropUI();
                 this.renderLayers();
+                
+                const btnNodes = document.getElementById('btn-edit-nodes');
+                const section = document.getElementById('path-actions');
+                if(el.tagName === 'path') {
+                    if(section) section.style.display = 'block';
+                } else {
+                    if(section) section.style.display = 'none';
+                    this.nodeEditor.deactivate();
+                }
             }
 
             deselectAll() {
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.classList.remove('selected');
-                });
                 this.selectedIds = [];
-                this.updatePropUI();
+                document.querySelectorAll('.vector-element').forEach(e => e.classList.remove('selected'));
+                this.gizmo.hide();
+                this.nodeEditor.deactivate();
+                document.getElementById('prop-controls').style.display = 'none';
                 this.renderLayers();
             }
 
-            // --- PROPERTIES ---
-            updatePropUI() {
-                const noSel = document.getElementById('no-selection-msg');
-                const controls = document.getElementById('prop-controls');
-                const typoSec = document.getElementById('typo-section');
-
-                if(this.selectedIds.length === 0) {
-                    if(noSel) noSel.style.display = 'block';
-                    if(controls) controls.style.display = 'none';
-                    return;
-                }
-                
-                if(noSel) noSel.style.display = 'none';
-                if(controls) controls.style.display = 'block';
-
+            initDrag() {
                 const el = document.getElementById(this.selectedIds[0]);
-                const isText = el && el.tagName === 'text';
-                if(typoSec) typoSec.style.display = isText ? 'block' : 'none';
-
-                if(el) {
-                    const setVal = (id, val) => {
-                        const e = document.getElementById(id);
-                        if(e) e.value = val;
-                    };
-
-                    setVal('inp-fill', Utils.rgbToHex(el.getAttribute('fill') || '#000000'));
-                    setVal('inp-stroke', Utils.rgbToHex(el.getAttribute('stroke') || '#000000'));
-                    setVal('inp-stroke-width', el.getAttribute('stroke-width') || 1);
-                    setVal('inp-opacity', el.getAttribute('opacity') || 1);
-
-                    // Transform
-                    const list = el.transform.baseVal;
-                    let tx = 0, ty = 0;
-                    if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                        tx = list.getItem(0).matrix.e;
-                        ty = list.getItem(0).matrix.f;
-                    }
-                    setVal('inp-x', Math.round(tx));
-                    setVal('inp-y', Math.round(ty));
-
-                    if(isText) {
-                        setVal('inp-text-content', el.textContent);
-                        const style = window.getComputedStyle(el);
-                        const fontFam = style.fontFamily.replace(/"/g, '');
-                        setVal('inp-font-family', fontFam);
-                        setVal('inp-font-size', parseInt(style.fontSize));
-                        const weight = (style.fontWeight === '700' || style.fontWeight === 'bold') ? '700' : '400';
-                        setVal('inp-font-weight', weight);
-                    }
+                const list = el.transform.baseVal;
+                let tx=0, ty=0;
+                if(list.numberOfItems > 0) {
+                    const t = list.getItem(0);
+                    if(t.type === SVGTransform.SVG_TRANSFORM_TRANSLATE) { tx = t.matrix.e; ty = t.matrix.f; }
                 }
+                this.dragStartState = { tx, ty, mouse: this.startPos };
+            }
+
+            doDrag(pos) {
+                const el = document.getElementById(this.selectedIds[0]);
+                const dx = pos.x - this.dragStartState.mouse.x;
+                const dy = pos.y - this.dragStartState.mouse.y;
+                
+                const list = el.transform.baseVal;
+                let t = null;
+                if(list.numberOfItems > 0) t = list.getItem(0);
+                else {
+                    t = this.svg.createSVGTransform();
+                    list.insertItemBefore(t, 0);
+                }
+                t.setTranslate(this.dragStartState.tx + dx, this.dragStartState.ty + dy);
+                
+                this.gizmo.show(el);
+                this.updatePropUI();
             }
 
             bindProperties() {
-                const setAttr = (attr, val) => {
+                const updateAttr = (attr, val) => {
                     this.saveState();
                     this.selectedIds.forEach(id => {
                         const el = document.getElementById(id);
@@ -1024,538 +1085,251 @@
                     });
                 };
 
-                const fillInp = document.getElementById('inp-fill');
-                if(fillInp) fillInp.oninput = (e) => setAttr('fill', e.target.value);
-
-                const noFillBtn = document.getElementById('btn-no-fill');
-                if(noFillBtn) noFillBtn.onclick = () => setAttr('fill', 'none');
-
-                const strokeInp = document.getElementById('inp-stroke');
-                if(strokeInp) strokeInp.oninput = (e) => setAttr('stroke', e.target.value);
-
-                const strokeWidthInp = document.getElementById('inp-stroke-width');
-                if(strokeWidthInp) strokeWidthInp.oninput = (e) => setAttr('stroke-width', e.target.value);
-
-                const opacityInp = document.getElementById('inp-opacity');
-                if(opacityInp) opacityInp.oninput = (e) => setAttr('opacity', e.target.value);
-
-                const updateText = () => {
-                    const val = document.getElementById('inp-text-content').value;
-                    this.saveState();
-                    this.selectedIds.forEach(id => {
-                        const el = document.getElementById(id);
-                        if(el.tagName === 'text') el.textContent = val;
-                    });
-                };
-                const textInp = document.getElementById('inp-text-content');
-                if(textInp) textInp.oninput = updateText;
-
-                const updateFont = (prop, val) => {
-                    this.saveState();
-                    this.selectedIds.forEach(id => {
-                        const el = document.getElementById(id);
-                        if(el.tagName === 'text') el.style[prop] = val;
-                    });
-                };
-                const famSel = document.getElementById('inp-font-family');
-                if(famSel) famSel.onchange = (e) => updateFont('fontFamily', e.target.value);
-                
-                const sizeInp = document.getElementById('inp-font-size');
-                if(sizeInp) sizeInp.onchange = (e) => updateFont('fontSize', e.target.value + 'px');
-                
-                const wSel = document.getElementById('inp-font-weight');
-                if(wSel) wSel.onchange = (e) => updateFont('fontWeight', e.target.value);
-
-                const updateTransform = () => {
-                    const xVal = document.getElementById('inp-x');
-                    const yVal = document.getElementById('inp-y');
-                    const x = parseFloat(xVal ? xVal.value : 0) || 0;
-                    const y = parseFloat(yVal ? yVal.value : 0) || 0;
-                    this.saveState();
-                    this.selectedIds.forEach(id => {
-                        const el = document.getElementById(id);
-                        const list = el.transform.baseVal;
-                        let t = null;
-                        if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                            t = list.getItem(0);
-                        } else {
-                            t = this.svg.createSVGTransform();
-                            list.insertItemBefore(t, 0);
-                        }
-                        t.setTranslate(x, y);
-                        this.initialAttrs[id] = { tx: x, ty: y };
-                    });
-                };
-                const xInp = document.getElementById('inp-x');
-                const yInp = document.getElementById('inp-y');
-                if(xInp) xInp.onchange = updateTransform;
-                if(yInp) yInp.onchange = updateTransform;
-
-                // Action Buttons
-                const dupBtn = document.getElementById('btn-dup');
-                if(dupBtn) dupBtn.onclick = () => this.duplicate();
-
-                const delBtn = document.getElementById('btn-del');
-                if(delBtn) delBtn.onclick = () => this.delete();
-
-                const groupBtn = document.getElementById('btn-group');
-                if(groupBtn) groupBtn.onclick = () => this.group();
-
-                const ungroupBtn = document.getElementById('btn-ungroup');
-                if(ungroupBtn) ungroupBtn.onclick = () => this.ungroup();
-
-                const frontBtn = document.getElementById('btn-front');
-                if(frontBtn) frontBtn.onclick = () => this.bringFront();
-
-                const backBtn = document.getElementById('btn-back');
-                if(backBtn) backBtn.onclick = () => this.sendBack();
-
-                // Context Menu
-                const ctxDup = document.getElementById('ctx-dup');
-                if(ctxDup) ctxDup.onclick = () => { this.duplicate(); document.getElementById('context-menu').style.display='none'; };
-                
-                const ctxDel = document.getElementById('ctx-del');
-                if(ctxDel) ctxDel.onclick = () => { this.delete(); document.getElementById('context-menu').style.display='none'; };
-                
-                const ctxFront = document.getElementById('ctx-front');
-                if(ctxFront) ctxFront.onclick = () => { this.bringFront(); document.getElementById('context-menu').style.display='none'; };
-                
-                const ctxBack = document.getElementById('ctx-back');
-                if(ctxBack) ctxBack.onclick = () => { this.sendBack(); document.getElementById('context-menu').style.display='none'; };
-            }
-
-            createText(x, y) {
-                const el = this.createSVG('text', {
-                    x: x, y: y,
-                    fill: '#000',
-                    'font-family': 'Inter',
-                    'font-weight': 'bold',
-                    'font-size': '24px'
+                ['fill','stroke','stroke-width','opacity'].forEach(attr => {
+                    const el = document.getElementById(`inp-${attr.replace('-','')}`); 
+                    if(el) el.oninput = (e) => updateAttr(attr, e.target.value);
                 });
-                el.textContent = "Text";
-                el.id = Utils.uid();
-                el.classList.add('vector-element');
-                this.saveState();
-                this.selectElement(el);
-                this.editText(el);
+
+                ['x','y'].forEach(axis => {
+                    document.getElementById(`inp-${axis}`).onchange = (e) => {
+                        const val = parseFloat(e.target.value);
+                        const el = document.getElementById(this.selectedIds[0]);
+                        const list = el.transform.baseVal;
+                        let t = list.numberOfItems > 0 ? list.getItem(0) : this.svg.createSVGTransform();
+                        if(t.type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) t = this.svg.createSVGTransform();
+                        const m = t.matrix;
+                        t.setTranslate(axis==='x'?val:m.e, axis==='y'?val:m.f);
+                        if(list.numberOfItems===0) list.insertItemBefore(t,0);
+                        this.gizmo.show(el);
+                        this.saveState();
+                    };
+                });
+
+                document.getElementById('btn-dup').onclick = () => {
+                    this.saveState();
+                    const el = document.getElementById(this.selectedIds[0]);
+                    const clone = el.cloneNode(true);
+                    clone.id = Utils.uid();
+                    const list = clone.transform.baseVal;
+                    const t = list.numberOfItems > 0 ? list.getItem(0) : this.svg.createSVGTransform();
+                    const m = t.matrix; 
+                    t.setTranslate((m.e||0)+20, (m.f||0)+20);
+                    this.layer.appendChild(clone);
+                    this.selectElement(clone);
+                };
+                
+                document.getElementById('btn-del').onclick = () => {
+                    this.saveState();
+                    document.getElementById(this.selectedIds[0]).remove();
+                    this.deselectAll();
+                };
+
+                const moveLayer = (dir) => {
+                    this.saveState();
+                    const el = document.getElementById(this.selectedIds[0]);
+                    if(dir==='front') el.parentNode.appendChild(el);
+                    if(dir==='back') el.parentNode.insertBefore(el, el.parentNode.firstChild);
+                    this.renderLayers();
+                };
+                document.getElementById('btn-front').onclick = () => moveLayer('front');
+                document.getElementById('btn-back').onclick = () => moveLayer('back');
+
+                document.getElementById('btn-clip').onclick = () => {
+                    if(this.selectedIds.length !== 2) return Utils.toast("Selecione exatamente 2 itens");
+                    this.saveState();
+                    const top = document.getElementById(this.selectedIds[0]); 
+                    const bottom = document.getElementById(this.selectedIds[1]);
+                    
+                    const defs = this.svg.querySelector('defs') || this.createSVG('defs');
+                    const clipId = Utils.uid();
+                    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+                    clipPath.id = clipId;
+                    clipPath.appendChild(top.cloneNode(true)); 
+                    defs.appendChild(clipPath);
+                    
+                    bottom.setAttribute('clip-path', `url(#${clipId})`);
+                    top.remove(); 
+                    this.deselectAll();
+                    Utils.toast("Recortado!");
+                };
+
+                document.getElementById('btn-edit-nodes').onclick = () => {
+                    this.gizmo.hide();
+                    this.nodeEditor.activate(document.getElementById(this.selectedIds[0]));
+                };
             }
 
-            editText(el) {
-                this.selectElement(el);
-                const input = document.getElementById('inp-text-content');
-                if(input) {
-                    input.focus();
-                    input.select();
+            updatePropUI() {
+                const el = document.getElementById(this.selectedIds[0]);
+                if(!el) return;
+                document.getElementById('prop-controls').style.display = 'block';
+
+                ['fill','stroke','stroke-width','opacity'].forEach(k => {
+                    const val = el.getAttribute(k);
+                    const inp = document.getElementById(`inp-${k.replace('-','')}`);
+                    if(inp && val) inp.value = val;
+                });
+
+                const list = el.transform.baseVal;
+                let tx=0, ty=0;
+                if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                    tx = list.getItem(0).matrix.e;
+                    ty = list.getItem(0).matrix.f;
                 }
-                if(window.innerWidth < 900) {
-                    const props = document.getElementById('properties');
-                    if(props) props.classList.add('open');
-                }
-                Utils.toast("Edit text in sidebar");
+                document.getElementById('inp-x').value = Math.round(tx);
+                document.getElementById('inp-y').value = Math.round(ty);
             }
 
             renderLayers() {
                 const list = document.getElementById('layers-list');
-                if(!list) return;
                 list.innerHTML = '';
                 Array.from(this.layer.children).reverse().forEach(el => {
                     const div = document.createElement('div');
-                    const isSel = this.selectedIds.includes(el.id);
-                    div.className = `layer-item ${isSel ? 'active' : ''}`;
+                    div.className = 'layer-item';
+                    if(this.selectedIds.includes(el.id)) div.classList.add('active');
                     
-                    let type = el.tagName;
-                    let icon = 'square';
-                    let label = type.toUpperCase();
-                    
-                    if(type === 'circle') icon = 'circle';
-                    else if(type === 'path') icon = 'pencil-alt';
-                    else if(type === 'line') icon = 'slash';
-                    else if(type === 'text') {
-                        icon = 'font';
-                        label = el.textContent.substring(0, 10) || 'Text';
-                    }
-                    else if(type === 'g') icon = 'object-group';
+                    const type = el.tagName;
+                    let icon = 'shapes';
+                    if(type==='rect') icon='square';
+                    if(type==='circle') icon='circle';
+                    if(type==='path') icon='bezier-curve';
+                    if(type==='text') icon='font';
+                    if(type==='line') icon='slash';
+                    if(type==='polygon') icon='draw-polygon';
 
-                    div.innerHTML = `<i class="fas fa-${icon}"></i> <span>${label}</span> <small>(${el.id.substr(-4)})</small>`;
+                    div.innerHTML = `
+                        <i class="fas fa-${icon}" style="width:15px"></i>
+                        <span style="flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${type}</span>
+                        <div class="layer-controls">
+                            <i class="fas fa-eye layer-btn" onclick="App.toggleVis('${el.id}', this)"></i>
+                            <i class="fas fa-lock layer-btn" onclick="App.toggleLock('${el.id}', this)"></i>
+                        </div>
+                    `;
                     div.onclick = (e) => {
-                        if(!e.shiftKey) this.deselectAll();
+                        if(e.target.closest('.layer-controls')) return;
                         this.selectElement(el);
                     };
                     list.appendChild(div);
                 });
             }
 
-            delete() {
-                if(this.selectedIds.length === 0) return;
-                this.saveState();
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.remove();
-                });
-                this.deselectAll();
-                Utils.toast('Deleted');
+            toggleVis(id, btn) {
+                const el = document.getElementById(id);
+                const cur = el.getAttribute('display');
+                el.setAttribute('display', cur === 'none' ? 'block' : 'none');
+                btn.className = `fas fa-${cur === 'none' ? 'eye' : 'eye-slash'} layer-btn`;
+            }
+            toggleLock(id, btn) {
+                const el = document.getElementById(id);
+                const cur = el.getAttribute('data-locked');
+                const isLocked = cur === 'true';
+                el.setAttribute('data-locked', !isLocked);
+                el.style.pointerEvents = isLocked ? 'all' : 'none';
+                btn.className = `fas fa-${isLocked ? 'lock-open' : 'lock'} layer-btn`;
+                btn.style.color = isLocked ? '#888' : 'var(--c-danger)';
             }
 
-            duplicate() {
-                if(this.selectedIds.length === 0) return;
-                this.saveState();
-                const newIds = [];
-                this.deselectAll();
-                
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) {
-                        const clone = el.cloneNode(true);
-                        clone.id = Utils.uid();
-                        clone.classList.remove('selected');
-                        clone.classList.add('vector-element');
-                        
-                        const list = clone.transform.baseVal;
-                        let tx = 10, ty = 10;
-                        if(list.numberOfItems > 0 && list.getItem(0).type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                            const m = list.getItem(0).matrix;
-                            list.getItem(0).setTranslate(m.e + 10, m.f + 10);
-                        } else {
-                            const t = this.svg.createSVGTransform();
-                            t.setTranslate(10,10);
-                            list.insertItemBefore(t, 0);
-                        }
-                        
-                        this.layer.appendChild(clone);
-                        newIds.push(clone.id);
-                    }
-                });
-                newIds.forEach(id => this.selectElement(document.getElementById(id)));
-                Utils.toast('Duplicated');
-            }
-
-            group() {
-                if(this.selectedIds.length < 2) return Utils.toast('Select 2+ items');
-                this.saveState();
-                const g = this.createSVG('g', { id: Utils.uid() });
-                g.classList.add('vector-element');
-                
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) g.appendChild(el);
-                });
-                
-                this.deselectAll();
-                this.selectElement(g);
-                Utils.toast('Grouped');
-            }
-
-            ungroup() {
-                const groups = this.selectedIds.map(id => document.getElementById(id)).filter(el => el && el.tagName === 'g');
-                if(groups.length === 0) return;
-                
-                this.saveState();
-                groups.forEach(g => {
-                    const parent = g.parentNode;
-                    while(g.firstChild) {
-                        parent.appendChild(g.firstChild);
-                    }
-                    g.remove();
-                });
-                this.deselectAll();
-                Utils.toast('Ungrouped');
-            }
-
-            bringFront() {
-                this.saveState();
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el && el.nextElementSibling) el.parentNode.appendChild(el);
-                });
-                this.renderLayers();
-            }
-
-            sendBack() {
-                this.saveState();
-                this.selectedIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el && el.previousElementSibling) el.parentNode.insertBefore(el, el.previousElementSibling);
-                });
-                this.renderLayers();
-            }
-
-            // --- GLOBAL & IMPORT/EXPORT (ROBUST) ---
             bindGlobal() {
-                // SAVE PROJECT (JSON)
-                const saveBtn = document.getElementById('btn-save-project');
-                if(saveBtn) {
-                    saveBtn.onclick = () => {
-                        Utils.setStatus('Saving Project...');
-                        setTimeout(() => {
-                            try {
-                                const data = {
-                                    version: 4.2,
-                                    zoom: this.zoom,
-                                    pan: this.pan,
-                                    svgContent: this.layer.innerHTML
-                                };
-                                Utils.downloadFile(JSON.stringify(data), 'inkling-project.json', 'application/json');
-                                Utils.toast('Project Saved');
-                            } catch(e) {
-                                alert("Save failed: " + e.message);
-                            }
-                            Utils.setStatus('Ready');
-                        }, 100);
-                    };
-                }
-
-                // IMPORT (JSON & SVG)
-                const importBtn = document.getElementById('btn-import');
-                if(importBtn) {
-                    importBtn.onclick = () => {
-                        const fi = document.getElementById('file-input');
-                        if(fi) fi.click();
-                    };
-                }
-
-                const fi = document.getElementById('file-input');
-                if(fi) {
-                    fi.onchange = (e) => {
-                        const file = e.target.files[0];
-                        if(!file) return;
-                        const reader = new FileReader();
-                        
-                        if(file.name.endsWith('.svg')) {
-                            Utils.setStatus('Importing SVG...');
-                            reader.onload = (ev) => {
-                                try {
-                                    this.saveState();
-                                    const parser = new DOMParser();
-                                    const doc = parser.parseFromString(ev.target.result, 'image/svg+xml');
-                                    const children = Array.from(doc.documentElement.children);
-                                    
-                                    const g = this.createSVG('g', { id: Utils.uid() });
-                                    g.classList.add('vector-element');
-                                    
-                                    children.forEach(c => {
-                                        if(c.tagName !== 'defs') {
-                                            const imported = document.importNode(c, true);
-                                            g.appendChild(imported);
-                                        }
-                                    });
-                                    
-                                    try {
-                                        const bbox = g.getBBox();
-                                        const trans = this.svg.createSVGTransform();
-                                        trans.setTranslate(400 - (bbox.x + bbox.width/2), 300 - (bbox.y + bbox.height/2));
-                                        g.transform.baseVal.appendItem(trans);
-                                    } catch(err) { console.warn('BBox calculation failed', err); }
-
-                                    this.deselectAll();
-                                    this.selectElement(g);
-                                    this.renderLayers();
-                                    Utils.toast('SVG Imported');
-                                } catch(err) {
-                                    Utils.toast('Import Failed');
-                                    console.error(err);
-                                }
-                                Utils.setStatus('Ready');
-                            };
-                            reader.readAsText(file);
-                        } else if (file.name.endsWith('.json')) {
-                            Utils.setStatus('Loading Project...');
-                            reader.onload = (ev) => {
-                                try {
-                                    const data = JSON.parse(ev.target.result);
-                                    
-                                    if(data.zoom) this.setZoom(data.zoom);
-                                    if(data.pan) { this.pan = data.pan; this.updateTransform(); }
-                                    
-                                    this.layer.innerHTML = data.svgContent;
-                                    this.reapplyClasses(this.layer);
-                                    
-                                    this.history = [];
-                                    this.redo = [];
-                                    this.saveState(); 
-                                    
-                                    this.deselectAll();
-                                    Utils.toast('Project Loaded');
-                                } catch(e) {
-                                    alert('Invalid Project File');
-                                    console.error(e);
-                                }
-                                Utils.setStatus('Ready');
-                            };
-                            reader.readAsText(file);
-                        }
-                        e.target.value = '';
-                    };
-                }
-
-                // EXPORT SVG
-                const expSvgBtn = document.getElementById('btn-export-svg');
-                if(expSvgBtn) {
-                    expSvgBtn.onclick = () => {
-                        Utils.setStatus('Exporting SVG...');
-                        try {
-                            const serializer = new XMLSerializer();
-                            let source = serializer.serializeToString(this.svg);
-                            
-                            const fontCSS = `<style>
-                                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap');
-                                text { font-family: inherit; }
-                            </style>`;
-                            
-                            source = source.replace('</defs>', `${fontCSS}</defs>`);
-
-                            if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-                                source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-                            }
-                            
-                            Utils.downloadFile(source, 'inkling-art.svg', 'image/svg+xml;charset=utf-8');
-                            Utils.toast('SVG Exported');
-                        } catch(e) {
-                            alert("Export Failed: " + e.message);
-                        }
-                        Utils.setStatus('Ready');
-                    };
-                }
-
-                // EXPORT PNG
-                const expPngBtn = document.getElementById('btn-export-png');
-                if(expPngBtn) {
-                    expPngBtn.onclick = () => {
-                        Utils.setStatus('Rendering PNG...');
-                        try {
-                            const serializer = new XMLSerializer();
-                            const svgData = serializer.serializeToString(this.svg);
-                            
-                            const viewBox = this.svg.viewBox.baseVal;
-                            const canvas = document.createElement('canvas');
-                            canvas.width = viewBox.width * 2;
-                            canvas.height = viewBox.height * 2;
-                            
-                            const ctx = canvas.getContext('2d');
-                            ctx.fillStyle = '#ffffff';
-                            ctx.fillRect(0, 0, canvas.width, canvas.height);
-                            ctx.scale(2, 2);
-
-                            const img = new Image();
-                            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                            const url = URL.createObjectURL(svgBlob);
-                            
-                            img.onload = () => {
-                                try {
-                                    ctx.drawImage(img, 0, 0);
-                                    const pngUrl = canvas.toDataURL('image/png');
-                                    
-                                    // Create a temporary link for download
-                                    const a = document.createElement('a');
-                                    a.href = pngUrl;
-                                    a.download = "inkling-art.png";
-                                    a.style.display = 'none';
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    document.body.removeChild(a);
-                                    
-                                    URL.revokeObjectURL(url);
-                                    Utils.toast('PNG Exported');
-                                    Utils.setStatus('Ready');
-                                } catch(e) {
-                                    alert('Canvas Render Error: ' + e.message);
-                                    Utils.setStatus('Error');
-                                }
-                            };
-                            img.onerror = () => {
-                                alert('Error rendering PNG (Image Load Failed). Check console.');
-                                console.error("Image error");
-                                Utils.setStatus('Error');
-                            };
-                            img.src = url;
-                        } catch(e) {
-                            alert("Export Error: " + e.message);
-                            Utils.setStatus('Error');
-                        }
-                    };
-                }
-            }
-
-            setZoom(l) {
-                this.zoom = Math.max(0.2, Math.min(l, 5));
-                const zr = document.getElementById('zoom-reset');
-                if(zr) zr.innerText = Math.round(this.zoom * 100) + '%';
-                this.updateTransform();
-            }
-
-            updateTransform() {
-                const container = document.getElementById('artboard-container');
-                if(container) {
-                    container.style.transform = `translate(${this.pan.x}px, ${this.pan.y}px) scale(${this.zoom})`;
-                }
-            }
-
-            // --- HISTORY ---
-            saveState() {
-                const html = this.layer.innerHTML;
-                if(this.history.length > 0 && this.history[this.history.length-1] === html) return;
+                const imp = document.getElementById('btn-import');
+                imp.onclick = () => document.getElementById('file-input').click();
                 
-                this.history.push(html);
-                if(this.history.length > this.maxHistory) this.history.shift();
-                this.redo = [];
-                this.updateHistoryUI();
+                document.getElementById('file-input').onchange = (e) => {
+                    const file = e.target.files[0];
+                    if(!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(evt.target.result, 'image/svg+xml');
+                        const importedRoot = doc.documentElement;
+                        
+                        const g = this.createSVG('g', {id: Utils.uid()});
+                        g.classList.add('vector-element');
+                        
+                        const clone = (node) => {
+                            if(node.nodeType !== 1) return null;
+                            const el = document.createElementNS('http://www.w3.org/2000/svg', node.tagName);
+                            Array.from(node.attributes).forEach(a => el.setAttribute(a.name, a.value));
+                            node.childNodes.forEach(c => {
+                                if(c.nodeType === 3) el.textContent = c.textContent;
+                                else el.appendChild(clone(c));
+                            });
+                            return el;
+                        };
+
+                        Array.from(importedRoot.childNodes).forEach(c => {
+                            if(c.nodeType === 1) g.appendChild(clone(c));
+                        });
+
+                        this.deselectAll();
+                        this.selectElement(g);
+                        this.saveState();
+                        Utils.toast('Importado');
+                    };
+                    reader.readAsText(file);
+                    e.target.value = '';
+                };
+
+                document.getElementById('btn-export-svg').onclick = () => {
+                    const s = new XMLSerializer().serializeToString(this.svg);
+                    const b = new Blob([s], {type:'image/svg+xml'});
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(b);
+                    a.download = 'art.svg';
+                    a.click();
+                };
+                
+                document.getElementById('btn-save-project').onclick = () => {
+                    const data = { svg: this.layer.innerHTML, zoom: this.zoom, pan: this.pan };
+                    const b = new Blob([JSON.stringify(data)], {type:'application/json'});
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(b);
+                    a.download = 'project.json';
+                    a.click();
+                };
+
+                document.getElementById('btn-clear').onclick = () => {
+                    if(confirm('Limpar tudo?')) { this.layer.innerHTML=''; this.deselectAll(); this.saveState(); }
+                };
+
+                document.getElementById('btn-undo').onclick = () => this.undo();
+                document.getElementById('btn-redo').onclick = () => this.redo();
+
+                window.onkeydown = (e) => {
+                    if(e.ctrlKey && e.key === 'z') { e.preventDefault(); this.undo(); }
+                    if(e.ctrlKey && e.key === 'y') { e.preventDefault(); this.redo(); }
+                };
+            }
+
+            saveState() {
+                this.history.push(this.layer.innerHTML);
+                if(this.history.length > 20) this.history.shift();
+                this.redoStack = [];
+                this.updateHistoryBtns();
             }
 
             undo() {
-                if(this.history.length <= 1) return;
-                this.redo.push(this.history.pop());
-                this.layer.innerHTML = this.history[this.history.length - 1];
-                this.reapplyClasses(this.layer);
+                if(this.history.length < 2) return;
+                this.redoStack.push(this.history.pop());
+                this.layer.innerHTML = this.history[this.history.length-1];
                 this.deselectAll();
-                this.updateHistoryUI();
+                this.updateHistoryBtns();
             }
-
             redo() {
-                if(this.redo.length === 0) return;
-                const next = this.redo.pop();
-                this.history.push(next);
-                this.layer.innerHTML = next;
-                this.reapplyClasses(this.layer);
+                if(!this.redoStack.length) return;
+                const state = this.redoStack.pop();
+                this.history.push(state);
+                this.layer.innerHTML = state;
                 this.deselectAll();
-                this.updateHistoryUI();
+                this.updateHistoryBtns();
             }
-
-            reapplyClasses(node) {
-                if(!node) return;
-                Array.from(node.children).forEach(child => {
-                    const tag = child.tagName.toLowerCase();
-                    if(['g', 'path', 'rect', 'circle', 'ellipse', 'line', 'text', 'image', 'polyline', 'polygon'].includes(tag)) {
-                        child.classList.add('vector-element');
-                    }
-                    if(tag === 'g') {
-                        this.reapplyClasses(child);
-                    }
-                });
-            }
-
-            updateHistoryUI() {
-                const btnUndo = document.getElementById('btn-undo');
-                const btnRedo = document.getElementById('btn-redo');
-                
-                if(btnUndo) {
-                    btnUndo.disabled = this.history.length <= 1;
-                    btnUndo.classList.toggle('disabled', this.history.length <= 1);
-                }
-                
-                if(btnRedo) {
-                    btnRedo.disabled = this.redo.length === 0;
-                    btnRedo.classList.toggle('disabled', this.redo.length === 0);
-                }
+            updateHistoryBtns() {
+                document.getElementById('btn-undo').disabled = this.history.length < 2;
+                document.getElementById('btn-redo').disabled = !this.redoStack.length;
             }
         }
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                window.App = new Inkling();
-            } catch(e) {
-                alert("Fatal Error loading Inkling: " + e.message);
-            }
-        });
+        const App = new Inkling();
+        window.App = App; 
     </script>
 </body>
 </html>

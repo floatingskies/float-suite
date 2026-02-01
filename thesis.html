@@ -688,253 +688,321 @@
     <!-- TOAST -->
     <div class="toast hidden" id="toast-msg">Action Successful</div>
 
-    <script>
-        class ThesisApp {
-            constructor() {
-                // DOM Elements
-                this.paper = document.getElementById('paper');
-                this.editor = document.getElementById('editor-area');
-                this.currentStandard = 'abnt';
-                
-                // Debounce timer for auto-save
-                this.saveTimer = null;
-            }
+   <script>
+    class ThesisApp {
+        constructor() {
+            this.paper = document.getElementById('paper');
+            this.editor = document.getElementById('editor-area');
+            this.currentStandard = 'abnt';
+            this.saveTimer = null;
+        }
 
-            init() {
-                console.log("Thesis.web System Initialized.");
-                this.loadState();
-                this.bindEvents();
+        init() {
+            this.loadState();
+            this.bindEvents();
+            this.updateStats();
+            Utils.toast('System Ready');
+        }
+
+        exec(command, value = null) {
+            document.execCommand(command, false, value);
+            this.editor.focus();
+            this.triggerAutoSave();
+        }
+
+        bindEvents() {
+            this.editor.addEventListener('input', () => {
                 this.updateStats();
-                Utils.toast('System Ready');
-            }
-
-            // --- CORE EDITOR FUNCTIONS ---
-            exec(command, value = null) {
-                document.execCommand(command, false, value);
-                this.editor.focus();
                 this.triggerAutoSave();
-            }
+            });
 
-            bindEvents() {
-                // Editor Input Events
-                this.editor.addEventListener('input', () => {
-                    this.updateStats();
-                    this.triggerAutoSave();
+            document.getElementById('btn-save').onclick = () => this.downloadHTML();
+            document.getElementById('btn-print').onclick = () => this.openModal('print-modal');
+            document.getElementById('btn-ref').onclick = () => this.openRefModal();
+            document.getElementById('btn-guide').onclick = () => this.openModal('guide-modal');
+            document.getElementById('btn-zen').onclick = () => this.toggleZen();
+            
+            document.getElementById('mobile-menu-btn').onclick = () => {
+                document.getElementById('sidebar').classList.toggle('mobile-active');
+            };
+
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if(e.target === overlay) this.closeModal(overlay.id);
                 });
+            });
+        }
 
-                // Global Buttons
-                document.getElementById('btn-save').onclick = () => this.downloadHTML();
-                document.getElementById('btn-print').onclick = () => this.openModal('print-modal');
-                document.getElementById('btn-ref').onclick = () => this.openRefModal();
-                document.getElementById('btn-guide').onclick = () => this.openModal('guide-modal');
-                document.getElementById('btn-zen').onclick = () => this.toggleZen();
-                
-                // Mobile Menu
-                document.getElementById('mobile-menu-btn').onclick = () => {
-                    document.getElementById('sidebar').classList.toggle('mobile-active');
-                };
-
-                // Close modals on overlay click
-                document.querySelectorAll('.modal-overlay').forEach(overlay => {
-                    overlay.addEventListener('click', (e) => {
-                        if(e.target === overlay) this.closeModal(overlay.id);
-                    });
-                });
-            }
-
-            // --- ACADEMIC STANDARDS LOGIC ---
-            setStandard(std) {
-                this.currentStandard = std;
-                
-                // 1. Update Sidebar UI
-                document.querySelectorAll('.format-option').forEach(btn => btn.classList.remove('active'));
-                const activeBtn = document.querySelector(`.format-option[data-style="style-${std}"]`);
-                if(activeBtn) activeBtn.classList.add('active');
-
-                // 2. Update Paper Class (This triggers CSS changes)
-                this.paper.className = '';
-                this.paper.classList.add(`style-${std}`);
-
-                // 3. Update Footer Status
-                const names = { 
-                    abnt: 'ABNT (NBR 14724)', 
-                    apa: 'APA (7th Ed)', 
-                    mla: 'MLA (9th Ed)' 
-                };
-                document.getElementById('status-std').innerText = `STD: ${names[std]}`;
-
-                // 4. Update Dynamic Labels (Cover Page, Structures)
-                this.updateStandardLabels(std);
-
-                this.saveState();
-                Utils.toast(`Switched to ${names[std]}`);
-            }
-
-            updateStandardLabels(std) {
-                // Update Cover Page Defaults based on language/standard style
-                const inst = document.getElementById('cover-inst');
-                const title = document.getElementById('cover-title');
-
-                if (std === 'abnt') {
-                    if(inst.innerText === 'INSTITUTION NAME' || inst.innerText === 'University Name') inst.innerText = 'NOME DA INSTITUIÇÃO';
-                    // No strict title caps for ABNT usually, but layout is specific
-                } else {
-                    if(inst.innerText === 'NOME DA INSTITUIÇÃO') inst.innerText = 'University Name';
-                    if(std === 'apa') title.style.textDecoration = 'none';
+        // --- FIXED: CLEAR PAPER LOGIC ---
+        clearPaper() {
+            // Check if custom modal exists
+            const modal = document.getElementById('clear-modal');
+            if (modal) {
+                this.openModal('clear-modal');
+            } else {
+                // Fallback to native confirm if modal HTML is missing
+                if(confirm('Are you sure? This will wipe all text and cannot be undone.')) {
+                    this.confirmClear();
                 }
             }
+        }
 
-            // --- COVER PAGE LOGIC ---
-            toggleCover() {
-                const cover = document.getElementById('cover-page');
+        confirmClear() {
+            // 1. Reset Editor Content
+            this.editor.innerHTML = '<p>Start writing...</p>';
+            
+            // 2. Hide cover page if open
+            const cover = document.getElementById('cover-page');
+            if(cover) {
+                cover.style.display = 'none';
+                // Reset sidebar button state
                 const btnText = document.getElementById('cover-btn-text');
                 const btn = document.getElementById('btn-toggle-cover');
-                
-                const isHidden = getComputedStyle(cover).display === 'none';
-                
-                if (isHidden) {
-                    cover.style.display = 'flex';
-                    btnText.innerText = 'Remove Cover Page';
-                    btn.classList.add('btn-danger');
-                    btn.classList.remove('btn-secondary');
-                } else {
-                    cover.style.display = 'none';
-                    btnText.innerText = 'Insert Cover Page';
+                if(btnText) btnText.innerText = 'Insert Cover Page';
+                if(btn) {
                     btn.classList.remove('btn-danger');
                     btn.classList.add('btn-secondary');
                 }
-                this.triggerAutoSave();
+            }
+            
+            // 3. Update State
+            this.updateStats();
+            this.triggerAutoSave();
+            this.closeModal('clear-modal');
+            
+            Utils.toast('Paper Cleared');
+        }
+
+        // --- FIXED: INSERT STRUCTURE LOGIC ---
+        insertStructure(type) {
+            if (!this.editor) return;
+
+            const h2 = document.createElement('h2');
+            let label = '';
+            
+            if (type === 'abstract') {
+                label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
+            } else if (type === 'references') {
+                label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
             }
 
-            // --- REFERENCE GENERATOR ---
-            openRefModal() {
-                // Set the dropdown to current app standard
-                document.getElementById('ref-std').value = this.currentStandard;
-                // Clear fields
-                ['ref-author','ref-title','ref-subtitle','ref-edition','ref-city','ref-pub','ref-year'].forEach(id => {
-                    document.getElementById(id).value = '';
-                });
-                this.updateRefPreview();
-                this.openModal('ref-modal');
-            }
+            h2.innerText = label;
 
-            updateRefPreview() {
-                const std = document.getElementById('ref-std').value;
-                const auth = document.getElementById('ref-author').value || 'AUTHOR';
-                const title = document.getElementById('ref-title').value || 'TITLE';
-                const sub = document.getElementById('ref-subtitle').value;
-                const edition = document.getElementById('ref-edition').value;
-                const city = document.getElementById('ref-city').value || 'CITY';
-                const pub = document.getElementById('ref-pub').value || 'PUBLISHER';
-                const year = document.getElementById('ref-year').value || 'YEAR';
+            // Create a placeholder paragraph so the user can type immediately
+            const p = document.createElement('p');
+            p.innerHTML = '<br>';
 
-                let html = '';
-
-                // Simplified Logic for common book citations
-                if (std === 'abnt') {
-                    // ABNT: AUTHOR. <b>Title</b>: subtitle. Edition. City: Publisher, Year.
-                    html = `${auth}. <b>${title}</b>${sub ? ': ' + sub : ''}${edition ? '. ' + edition : ''}. ${city}: ${pub}, ${year}.`;
-                } else if (std === 'apa') {
-                    // APA: Author. (Year). <i>Title</i>. Publisher.
-                    html = `${auth}. (${year}). <i>${title}</i>. ${pub}.`;
-                } else {
-                    // MLA: Author. <i>Title</i>. Publisher, Year.
-                    html = `${auth}. <i>${title}</i>. ${pub}, ${year}.`;
-                }
-
-                document.getElementById('ref-preview-output').innerHTML = html;
-            }
-
-            insertReference() {
-                const html = document.getElementById('ref-preview-output').innerHTML;
-                const p = document.createElement('p');
-                p.innerHTML = html;
-                
-                // Ensure it has correct styling class
-                p.style.marginBottom = "0"; 
-                
-                this.editor.appendChild(p);
-                
-                // Move cursor to end
-                const range = document.createRange();
-                const sel = window.getSelection();
-                range.selectNodeContents(p);
-                range.collapse(false);
-                sel.removeAllRanges();
-                sel.addRange(range);
-                
-                this.closeModal('ref-modal');
-                this.triggerAutoSave();
-                Utils.toast('Reference Added');
-            }
-
-            // --- STRUCTURE HELPERS ---
-            insertStructure(type) {
-                const h2 = document.createElement('h2');
-                let label = '';
-                
-                if(type === 'abstract') {
-                    label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
-                    // Insert at top of editor, after cover logic is separate
-                    this.editor.insertBefore(h2, this.editor.firstChild);
-                    
-                    const p = document.createElement('p');
-                    p.innerHTML = '<br>';
-                    this.editor.insertBefore(p, this.editor.children[1]);
-                    
+            // Robust DOM Insertion
+            try {
+                if (type === 'abstract') {
+                    // Prepend (add to top)
+                    this.editor.prepend(h2);
+                    this.editor.prepend(p);
                 } else if (type === 'references') {
-                    label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
+                    // Append (add to bottom)
                     this.editor.appendChild(h2);
-                    
-                    const p = document.createElement('p');
-                    p.innerHTML = '<br>';
                     this.editor.appendChild(p);
                 }
                 
-                h2.innerText = label;
+                // Force Focus & Cursor Placement
+                // Use setTimeout to ensure DOM is painted before moving selection
+                setTimeout(() => {
+                    this.editor.focus();
+                    
+                    // Place cursor at the end of the new paragraph
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.selectNodeContents(p);
+                    range.collapse(false); // false collapses to end
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }, 10);
+
                 this.triggerAutoSave();
                 Utils.toast(`${label} Section Added`);
+                
+            } catch (e) {
+                console.error("Insert failed:", e);
+                Utils.toast("Error inserting section");
+            }
+        }
+
+        // --- FIXED: REFERENCE GENERATOR ---
+        openRefModal() {
+            // Set dropdown to current app standard
+            const stdSelect = document.getElementById('ref-std');
+            if(stdSelect) stdSelect.value = this.currentStandard;
+            
+            // Clear fields
+            const fields = ['ref-author','ref-title','ref-subtitle','ref-edition','ref-city','ref-pub','ref-year'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.value = '';
+            });
+            
+            this.updateRefPreview();
+            this.openModal('ref-modal');
+        }
+
+        updateRefPreview() {
+            const std = document.getElementById('ref-std').value;
+            const auth = document.getElementById('ref-author').value || 'AUTHOR';
+            const title = document.getElementById('ref-title').value || 'TITLE';
+            const sub = document.getElementById('ref-subtitle').value;
+            const edition = document.getElementById('ref-edition').value;
+            const city = document.getElementById('ref-city').value || 'CITY';
+            const pub = document.getElementById('ref-pub').value || 'PUBLISHER';
+            const year = document.getElementById('ref-year').value || 'YEAR';
+
+            let html = '';
+
+            if (std === 'abnt') {
+                html = `${auth}. <b>${title}</b>${sub ? ': ' + sub : ''}${edition ? '. ' + edition : ''}. ${city}: ${pub}, ${year}.`;
+            } else if (std === 'apa') {
+                html = `${auth}. (${year}). <i>${title}</i>. ${pub}.`;
+            } else {
+                // MLA
+                html = `${auth}. <i>${title}</i>. ${pub}, ${year}.`;
             }
 
-            clearPaper() {
-                if(confirm('Are you sure? This will wipe all text and cannot be undone.')) {
-                    this.editor.innerHTML = '<p>Start writing...</p>';
-                    this.updateStats();
-                    this.triggerAutoSave();
+            const preview = document.getElementById('ref-preview-output');
+            if(preview) preview.innerHTML = html;
+        }
+
+        // --- FIXED: INSERT REFERENCE ---
+        insertReference() {
+            const preview = document.getElementById('ref-preview-output');
+            if(!preview) return;
+            
+            const html = preview.innerHTML;
+            const p = document.createElement('p');
+            p.innerHTML = html;
+            p.style.marginBottom = "0"; 
+            
+            try {
+                // Append to editor
+                this.editor.appendChild(p);
+                
+                // Force Focus & Cursor Placement
+                // Create a new paragraph after the reference for convenience
+                const newP = document.createElement('p');
+                newP.innerHTML = '<br>';
+                this.editor.appendChild(newP);
+
+                setTimeout(() => {
+                    this.editor.focus();
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.selectNodeContents(newP);
+                    range.collapse(false);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }, 10);
+
+                this.closeModal('ref-modal');
+                this.triggerAutoSave();
+                Utils.toast('Reference Added');
+            } catch (e) {
+                console.error("Ref Insert Failed:", e);
+                Utils.toast("Error inserting reference");
+            }
+        }
+
+        // --- STANDARD LOGIC ---
+        setStandard(std) {
+            this.currentStandard = std;
+            
+            // Update Sidebar UI
+            document.querySelectorAll('.format-option').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.format-option[data-style="style-${std}"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            // Update Paper Class
+            this.paper.className = '';
+            this.paper.classList.add(`style-${std}`);
+
+            // Update Footer Status
+            const names = { 
+                abnt: 'ABNT (NBR 14724)', 
+                apa: 'APA (7th Ed)', 
+                mla: 'MLA (9th Ed)' 
+            };
+            const statusStd = document.getElementById('status-std');
+            if(statusStd) statusStd.innerText = `STD: ${names[std]}`;
+
+            // Update Cover Labels
+            this.updateStandardLabels(std);
+
+            this.saveState();
+            Utils.toast(`Switched to ${names[std]}`);
+        }
+
+        updateStandardLabels(std) {
+            const inst = document.getElementById('cover-inst');
+            const title = document.getElementById('cover-title');
+
+            if (std === 'abnt') {
+                if(inst && (inst.innerText === 'University Name')) inst.innerText = 'NOME DA INSTITUIÇÃO';
+            } else {
+                if(inst && (inst.innerText === 'NOME DA INSTITUIÇÃO')) inst.innerText = 'University Name';
+                if(title && std === 'apa') title.style.textDecoration = 'none';
+            }
+        }
+
+        // --- COVER PAGE ---
+        toggleCover() {
+            const cover = document.getElementById('cover-page');
+            const btnText = document.getElementById('cover-btn-text');
+            const btn = document.getElementById('btn-toggle-cover');
+            
+            const isHidden = getComputedStyle(cover).display === 'none';
+            
+            if (isHidden) {
+                cover.style.display = 'flex';
+                if(btnText) btnText.innerText = 'Remove Cover Page';
+                if(btn) {
+                    btn.classList.add('btn-danger');
+                    btn.classList.remove('btn-secondary');
+                }
+            } else {
+                cover.style.display = 'none';
+                if(btnText) btnText.innerText = 'Insert Cover Page';
+                if(btn) {
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-secondary');
                 }
             }
+            this.triggerAutoSave();
+        }
 
-            // --- EXPORT & PRINT ---
-            confirmPrint() {
-                this.closeModal('print-modal');
-                setTimeout(() => {
-                    window.print();
-                }, 300);
-            }
+        // --- EXPORT & PRINT ---
+        confirmPrint() {
+            this.closeModal('print-modal');
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
 
-            downloadHTML() {
-                const stdName = this.currentStandard.toUpperCase();
-                const date = new Date().toISOString().slice(0,10);
-                
-                // We clone the paper to clean it up if necessary, or just take outerHTML
-                let content = this.paper.outerHTML;
-                
-                // Generate minimal CSS for the downloaded file
-                // We use the existing styles but simplified for the standalone file
-                let css = `
-                    body { font-family: Arial, sans-serif; line-height: 1.5; }
-                    .style-apa, .style-mla { font-family: "Times New Roman", serif; }
-                    #paper { width: 210mm; margin: 0 auto; }
-                    .style-abnt #editor-area { padding: 3cm 2cm 2cm 3cm; font-size: 12pt; text-align: justify; }
-                    .style-apa #editor-area { padding: 1in; font-size: 12pt; line-height: 2; }
-                    .style-mla #editor-area { padding: 1in; font-size: 12pt; }
-                    #cover-page { min-height: 297mm; border-bottom: 1px solid #ccc; margin-bottom: 20px; display:flex; flex-direction:column; justify-content:center; align-items:center; page-break-after: always;}
-                    h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 10px; }
-                    h2 { font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
-                    p { margin-bottom: 0; }
-                `;
+        downloadHTML() {
+            const stdName = this.currentStandard.toUpperCase();
+            const date = new Date().toISOString().slice(0,10);
+            
+            let content = this.paper.outerHTML;
+            
+            let css = `
+                body { font-family: Arial, sans-serif; line-height:1.5; }
+                .style-apa, .style-mla { font-family: "Times New Roman", serif; }
+                #paper { width: 210mm; margin: 0 auto; }
+                .style-abnt #editor-area { padding: 3cm 2cm 2cm 3cm; font-size: 12pt; text-align: justify; }
+                .style-apa #editor-area { padding: 1in; font-size: 12pt; line-height: 2; }
+                .style-mla #editor-area { padding: 1in; font-size: 12pt; }
+                #cover-page { min-height: 297mm; border-bottom: 1px solid #ccc; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; page-break-after: always; }
+                h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 10px; }
+                h2 { font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
+                p { margin-bottom: 0; }
+            `;
 
-                const htmlFull = `
+            const htmlFull = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -948,112 +1016,107 @@
     ${content}
 </body>
 </html>
-                `;
-                
-                const blob = new Blob([htmlFull], {type: 'text/html'});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `Thesis_${date}_${stdName.toLowerCase()}.html`;
-                a.click();
-                Utils.toast('HTML Downloaded');
-            }
-
-            // --- UTILITIES ---
-            updateStats() {
-                const text = this.editor.innerText || '';
-                // Better word count regex
-                const words = text.trim().split(/[\s\n]+/).filter(w => w.length > 0 && w.match(/[a-zA-Z0-9\u00C0-\u00FF]/)).length;
-                const chars = text.length;
-                document.getElementById('status-stats').innerText = `Words: ${words} | Chars: ${chars}`;
-            }
-
-            triggerAutoSave() {
-                const status = document.getElementById('status-save');
-                status.innerHTML = '<i class="fas fa-pen"></i> Saving...';
-                
-                if(this.saveTimer) clearTimeout(this.saveTimer);
-                
-                this.saveTimer = setTimeout(() => {
-                    this.saveState();
-                    status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
-                }, 1000);
-            }
-
-            saveState() {
-                localStorage.setItem('thesis-content', this.paper.outerHTML);
-                localStorage.setItem('thesis-std', this.currentStandard);
-                localStorage.setItem('thesis-checklist', document.getElementById('sidebar').innerHTML);
-            }
-
-            loadState() {
-                const savedStd = localStorage.getItem('thesis-std');
-                if(savedStd) {
-                    this.setStandard(savedStd);
-                } else {
-                    this.setStandard('abnt');
-                }
-                
-                const saved = localStorage.getItem('thesis-content');
-                if(saved) {
-                    const temp = document.createElement('div');
-                    temp.innerHTML = saved;
-                    const newPaper = temp.firstElementChild;
-                    
-                    // Only swap if valid
-                    if(newPaper && newPaper.id === 'paper') {
-                        newPaper.id = 'paper-loaded'; // temporary id
-                        this.paper.parentNode.replaceChild(newPaper, this.paper);
-                        newPaper.id = 'paper'; // restore id
-                        this.paper = newPaper; // update ref
-                        this.editor = document.getElementById('editor-area'); // update ref
-                    }
-                }
-                
-                // Restore checklist visual state (simple innerHTML swap)
-                // Note: In a real app we'd bind state, but for UI persistence this works
-                /*
-                const savedChecklist = localStorage.getItem('thesis-checklist');
-                if(savedChecklist) {
-                     // Logic to re-check boxes could go here
-                }
-                */
-               
-                this.updateStats();
-            }
-
-            // --- MODAL SYSTEM ---
-            openModal(id) {
-                const modal = document.getElementById(id);
-                if(modal) modal.classList.remove('hidden');
-            }
-
-            closeModal(id) {
-                const modal = document.getElementById(id);
-                if(modal) modal.classList.add('hidden');
-            }
-
-            toggleZen() {
-                document.body.classList.toggle('focus-mode');
-                Utils.toast(document.body.classList.contains('focus-mode') ? 'Zen Mode On' : 'Zen Mode Off');
-            }
+            `;
+            
+            const blob = new Blob([htmlFull], {type: 'text/html'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Thesis_${date}_${stdName.toLowerCase()}.html`;
+            a.click();
+            Utils.toast('HTML Downloaded');
         }
 
-        // Utility Wrapper
-        const Utils = {
-            toast: (msg) => {
-                const t = document.getElementById('toast-msg');
-                t.innerText = msg;
-                t.classList.remove('hidden');
-                setTimeout(() => t.classList.add('hidden'), 2500);
+        // --- UTILITIES ---
+        updateStats() {
+            const text = this.editor.innerText || '';
+            // Better word count regex
+            const words = text.trim().split(/[\s\n]+/).filter(w => w.length > 0 && w.match(/[a-zA-Z0-9\u00C0-\u00FF]/)).length;
+            const chars = text.length;
+            const stats = document.getElementById('status-stats');
+            if(stats) stats.innerText = `Words: ${words} | Chars: ${chars}`;
+        }
+
+        triggerAutoSave() {
+            const status = document.getElementById('status-save');
+            if(!status) return;
+            status.innerHTML = '<i class="fas fa-pen"></i> Saving...';
+            
+            if(this.saveTimer) clearTimeout(this.saveTimer);
+            
+            this.saveTimer = setTimeout(() => {
+                this.saveState();
+                status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
+            }, 1000);
+        }
+
+        saveState() {
+            localStorage.setItem('thesis-content', this.paper.outerHTML);
+            localStorage.setItem('thesis-std', this.currentStandard);
+            const sidebar = document.getElementById('sidebar');
+            if(sidebar) localStorage.setItem('thesis-checklist', sidebar.innerHTML);
+        }
+
+        loadState() {
+            const savedStd = localStorage.getItem('thesis-std');
+            if(savedStd) {
+                this.setStandard(savedStd);
+            } else {
+                this.setStandard('abnt');
             }
-        };
+            
+            const saved = localStorage.getItem('thesis-content');
+            if(saved) {
+                const temp = document.createElement('div');
+                temp.innerHTML = saved;
+                const newPaper = temp.firstElementChild;
+                
+                // Only swap if valid
+                if(newPaper && newPaper.id === 'paper') {
+                    newPaper.id = 'paper-loaded'; 
+                    if(this.paper && this.paper.parentNode) {
+                        this.paper.parentNode.replaceChild(newPaper, this.paper);
+                    }
+                    newPaper.id = 'paper'; 
+                    this.paper = newPaper; 
+                    this.editor = document.getElementById('editor-area'); 
+                }
+            }
+            
+            this.updateStats();
+        }
 
-        // Bootstrap
-        window.addEventListener('DOMContentLoaded', () => {
-            window.App = new ThesisApp();
-            window.App.init();
-        });
+        // --- MODAL SYSTEM ---
+        openModal(id) {
+            const modal = document.getElementById(id);
+            if(modal) modal.classList.remove('hidden');
+        }
 
-    </script>
+        closeModal(id) {
+            const modal = document.getElementById(id);
+            if(modal) modal.classList.add('hidden');
+        }
+
+        toggleZen() {
+            document.body.classList.toggle('focus-mode');
+            const isActive = document.body.classList.contains('focus-mode');
+            Utils.toast(isActive ? 'Zen Mode On' : 'Zen Mode Off');
+        }
+    }
+
+    const Utils = {
+        toast: (msg) => {
+            const t = document.getElementById('toast-msg');
+            if(!t) return;
+            t.innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 2500);
+        }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+        window.App = new ThesisApp();
+        window.App.init();
+    });
+</script>
 </body>
 </html>
