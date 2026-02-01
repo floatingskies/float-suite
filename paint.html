@@ -3,40 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Paint.web - Pro Web Editor</title>
+    <title>PAINT.WEB - Graphics Raster Editor</title>
     
     <meta name="theme-color" content="#FFDE59">
     <meta name="description" content="Professional Layer-Based Image Editor">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- NEO-BRUTALIST FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --c-bg: #f0f2f5;         
+            --c-bg: #e0e0e0;         
             --c-panel: #ffffff;       
             --c-surface: #f4f4f4;     
-            --c-text: #1a1a1a;       
-            --c-border: #cccccc;      
-            --c-primary: #FFDE59;     
-            --c-secondary: #FF90E8;   
-            --c-accent: #23C9FF;      
+            --c-text: #000000;       
+            --c-border: #000000;      /* ALWAYS BLACK */
+            
+            --c-primary: #FFDE59;     /* BRUTALIST YELLOW */
+            --c-secondary: #FF90E8;   /* BRUTALIST PINK */
+            --c-accent: #23C9FF;      /* BRUTALIST BLUE */
             --c-danger: #FF4D4D;      
-            --border-width: 2px;
-            --shadow-hard: 4px 4px 0px rgba(0,0,0,0.1);
-            --font-ui: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            --font-label: 'Impact', 'Arial Black', sans-serif;
-            --header-h: 50px;
+           
+            --border-width: 3px;
+            --shadow-hard: 5px 5px 0px 0px #000000;
+            --shadow-active: 2px 2px 0px 0px #000000;
+            --shadow-hover: 7px 7px 0px 0px #000000;
+            
+            --font-ui: 'Space Mono', monospace; 
+            --font-head: 'Archivo Black', sans-serif;
+            
+            --header-h: 60px;
             --sidebar-w: 280px;
-            --bottom-h: 180px;
+            --bottom-h: 200px;
         }
 
         [data-theme="dark"] {
             --c-bg: #121212;
-            --c-panel: #1e1e1e;
+            --c-panel: #1a1a1a;
             --c-surface: #2a2a2a;
-            --c-text: #e0e0e0;
-            --c-border: #444444;
-            --c-primary: #bfa300;
-            --shadow-hard: 4px 4px 0px rgba(255,255,255,0.1);
+            --c-text: #ffffff;
+            --c-border: #ffffff;
+            --c-primary: #bfa300; /* Dimmer yellow for dark mode */
+            --c-secondary: #d966cc;
+            --shadow-hard: 5px 5px 0px 0px #ffffff;
+            --shadow-active: 2px 2px 0px 0px #ffffff;
+            --shadow-hover: 7px 7px 0px 0px #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; -webkit-user-select: none; }
@@ -53,77 +66,108 @@
             flex-direction: column;
         }
 
-        /* --- UI Components --- */
         .btn {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
             color: var(--c-text);
-            padding: 6px 10px;
-            font-family: var(--font-ui);
-            font-weight: 600;
+            padding: 8px 12px;
+            font-family: var(--font-head);
+            font-weight: 400;
             text-transform: uppercase;
             cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             transition: all 0.1s;
             flex-shrink: 0;
-            font-size: 10px;
-            border-radius: 4px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-hard);
+            /* No border-radius for pure brutalism, or very slight */
+            border-radius: 0px; 
         }
         .btn:hover { 
             background: var(--c-primary); 
-            transform: translateY(-1px); 
+            transform: translate(-2px, -2px); 
             color: #000;
-            border-color: #000;
+            box-shadow: var(--shadow-hover);
         }
         .btn:active, .btn.active { 
             background: var(--c-secondary); 
-            transform: translateY(1px); 
+            transform: translate(2px, 2px); 
             color: #000;
-            border-color: #000;
+            box-shadow: var(--shadow-active);
         }
-        .btn-icon { width: 36px; height: 36px; padding: 0; font-size: 14px; border-radius: 6px; }
-        .btn-danger { color: var(--c-danger); border-color: var(--c-danger); }
-        .btn-danger:hover { background: var(--c-danger); color: #fff; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        .btn-icon { width: 40px; height: 40px; padding: 0; font-size: 16px; }
+        .btn-danger { background: #FF4D4D; color: #fff; }
+        .btn-danger:hover { background: #ff0000; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; box-shadow: none; }
 
+        /* Sliders */
         input[type="range"] { 
-            width: 100%; accent-color: var(--c-primary); cursor: pointer; height: 4px; background: var(--c-border);
-            appearance: none; border-radius: 2px;
+            width: 100%; accent-color: var(--c-text); cursor: pointer; height: 6px; background: var(--c-border);
+            appearance: none; /* Remove default styling */
+            background: var(--c-panel);
+            border: 2px solid var(--c-border);
         }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--c-primary); border: 2px solid var(--c-text); cursor: pointer;
+            -webkit-appearance: none; 
+            width: 20px; height: 20px; 
+            background: var(--c-accent); 
+            border: 2px solid var(--c-border); 
+            cursor: pointer;
+            box-shadow: 2px 2px 0px 0px #000;
         }
 
-        input[type="number"], input[type="text"] {
-            background: var(--c-surface); border: 2px solid var(--c-border);
-            color: var(--c-text); font-family: var(--font-ui); font-weight: 500;
-            padding: 4px; width: 100%; border-radius: 4px;
+        /* Inputs */
+        input[type="number"], input[type="text"], select {
+            background: var(--c-panel); 
+            border: var(--border-width) solid var(--c-border);
+            color: var(--c-text); 
+            font-family: var(--font-ui); 
+            font-weight: 700;
+            padding: 8px; width: 100%;
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.2);
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: var(--c-accent);
+            box-shadow: 4px 4px 0px 0px var(--c-accent);
+            transform: translate(-1px, -1px);
         }
         
-        /* --- Layout --- */
         .topbar {
             height: var(--header-h);
             background: var(--c-panel);
             border-bottom: var(--border-width) solid var(--c-border);
-            display: flex; align-items: center; padding: 0 15px; gap: 15px;
+            display: flex; align-items: center; padding: 0 20px; gap: 20px;
             z-index: 100;
             flex-shrink: 0;
+            box-shadow: 0 4px 0px 0px rgba(0,0,0,0.1);
         }
-        .logo { font-family: var(--font-label); font-size: 20px; font-weight: 900; color: var(--c-text); }
+        .logo { 
+            font-family: var(--font-head); 
+            font-size: 24px; 
+            letter-spacing: -1px;
+            color: #000;
+            background: var(--c-primary);
+            padding: 4px 10px;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+            transform: rotate(-1deg);
+        }
         
         .menubar {
-            height: 30px;
-            background: var(--c-bg);
-            border-bottom: 1px solid var(--c-border);
-            display: flex; align-items: center; padding: 0 10px; gap: 10px;
+            height: 36px;
+            background: #000; /* Brutalist High Contrast */
+            color: #fff;
+            border-bottom: var(--border-width) solid var(--c-border);
+            display: flex; align-items: center; padding: 0 15px; gap: 15px;
             flex-shrink: 0;
         }
-        .menu-item { padding: 4px 10px; cursor: pointer; font-weight: 700; font-size: 10px; border-radius: 4px; text-transform: uppercase; }
-        .menu-item:hover { background: var(--c-surface); color: var(--c-primary); }
+        .menu-item { padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 11px; border-radius: 0px; text-transform: uppercase; font-family: var(--font-head); letter-spacing: 1px;}
+        .menu-item:hover { background: var(--c-accent); color: #000; }
 
-        #app { display: flex; flex: 1; overflow: hidden; position: relative; height: calc(100vh - var(--header-h) - 30px - var(--bottom-h)); }
+        #app { display: flex; flex: 1; overflow: hidden; position: relative; height: calc(100vh - var(--header-h) - 36px - var(--bottom-h)); }
         
-        /* --- Left Sidebar (Tools & Adjustments) --- */
+        /* --- LEFT SIDEBAR --- */
         .toolbar {
             width: var(--sidebar-w);
             background: var(--c-panel);
@@ -132,58 +176,73 @@
             flex-direction: column;
             overflow-y: auto;
             flex-shrink: 0;
-            padding: 10px;
-            gap: 15px;
+            padding: 15px;
+            gap: 20px;
+            /* Scrollbar styling */
+            scrollbar-width: thin;
+            scrollbar-color: #000 #f0f0f0;
         }
+        .toolbar::-webkit-scrollbar { width: 10px; }
+        .toolbar::-webkit-scrollbar-thumb { background: #000; border: 2px solid #fff; }
 
         .tool-group {
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex; flex-direction: column; gap: 10px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 15px;
         }
+        .tool-group:last-child { border-bottom: none; }
+
         .tool-label {
-            font-size: 10px; font-weight: 900; text-transform: uppercase; color: #888;
-            margin-bottom: 4px; letter-spacing: 1px;
+            font-size: 14px; font-family: var(--font-head); text-transform: uppercase; color: #000;
+            margin-bottom: 8px; letter-spacing: 0.5px;
+            background: var(--c-accent);
+            display: inline-block;
+            padding: 2px 6px;
+            border: 2px solid #000;
         }
+
         .tools-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
         }
         .tools-2-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
         }
         
-        .adj-row { display: flex; flex-direction: column; gap: 4px; }
-        .adj-header { display: flex; justify-content: space-between; font-size: 10px; font-weight: bold; }
+        .adj-row { display: flex; flex-direction: column; gap: 6px; }
+        .adj-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; text-transform: uppercase; font-family: var(--font-head); }
 
-        /* --- Viewport --- */
+        /* --- VIEWPORT --- */
         .viewport {
             flex: 1;
-            background-color: #888; 
-            background-image:
-                linear-gradient(45deg, #777 25%, transparent 25%),
-                linear-gradient(-45deg, #777 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #777 75%),
-                linear-gradient(-45deg, transparent 75%, #777 75%);
+            /* Brutalist Checkerboard */
+            background-color: #fff;
+            background-image: 
+                linear-gradient(45deg, #000 25%, transparent 25%), 
+                linear-gradient(-45deg, #000 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #000 75%), 
+                linear-gradient(-45deg, transparent 75%, #000 75%);
             background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             overflow: hidden; 
             position: relative;
             display: flex; align-items: center; justify-content: center;
             touch-action: none;
+            border-left: var(--border-width) solid var(--c-border);
         }
-        .viewport[data-cursor="move"] { cursor: grab; }
-        .viewport[data-cursor="move"].grabbing { cursor: grabbing; }
-        .viewport[data-cursor="crosshair"] { cursor: crosshair; }
         
         #canvas-wrapper {
             position: absolute;
             top: 0; left: 0;
             background: #fff; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+            box-shadow: 15px 15px 0px 0px #000; /* Massive shadow */
             transform-origin: 0 0; 
+            border: var(--border-width) solid #000;
         }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; image-rendering: pixelated; }
         canvas.active-canvas { pointer-events: auto; }
         #preview-canvas { z-index: 999; pointer-events: none; }
 
-        /* --- BOTTOM BAR (Layers & Swatches) --- */
+        /* --- BOTTOM BAR --- */
         .bottom-bar {
             height: var(--bottom-h);
             background: var(--c-panel);
@@ -194,133 +253,143 @@
         }
 
         .bb-section {
-            padding: 10px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
         }
         #bb-layers {
             flex: 3;
-            border-right: 1px solid var(--c-border);
+            border-right: var(--border-width) solid var(--c-border);
+            background: #f9f9f9;
         }
         #bb-swatches {
             flex: 1;
+            background: var(--c-panel);
         }
 
         .bb-header {
-            font-size: 11px; font-weight: 900; text-transform: uppercase;
-            margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
-            letter-spacing: 0.5px;
+            font-size: 16px; font-family: var(--font-head); text-transform: uppercase;
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 5px;
         }
         
         .layer-controls {
-            display: flex; gap: 5px; margin-bottom: 8px;
+            display: flex; gap: 8px; margin-bottom: 10px;
         }
 
         .layers-list {
             flex: 1;
             overflow-y: auto;
-            display: flex; flex-direction: column; gap: 6px;
+            display: flex; flex-direction: column; gap: 8px;
         }
         .layer-item {
-            background: var(--c-surface);
-            border: 2px solid var(--c-border);
-            padding: 4px 8px;
-            display: flex; align-items: center; gap: 8px;
+            background: #fff;
+            border: 2px solid #000;
+            padding: 6px 10px;
+            display: flex; align-items: center; gap: 10px;
             cursor: pointer;
             transition: 0.1s;
             position: relative;
-            border-radius: 4px;
-            height: 40px;
+            height: 45px;
+            box-shadow: 3px 3px 0px 0px #000;
         }
-        .layer-item:hover { background: #eef; border-color: var(--c-accent); }
-        .layer-item.active { background: var(--c-primary); color: #000; border-color: #000; }
+        .layer-item:hover { background: var(--c-primary); transform: translate(-1px, -1px); box-shadow: 4px 4px 0px 0px #000; }
+        .layer-item.active { background: var(--c-secondary); color: #000; border-color: #000; transform: translate(2px, 2px); box-shadow: 0px 0px 0px 0px #000;}
         
         .layer-thumb { 
-            width: 40px; height: 32px; background: #fff; 
-            border: 1px solid #000; border-radius: 2px; display: flex; align-items: center; justify-content: center; 
+            width: 45px; height: 35px; background: #ddd; 
+            border: 2px solid #000; display: flex; align-items: center; justify-content: center; 
             overflow: hidden; flex-shrink: 0; pointer-events: none;
         }
         .layer-thumb canvas { position: static; width: 100%; height: 100%; object-fit: contain; }
-        .layer-name { flex: 1; font-weight: 600; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;}
-        .layer-vis { cursor: pointer; width: 20px; text-align: center; color: #666; }
-        .layer-vis:hover { color: #000; }
+        .layer-name { flex: 1; font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; font-family: var(--font-head); text-transform: uppercase;}
+        .layer-vis { cursor: pointer; width: 24px; text-align: center; color: #000; font-weight: bold; }
+        .layer-vis:hover { color: var(--c-accent); }
 
-        /* --- Swatches --- */
+        /* --- SWATCHES --- */
         #swatches {
-            display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start;
+            display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start;
             overflow-y: auto;
         }
         .swatch {
-            width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.1);
+            width: 28px; height: 28px; 
+            border: 2px solid #000; 
             cursor: pointer; transition: transform 0.1s; position: relative;
+            box-shadow: 2px 2px 0px 0px #000;
         }
-        .swatch:hover { transform: scale(1.2); z-index: 2; border-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .swatch:hover { transform: scale(1.1) rotate(3deg); z-index: 2; box-shadow: 3px 3px 0px 0px #000; }
         .swatch.add-color-btn {
-            background: #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; border-radius: 4px;
+            background: #fff; color: #000; display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
-        .swatch.add-color-btn:hover { background: #ddd; }
 
-        /* --- Modals & Toasts --- */
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             z-index: 2000;
             display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(5px); /* Slight blur for focus */
         }
         .modal-overlay.hidden { display: none; pointer-events: none; }
         
         .modal-box {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
-            width: 90%; max-width: 400px;
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            width: 90%; max-width: 450px;
+            box-shadow: 15px 15px 0px 0px #000;
             display: flex; flex-direction: column;
-            border-radius: 8px; overflow: hidden;
+            border-radius: 0px; overflow: hidden;
         }
         
         .modal-header { 
-            background: var(--c-primary); color: #000;
-            padding: 12px; font-family: var(--font-label); font-size: 16px;
-            font-weight: 900; text-transform: uppercase;
+            background: #000; color: #fff;
+            padding: 15px; font-family: var(--font-head); font-size: 18px;
+            font-weight: 400; text-transform: uppercase;
             display: flex; justify-content: space-between; align-items: center;
+            letter-spacing: 1px;
         }
-        .modal-body { padding: 20px; display:flex; flex-direction:column; gap:15px;}
-        .modal-footer { padding: 15px; background: var(--c-bg); border-top: 1px solid var(--c-border); display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-body { padding: 25px; display:flex; flex-direction:column; gap:20px; background: var(--c-panel);}
+        .modal-footer { padding: 15px; background: #eee; border-top: 3px solid #000; display: flex; justify-content: flex-end; gap: 15px; }
 
         .toast-container {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; gap: 8px; z-index: 3000; pointer-events: none;
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; gap: 10px; z-index: 3000; pointer-events: none;
         }
         .toast {
-            background: var(--c-text); color: var(--c-bg);
-            padding: 10px 20px; border-radius: 50px;
-            font-weight: 600; font-size: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #000; color: #fff;
+            padding: 12px 24px; border-radius: 0px;
+            font-family: var(--font-head); font-size: 14px;
+            text-transform: uppercase;
+            border: 3px solid #fff;
+            box-shadow: 5px 5px 0px 0px var(--c-primary);
+            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popUp { from {transform: translateY(20px) scale(0.9); opacity: 0;} to {transform: translateY(0) scale(1); opacity: 1;} }
+        @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
 
+        /* Inputs for tools */
         #text-tool-input {
-            position: absolute; background: rgba(255, 255, 255, 0.95);
-            border: 2px dashed #000; padding: 5px;
-            font-family: sans-serif; font-weight: bold; color: #000;
-            display: none; z-index: 1000; min-width: 50px; outline: none; border-radius: 4px;
+            position: absolute; background: #fff;
+            border: 3px solid #000; padding: 8px;
+            font-family: var(--font-head); font-weight: 900; color: #000;
+            display: none; z-index: 1000; min-width: 50px; outline: none; 
+            box-shadow: 4px 4px 0px 0px #000;
+            text-transform: uppercase;
         }
 
         #clone-cursor-ui {
             position: absolute; pointer-events: none;
-            border: 1px solid #000; background: rgba(255, 255, 255, 0.4);
-            display: none; z-index: 1001; border-radius: 50%;
+            border: 2px solid #000; background: rgba(35, 201, 255, 0.4);
+            display: none; z-index: 1001; border-radius: 0%; /* Square */
         }
         #clone-source-indicator {
-            position: absolute; width: 14px; height: 14px;
-            background: var(--c-accent); border: 2px solid #000; border-radius: 50%;
+            position: absolute; width: 16px; height: 16px;
+            background: var(--c-accent); border: 2px solid #000; 
             transform: translate(-50%, -50%); pointer-events: none;
-            display: none; z-index: 1001; box-shadow: 0 0 0 4px rgba(255,255,255,0.5);
+            display: none; z-index: 1001; box-shadow: 0 0 0 4px rgba(255,255,255,0.8);
         }
         
-        /* Hidden inputs */
         .hidden-file { display: none; }
     </style>
 </head>
@@ -328,15 +397,15 @@
 
     <!-- TOP BAR -->
     <div class="topbar">
-        <div class="logo">PAINT<span style="color:var(--c-primary)">.WEB</span></div>
+        <div class="logo">PAINT<span style="color:#000; background:#fff; padding:0 4px; border:2px solid #000; box-shadow:2px 2px 0 #000; margin-left:5px;">.WEB</span></div>
 
-        <div class="res-group" style="display:flex; gap:5px; align-items:center;">
+        <div class="res-group" style="display:flex; gap:10px; align-items:center; flex:1; justify-content: center;">
             <button class="btn btn-icon" onclick="App.ui.openModal('modal-resize')" title="Canvas Size"><i class="fas fa-expand"></i></button>
-            <div style="width: 1px; height: 20px; background: var(--c-border);"></div>
+            <div style="width: 3px; height: 30px; background: #000;"></div>
             <input type="file" id="file-input" accept="image/*" class="hidden-file">
-            <button class="btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-folder-open"></i> Open</button>
-            <button class="btn" id="btn-export"><i class="fas fa-save"></i> Export</button>
-            <div style="width: 1px; height: 20px; background: var(--c-border);"></div>
+            <button class="btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-folder-open"></i> OPEN</button>
+            <button class="btn" id="btn-export" style="background: var(--c-accent); color:#fff;"><i class="fas fa-save"></i> EXPORT</button>
+            <div style="width: 3px; height: 30px; background: #000;"></div>
             <button class="btn btn-icon" id="btn-undo" title="Undo (Ctrl+Z)" disabled><i class="fas fa-undo"></i></button>
             <button class="btn btn-icon" id="btn-redo" title="Redo (Ctrl+Y)" disabled><i class="fas fa-redo"></i></button>
         </div>
@@ -346,10 +415,10 @@
         <div class="menu-item" onclick="App.ui.openModal('modal-filters')">Effects & Filters</div>
         <div style="flex:1"></div>
         <div class="menu-item" id="zoom-level">100%</div>
-        <div class="menu-item" onclick="App.toggleTheme()"><i class="fas fa-adjust"></i></div>
+        <div class="menu-item" onclick="App.toggleTheme()">THEME</div>
     </div>
 
-    <!-- MAIN APP AREA (Tools + Viewport) -->
+    <!-- MAIN APP AREA -->
     <div id="app">
         <!-- LEFT SIDEBAR -->
         <nav class="toolbar">
@@ -357,17 +426,17 @@
             <div class="tool-group">
                 <div class="tool-label">Tools</div>
                 <div class="tools-grid">
-                    <button class="btn btn-icon active" data-tool="move" title="Move Canvas (Space)"><i class="fas fa-arrows-alt"></i></button>
-                    <button class="btn btn-icon" data-tool="pan-layer" title="Move Layer (V)"><i class="fas fa-expand-arrows-alt"></i></button>
-                    <button class="btn btn-icon" data-tool="crop" title="Crop (C)"><i class="fas fa-crop-alt"></i></button>
-                    <button class="btn btn-icon" data-tool="picker" title="Eyedropper (I)"><i class="fas fa-eye-dropper"></i></button>
+                    <button class="btn btn-icon active" data-tool="move" title="Move Canvas"><i class="fas fa-arrows-alt"></i></button>
+                    <button class="btn btn-icon" data-tool="pan-layer" title="Move Layer"><i class="fas fa-expand-arrows-alt"></i></button>
+                    <button class="btn btn-icon" data-tool="crop" title="Crop"><i class="fas fa-crop-alt"></i></button>
+                    <button class="btn btn-icon" data-tool="picker" title="Picker"><i class="fas fa-eye-dropper"></i></button>
                     
-                    <button class="btn btn-icon" data-tool="brush" title="Brush (B)"><i class="fas fa-paint-brush"></i></button>
-                    <button class="btn btn-icon" data-tool="eraser" title="Eraser (E)"><i class="fas fa-eraser"></i></button>
-                    <button class="btn btn-icon" data-tool="fill" title="Fill Bucket (G)"><i class="fas fa-fill-drip"></i></button>
-                    <button class="btn btn-icon" data-tool="text" title="Text (T)"><i class="fas fa-font"></i></button>
+                    <button class="btn btn-icon" data-tool="brush" title="Brush"><i class="fas fa-paint-brush"></i></button>
+                    <button class="btn btn-icon" data-tool="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
+                    <button class="btn btn-icon" data-tool="fill" title="Fill"><i class="fas fa-fill-drip"></i></button>
+                    <button class="btn btn-icon" data-tool="text" title="Text"><i class="fas fa-font"></i></button>
 
-                    <button class="btn btn-icon" data-tool="clone" title="Clone Stamp (S)"><i class="fas fa-stamp"></i></button>
+                    <button class="btn btn-icon" data-tool="clone" title="Clone"><i class="fas fa-stamp"></i></button>
                     <button class="btn btn-icon" data-tool="line" title="Line"><i class="fas fa-slash"></i></button>
                     <button class="btn btn-icon" data-tool="rect" title="Rectangle"><i class="far fa-square"></i></button>
                     <button class="btn btn-icon" data-tool="circle" title="Circle"><i class="far fa-circle"></i></button>
@@ -375,16 +444,16 @@
             </div>
 
             <div class="tool-group">
-                <div class="tool-label">Brush Settings</div>
+                <div class="tool-label">Settings</div>
                 <div class="adj-row">
-                    <div class="adj-header"><span>Size</span> <span id="lbl-size">10px</span></div>
+                    <div class="adj-header"><span>Brush Size</span> <span id="lbl-size">10px</span></div>
                     <input type="range" id="brush-size" min="1" max="200" value="10">
                 </div>
                 <div class="adj-row">
                      <div class="adj-header"><span>Color</span></div>
-                     <div style="display:flex; gap: 5px; align-items:center;">
-                        <input type="color" id="native-color-picker" style="width:30px; height:30px; padding:0; border:none; background:none; cursor:pointer;">
-                        <span id="hex-display" style="font-family: monospace; font-size: 11px;">#000000</span>
+                     <div style="display:flex; gap: 8px; align-items:center;">
+                        <input type="color" id="native-color-picker" style="width:40px; height:40px; padding:0; border:3px solid #000; cursor:pointer; box-shadow:2px 2px 0 #000;">
+                        <span id="hex-display" style="font-family: var(--font-ui); font-weight: bold; font-size: 13px;">#000000</span>
                      </div>
                 </div>
             </div>
@@ -392,21 +461,21 @@
             <div class="tool-group">
                 <div class="tool-label">Transform</div>
                 <div class="tools-2-grid">
-                    <button class="btn" onclick="App.transformLayer('flip-h')"><i class="fas fa-arrows-alt-h"></i> Flip H</button>
-                    <button class="btn" onclick="App.transformLayer('flip-v')"><i class="fas fa-arrows-alt-v"></i> Flip V</button>
-                    <button class="btn" onclick="App.transformLayer('rotate-cw')"><i class="fas fa-redo"></i> Rot 90°</button>
-                    <button class="btn" onclick="App.transformLayer('rotate-ccw')"><i class="fas fa-undo"></i> Rot -90°</button>
+                    <button class="btn" onclick="App.transformLayer('flip-h')">FLIP H</button>
+                    <button class="btn" onclick="App.transformLayer('flip-v')">FLIP V</button>
+                    <button class="btn" onclick="App.transformLayer('rotate-cw')">ROT 90°</button>
+                    <button class="btn" onclick="App.transformLayer('rotate-ccw')">ROT -90°</button>
                 </div>
             </div>
 
             <div class="tool-group">
-                <div class="tool-label">Live Adjustments</div>
+                <div class="tool-label">Adjustments</div>
                 <div class="adj-row">
                     <div class="adj-header"><span>Opacity</span> <span id="val-op">100%</span></div>
                     <input type="range" class="adj-slider" id="adj-opacity" data-prop="opacity" min="0" max="1" step="0.05" value="1">
                 </div>
                 <div class="adj-row">
-                    <div class="adj-header"><span>Brightness</span></div>
+                    <div class="adj-header"><span>Bright</span></div>
                     <input type="range" class="adj-slider" data-prop="brightness" min="-100" max="100" value="0">
                 </div>
                 <div class="adj-row">
@@ -414,22 +483,24 @@
                     <input type="range" class="adj-slider" data-prop="contrast" min="-100" max="100" value="0">
                 </div>
                 <div class="adj-row">
-                    <div class="adj-header"><span>Saturation</span></div>
+                    <div class="adj-header"><span>Sat</span></div>
                     <input type="range" class="adj-slider" data-prop="saturate" min="-100" max="100" value="0">
                 </div>
                 <div class="adj-row">
                     <div class="adj-header"><span>Blur</span></div>
                     <input type="range" class="adj-slider" data-prop="blur" min="0" max="10" step="0.5" value="0">
                 </div>
-                <button class="btn" id="btn-apply-adj" style="background:var(--c-surface)">Apply Filters</button>
-                <button class="btn" id="btn-reset-adj">Reset</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:5px;">
+                    <button class="btn" id="btn-apply-adj">APPLY</button>
+                    <button class="btn" id="btn-reset-adj" style="background:#000; color:#fff;">RESET</button>
+                </div>
             </div>
         </nav>
 
         <!-- MAIN VIEWPORT -->
         <main class="viewport" id="viewport" data-cursor="default">
             <div id="canvas-wrapper"></div>
-            <input type="text" id="text-tool-input" placeholder="Type here...">
+            <input type="text" id="text-tool-input" placeholder="TYPE HERE...">
             <div id="clone-cursor-ui"></div>
             <div id="clone-source-indicator"></div>
         </main>
@@ -440,7 +511,7 @@
         <div class="bb-section" id="bb-layers">
             <div class="bb-header">
                 <span><i class="fas fa-layer-group"></i> Layers</span>
-                <small style="font-weight:normal; font-size:9px;">DRAG TO SORT</small>
+                <small style="font-family:var(--font-ui); font-size:10px; font-weight:normal;">DRAG TO REORDER</small>
             </div>
             <div class="layer-controls">
                 <button class="btn btn-icon" id="btn-add-layer" title="New Layer"><i class="fas fa-plus"></i></button>
@@ -452,8 +523,8 @@
         </div>
 
         <div class="bb-section" id="bb-swatches">
-            <div class="bb-header">
-                <span><i class="fas fa-palette"></i> Colors</span>
+            <div class="bb-header" style="font-size:14px;">
+                <span><i class="fas fa-palette"></i> Palette</span>
             </div>
             <div id="swatches"></div>
         </div>
@@ -466,19 +537,19 @@
         <div class="modal-box hidden" id="modal-settings">
             <div class="modal-header"><span>Export Image</span><i class="fas fa-save"></i></div>
             <div class="modal-body">
-                <div class="adj-row"><label>Filename</label><input type="text" id="exp-name" value="masterpiece"></div>
-                <div class="adj-row"><label>Format</label>
-                    <select id="exp-fmt" style="padding: 5px;">
+                <div class="adj-row"><label style="font-family:var(--font-head);">FILENAME</label><input type="text" id="exp-name" value="brutalist-art"></div>
+                <div class="adj-row"><label style="font-family:var(--font-head);">FORMAT</label>
+                    <select id="exp-fmt" style="padding: 8px;">
                         <option value="image/png">PNG</option>
                         <option value="image/jpeg">JPG</option>
-                        <option value="image/webp">WebP</option>
+                        <option value="image/webp">WEBP</option>
                     </select>
                 </div>
-                <div class="adj-row"><label>Quality</label><input type="range" id="exp-qual" min="0.1" max="1" step="0.1" value="1"></div>
+                <div class="adj-row"><label style="font-family:var(--font-head);">QUALITY</label><input type="range" id="exp-qual" min="0.1" max="1" step="0.1" value="1"></div>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="App.ui.closeModal()">Cancel</button>
-                <button class="btn" onclick="App.exportImage()">Download</button>
+                <button class="btn" onclick="App.ui.closeModal()" style="background:#ccc;">Cancel</button>
+                <button class="btn" onclick="App.exportImage()" style="background:var(--c-primary);">DOWNLOAD</button>
             </div>
         </div>
 
@@ -488,21 +559,21 @@
             <div class="modal-body">
                 <div class="tools-2-grid">
                     <div>
-                        <label>Width</label>
+                        <label style="font-family:var(--font-head); display:block; margin-bottom:5px;">Width</label>
                         <input type="number" id="inp-w" value="1280">
                     </div>
                     <div>
-                        <label>Height</label>
+                        <label style="font-family:var(--font-head); display:block; margin-bottom:5px;">Height</label>
                         <input type="number" id="inp-h" value="720">
                     </div>
                 </div>
-                <label style="display:flex; align-items:center; gap:5px; font-size:11px; margin-top:5px;">
-                    <input type="checkbox" id="chk-keep-ratio"> Keep Aspect Ratio
+                <label style="display:flex; align-items:center; gap:8px; font-size:12px; margin-top:10px; font-family:var(--font-head);">
+                    <input type="checkbox" id="chk-keep-ratio" style="width:20px; height:20px;"> KEEP ASPECT RATIO
                 </label>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="App.ui.closeModal()">Cancel</button>
-                <button class="btn" onclick="App.resizeCanvasFromModal()">Apply</button>
+                <button class="btn" onclick="App.ui.closeModal()" style="background:#ccc;">Cancel</button>
+                <button class="btn" onclick="App.resizeCanvasFromModal()" style="background:var(--c-accent);">RESIZE</button>
             </div>
         </div>
 
@@ -510,18 +581,18 @@
         <div class="modal-box hidden" id="modal-filters">
             <div class="modal-header"><span>Effects</span><i class="fas fa-magic"></i></div>
             <div class="modal-body">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn filter-btn" data-f="invert">INVERT</button>
-                    <button class="btn filter-btn" data-f="grayscale">GRAYSCALE</button>
+                    <button class="btn filter-btn" data-f="grayscale">GRAY</button>
                     <button class="btn filter-btn" data-f="sepia">SEPIA</button>
                     <button class="btn filter-btn" data-f="noise">NOISE</button>
                     <button class="btn filter-btn" data-f="sharpen">SHARPEN</button>
                     <button class="btn filter-btn" data-f="emboss">EMBOSS</button>
-                    <button class="btn filter-btn" data-f="edge">EDGE DETECT</button>
+                    <button class="btn filter-btn" data-f="edge">EDGE</button>
                     <button class="btn filter-btn" data-f="pixelate">PIXELATE</button>
                 </div>
             </div>
-            <div class="modal-footer"><button class="btn" onclick="App.ui.closeModal()">Close</button></div>
+            <div class="modal-footer"><button class="btn" onclick="App.ui.closeModal()">CLOSE</button></div>
         </div>
     </div>
 
@@ -618,7 +689,7 @@
                 await this.restore(this.stack[this.stack.length - 1]);
                 this.isRestoring = false;
                 this.updateUI();
-                Utils.toast('Undo');
+                Utils.toast('UNDO');
             }
 
             async redo() {
@@ -629,7 +700,7 @@
                 await this.restore(next);
                 this.isRestoring = false;
                 this.updateUI();
-                Utils.toast('Redo');
+                Utils.toast('REDO');
             }
 
             updateUI() {
@@ -673,7 +744,6 @@
                     document.querySelectorAll('.modal-box').forEach(b => b.classList.add('hidden'));
                     document.getElementById(id).classList.remove('hidden');
                     App.ui.overlay.classList.remove('hidden');
-                    // Pre-fill resize values
                     if(id === 'modal-resize') {
                         document.getElementById('inp-w').value = App.width;
                         document.getElementById('inp-h').value = App.height;
@@ -743,7 +813,7 @@
                 if(w > 0 && h > 0) {
                     this.resizeCanvas(w, h);
                     this.ui.closeModal();
-                    Utils.toast('Resized');
+                    Utils.toast('CANVAS RESIZED');
                 }
             },
 
@@ -775,7 +845,6 @@
                 const l = this.getLayer(id);
                 if(l) {
                     l.canvas.classList.add('active-canvas');
-                    // Sync UI sliders
                     this.syncSidebarUI();
                 }
                 this.renderLayerList();
@@ -785,17 +854,11 @@
                 const l = this.getLayer(this.activeLayerId);
                 if(!l) return;
                 
-                // Parse filters from style or default
                 const opacity = l.opacity;
                 document.getElementById('adj-opacity').value = opacity;
                 document.getElementById('val-op').innerText = Math.round(opacity * 100) + '%';
 
-                // Reset filter sliders to 0 unless they are actively applied (simplified for this demo)
-                // Ideally we store numeric values in the layer object, not just the CSS string.
-                // For now, we reset visual sliders to indicate "live mode" start.
-                // But let's try to respect current filter if possible.
                 const f = l.canvas.style.filter;
-                // Simple parse (doesn't cover all cases but works for basics)
                 const getVal = (reg) => {
                     const m = f.match(reg);
                     return m ? parseFloat(m[1]) : 0;
@@ -831,7 +894,7 @@
             duplicateLayer() {
                 const l = this.getLayer(this.activeLayerId);
                 if(!l) return;
-                this.addLayer(l.name + ' copy');
+                this.addLayer(l.name + ' COPY');
                 const newL = this.getLayer(this.activeLayerId);
                 newL.x = l.x + 20;
                 newL.y = l.y + 20;
@@ -839,7 +902,7 @@
                 newL.canvas.style.filter = l.canvas.style.filter;
                 this.renderLayerDOM();
                 this.history.save(this.layers, this.width, this.height);
-                Utils.toast('Duplicated');
+                Utils.toast('LAYER DUPLICATED');
             },
 
             mergeDown() {
@@ -849,7 +912,6 @@
                 const bottom = this.layers[idx+1];
                 
                 bottom.ctx.globalAlpha = top.opacity;
-                // Apply top filters to temp canvas before merging
                 const tC = document.createElement('canvas'); tC.width=this.width; tC.height=this.height;
                 const tCtx = tC.getContext('2d');
                 tCtx.filter = top.canvas.style.filter;
@@ -864,7 +926,7 @@
                 this.renderLayerDOM();
                 this.updateLayerThumb(bottom.id);
                 this.history.save(this.layers, this.width, this.height);
-                Utils.toast("Merged");
+                Utils.toast("LAYERS MERGED");
             },
 
             transformLayer(type) {
@@ -904,19 +966,17 @@
                 l.ctx.drawImage(temp, 0, 0);
                 this.history.save(this.layers, this.width, this.height);
                 this.updateLayerThumb(l.id);
-                Utils.toast('Transformed');
+                Utils.toast('TRANSFORMED');
             },
 
             cropCanvas(x, y, w, h) {
                 if (w <= 0 || h <= 0) return;
                 
-                // Normalize coordinates
                 let rx = x < 0 ? 0 : x;
                 let ry = y < 0 ? 0 : y;
                 let rw = (x + w) > this.width ? this.width - x : w;
                 let rh = (y + h) > this.height ? this.height - y : h;
                 
-                // Constraint
                 if (rx + rw > this.width) rw = this.width - rx;
                 if (ry + rh > this.height) rh = this.height - ry;
                 if (rx < 0) rx = 0;
@@ -931,16 +991,11 @@
                     tempC.width = rw;
                     tempC.height = rh;
                     const tCtx = tempC.getContext('2d');
-
-                    // Draw the relevant portion
-                    // We need to account for layer offset (l.x, l.y)
-                    // The crop area (rx, ry) is in global coords.
-                    // Relative to layer: relX = rx - l.x
                     tCtx.drawImage(l.canvas, rx - l.x, ry - l.y, rw, rh, 0, 0, rw, rh);
 
                     l.canvas.width = rw;
                     l.canvas.height = rh;
-                    l.x = 0; // Reset position as content is now aligned to 0,0 of new layer
+                    l.x = 0; 
                     l.y = 0;
                     l.ctx.drawImage(tempC, 0, 0);
                 });
@@ -954,7 +1009,7 @@
 
                 this.renderLayerDOM();
                 this.centerCanvas();
-                Utils.toast('Cropped');
+                Utils.toast('CROPPED');
             },
 
             renderLayerDOM() {
@@ -1088,7 +1143,7 @@
                         this.ui.sourceIndicator.style.left = (this.pan.x + pos.x * this.zoom) + 'px';
                         this.ui.sourceIndicator.style.top = (this.pan.y + pos.y * this.zoom) + 'px';
                         this.ui.sourceIndicator.style.display = 'block';
-                        Utils.toast("Source Sampled");
+                        Utils.toast("SOURCE SAMPLED");
                         this.isDrawing = false;
                         return;
                     }
@@ -1096,15 +1151,15 @@
                     if(['brush', 'eraser'].includes(this.tool)) {
                         l.ctx.beginPath();
                         l.ctx.moveTo(drawX, drawY);
-                        l.ctx.lineCap = 'round';
-                        l.ctx.lineJoin = 'round';
+                        l.ctx.lineCap = 'square'; /* Brutalist brush cap */
+                        l.ctx.lineJoin = 'miter';
                         l.ctx.lineWidth = this.brushSize;
                         if(this.tool === 'eraser') l.ctx.globalCompositeOperation = 'destination-out';
                         else l.ctx.globalCompositeOperation = 'source-over';
                         l.ctx.strokeStyle = this.color;
                     } 
                     else if (this.tool === 'clone') {
-                        if(!this.cloneState.active) return Utils.toast("Alt+Click to set source!");
+                        if(!this.cloneState.active) return Utils.toast("ALT+CLICK TO SET SOURCE");
                         this.cloneState.snapshot = document.createElement('canvas');
                         this.cloneState.snapshot.width = this.width;
                         this.cloneState.snapshot.height = this.height;
@@ -1187,7 +1242,7 @@
 
                         l.ctx.save();
                         l.ctx.beginPath();
-                        l.ctx.arc(drawX, drawY, r, 0, Math.PI*2);
+                        l.ctx.rect(drawX - r, drawY - r, r*2, r*2); /* Rectangular brush area */
                         l.ctx.clip();
                         l.ctx.drawImage(this.cloneState.snapshot, 
                             srcX - r, srcY - r, r*2, r*2, 
@@ -1204,10 +1259,13 @@
                         this.ui.previewCtx.beginPath();
                         this.ui.previewCtx.strokeStyle = this.tool === 'crop' ? '#000' : this.color;
                         this.ui.previewCtx.lineWidth = this.brushSize;
+                        this.ui.previewCtx.lineCap = 'square';
+                        this.ui.previewCtx.lineJoin = 'miter';
+                        
                         if (this.tool === 'crop') {
-                            this.ui.previewCtx.setLineDash([5, 5]);
-                            this.ui.previewCtx.lineWidth = 1;
-                            this.ui.previewCtx.strokeStyle = '#23C9FF';
+                            this.ui.previewCtx.setLineDash([8, 4]);
+                            this.ui.previewCtx.lineWidth = 4;
+                            this.ui.previewCtx.strokeStyle = '#000';
                         } else {
                             this.ui.previewCtx.setLineDash([]);
                         }
@@ -1226,7 +1284,6 @@
                             this.ui.previewCtx.arc(startDX, startDY, r, 0, 2 * Math.PI);
                             this.ui.previewCtx.stroke();
                         } else if (this.tool === 'crop') {
-                            // Draw crop overlay
                             const rx = Math.min(this.startX, pos.x);
                             const ry = Math.min(this.startY, pos.y);
                             const rw = Math.abs(pos.x - this.startX);
@@ -1234,7 +1291,7 @@
                             this.ui.previewCtx.strokeStyle = '#fff';
                             this.ui.previewCtx.setLineDash([4,4]);
                             this.ui.previewCtx.strokeRect(rx, ry, rw, rh);
-                            this.ui.previewCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                            this.ui.previewCtx.fillStyle = 'rgba(35, 201, 255, 0.3)';
                             this.ui.previewCtx.fillRect(rx, ry, rw, rh);
                         }
                     }
@@ -1259,11 +1316,6 @@
                     }
                     else if (this.tool === 'crop') {
                         this.ui.previewCtx.clearRect(0,0,this.width, this.height);
-                        const pos = this.getCoords(e); // Note: e might be mouseup event, coords might be slightly off, but usually consistent enough
-                        // Re-calculate rect based on start and current pos
-                        // Using the last 'pos' from move isn't accessible here easily, 
-                        // so we rely on the user logic ending where the mouse is.
-                        // For precision, we usually store endX/Y in move, but let's approximate or fetch clientXY.
                         const rect = this.ui.wrapper.getBoundingClientRect();
                         const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
                         const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
@@ -1278,7 +1330,6 @@
                         if (rw > 10 && rh > 10) {
                             this.cropCanvas(rx, ry, rw, rh);
                         }
-                        // Switch back to move tool after crop
                         document.querySelector('[data-tool="move"]').click();
                     }
                 };
@@ -1378,14 +1429,16 @@
                 input.style.top = (y * this.zoom + this.pan.y) + 'px';
                 input.style.fontSize = (this.brushSize * 2 * this.zoom) + 'px';
                 input.style.color = this.color;
+                input.style.fontFamily = 'var(--font-head)';
                 input.value = '';
                 input.focus();
                 
                 const finish = () => {
                     if(input.style.display === 'none') return;
-                    layer.ctx.font = `bold ${this.brushSize * 2}px sans-serif`;
+                    layer.ctx.font = `900 ${this.brushSize * 2}px var(--font-head)`;
                     layer.ctx.fillStyle = this.color;
-                    layer.ctx.fillText(input.value, x, y + (this.brushSize * 2));
+                    layer.ctx.textBaseline = 'top';
+                    layer.ctx.fillText(input.value.toUpperCase(), x, y + (this.brushSize * 0.5)); /* Shift baseline slightly */
                     input.style.display = 'none';
                     input.onblur = null; input.onkeydown = null;
                     this.history.save(this.layers, this.width, this.height);
@@ -1405,7 +1458,7 @@
             setColor(hex) {
                 this.color = hex;
                 document.getElementById('native-color-picker').value = hex;
-                document.getElementById('hex-display').innerText = hex;
+                document.getElementById('hex-display').innerText = hex.toUpperCase();
             },
 
             updateLayerFilters(layer) {
@@ -1441,7 +1494,7 @@
                 this.resetAdjustments();
                 this.history.save(this.layers, this.width, this.height);
                 this.updateLayerThumb(this.activeLayerId);
-                Utils.toast('Applied');
+                Utils.toast('ADJUSTMENTS APPLIED');
             },
 
             runFilter(type) {
@@ -1495,7 +1548,7 @@
                 l.ctx.putImageData(imgData, 0, 0);
                 this.history.save(this.layers, this.width, this.height);
                 this.updateLayerThumb(this.activeLayerId);
-                Utils.toast('Filter Applied');
+                Utils.toast('FILTER APPLIED');
             },
 
             applyConvolution(layer, kernel) {
@@ -1547,7 +1600,7 @@
                     if(l.visible) {
                         ctx.save();
                         ctx.globalAlpha = l.opacity;
-                        ctx.filter = l.canvas.style.filter; // Bake CSS filters for export
+                        ctx.filter = l.canvas.style.filter;
                         ctx.drawImage(l.canvas, l.x, l.y);
                         ctx.restore();
                     }
@@ -1561,14 +1614,13 @@
             },
 
             initSwatches() {
-                // Modern & Pastel Palette
                 const colors = [
-                    '#000000', '#4a4a4a', '#9b9b9b', '#ffffff',
-                    '#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#073b4c', // Bold
-                    '#cdb4db', '#ffc8dd', '#ffafcc', '#bde0fe', '#a2d2ff', '#caf0f8', // Pastels
-                    '#e0aaff', '#c77dff', '#9d4edd', '#7b2cbf', '#5a189a', '#3c096c', // Purples
-                    '#ff9f1c', '#ffbf69', '#ffffff', '#cbf3f0', '#2ec4b6', '#e71d36', // Aesthetic
-                    '#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51', '#8d99ae'  // Earthy
+                    '#000000', '#ffffff', '#4a4a4a', '#9b9b9b',
+                    '#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#073b4c', 
+                    '#cdb4db', '#ffc8dd', '#ffafcc', '#bde0fe', '#a2d2ff', '#caf0f8', 
+                    '#e0aaff', '#c77dff', '#9d4edd', '#7b2cbf', '#5a189a', '#3c096c', 
+                    '#ff9f1c', '#ffbf69', '#ffffff', '#cbf3f0', '#2ec4b6', '#e71d36', 
+                    '#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51', '#8d99ae'  
                 ];
                 
                 const c = document.getElementById('swatches');
@@ -1576,7 +1628,6 @@
                     this.createSwatch(col, c);
                 });
 
-                // Add Custom Button
                 const addBtn = document.createElement('div');
                 addBtn.className = 'swatch add-color-btn';
                 addBtn.innerHTML = '<i class="fas fa-plus"></i>';
@@ -1592,7 +1643,6 @@
             },
 
             createSwatch(col, container, appendToEnd = false) {
-                // Check duplicate
                 if(Array.from(container.children).some(c => c.style.background === col)) return;
                 
                 const d = document.createElement('div');
@@ -1644,7 +1694,7 @@
                         App.centerCanvas();
                         App.history.save(App.layers, App.width, App.height);
                         App.updateLayerThumb(App.activeLayerId);
-                        Utils.toast('Imported');
+                        Utils.toast('IMPORTED');
                     };
                     img.src = evt.target.result;
                 };
