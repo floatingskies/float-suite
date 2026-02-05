@@ -13,9 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* =========================================
-           1. NEO-BRUTALIST THEME VARIABLES
-           ========================================= */
         :root {
             /* Palette */
             --c-bg: #e0e0e0;
@@ -40,7 +37,7 @@
             /* Document Dimensions */
             --page-width: 210mm;
             --page-height: 297mm;
-            --page-gap: 20px; /* The visual gap between sheets on screen */
+            --page-gap: 20px;
         }
 
         /* Dark Mode Override */
@@ -65,9 +62,6 @@
             transition: background 0.3s;
         }
 
-        /* =========================================
-           2. UI COMPONENT CLASSES
-           ========================================= */
         .btn {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
@@ -122,9 +116,6 @@
         }
         .form-group input:focus, .form-group textarea:focus { background: #fff; }
 
-        /* =========================================
-           3. LAYOUT STRUCTURE
-           ========================================= */
         header {
             height: 56px;
             border-bottom: var(--border-width) solid var(--c-border);
@@ -176,19 +167,51 @@
         .toolbar-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
         }
-
-        /* Checklist */
-        .checklist-item {
-            display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: bold;
-            cursor: pointer; user-select: none;
-        }
-        .checklist-item input { width: 16px; height: 16px; margin-right: 10px; accent-color: var(--c-success); cursor: pointer;}
         
+        .toolbar-select {
+            width: 100%; padding: 5px; border: 2px solid #000; font-family: var(--font-ui);
+            font-size: 11px; margin-top: 5px; background: #fff;
+        }
+
+        /* Document List Styles */
+        #doc-list {
+            list-style: none;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #000;
+            padding: 0;
+        }
+        .doc-item {
+            padding: 8px;
+            border-bottom: 1px solid #000;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .doc-item:hover { background: #f0f0f0; }
+        .doc-item.active { background: var(--c-primary); font-weight: bold; }
+        .doc-item .doc-name { 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            max-width: 180px; flex: 1; 
+            pointer-events: none; 
+        }
+        .doc-item .doc-actions { display: flex; gap: 5px; margin-left: 5px; }
+        .doc-btn-mini {
+            background: transparent; border: none; cursor: pointer; color: #666; padding: 4px;
+            transition: color 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .doc-btn-mini:hover { color: var(--c-danger); transform: scale(1.1); }
+
         /* WORKSPACE (The Gray Area) */
         #workspace {
             flex: 1;
             background-color: #bbb;
-            /* Graph paper grid pattern */
             background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
             background-size: 20px 20px;
             background-color: var(--c-bg);
@@ -196,15 +219,14 @@
             padding: 40px 20px;
             display: flex; 
             flex-direction: column;
-            align-items: center; /* Center the paper stack */
+            align-items: center;
         }
 
         /* THE A4 PAPER STACK CONTAINER */
         #paper {
             width: var(--page-width); 
-            /* Min-height removed to allow expansion, but content defines height */
             background: transparent; 
-            box-shadow: none; /* Shadow handled by page backgrounds */
+            box-shadow: none;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -218,18 +240,9 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             padding: 0; 
-            min-height: calc(var(--page-height) * 1); /* At least one page */
+            min-height: calc(var(--page-height) * 1);
             width: 100%;
-            
-            /* THE MAGIC: Visual Infinite Stack */
             background-color: #fff;
-            /* 
-               Gradient Logic:
-               1. White (Paper) from 0 to (PageHeight - 3px)
-               2. Black (Border) from (PageHeight - 3px) to PageHeight
-               3. Transparent (Gap) from PageHeight to (PageHeight + Gap)
-               4. Repeat
-            */
             background-image: 
                 linear-gradient(to bottom, 
                     #fff 0px, 
@@ -241,32 +254,25 @@
                 );
             background-size: 100% calc(var(--page-height) + var(--page-gap));
             background-repeat: repeat-y;
-            background-attachment: local; /* Scrolls with content */
-            
-            color: #000; /* Always black text on paper */
+            background-attachment: local;
+            color: #000;
             position: relative;
         }
 
         /* Cover Page */
         #cover-page {
             height: var(--page-height); 
-            display: none; /* Hidden by default */
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             margin-bottom: 0;
-            
-            /* Match the paper look */
             background-color: #fff;
             width: var(--page-width);
             border: 3px solid #000;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-            
-            /* Ensure separation from the next page */
             margin-bottom: var(--page-gap);
-            
-            /* Reset for specific standards */
             padding: 0; 
         }
 
@@ -278,29 +284,24 @@
         }
 
         /* =========================================
-           4. ACADEMIC STYLES (The Magic)
+           4. ACADEMIC STYLES
            ========================================= */
         
-        /* Common Paragraph Rules for Pagination */
         #editor-area p, #editor-area li {
-            /* Keep text inside lines */
             orphans: 3;
             widows: 3;
         }
         
-        /* Print Helper: Avoid breaking paragraphs mid-sentence if possible */
         @media print {
             #editor-area p, #editor-area h1, #editor-area h2, #editor-area li {
                 break-inside: avoid;
             }
         }
 
-        /* ABNT (Brazil - NBR 14724) */
+        /* ABNT */
         .style-abnt #editor-area, .style-abnt #cover-page {
-            /* Margins simulated via padding */
             padding: 3cm 2cm 2cm 3cm;
         }
-        
         .style-abnt #editor-area, .style-abnt p, .style-abnt li {
             font-family: Arial, sans-serif;
             font-size: 12pt;
@@ -309,32 +310,26 @@
             margin-bottom: 0; 
             text-indent: 1.25cm;
         }
-        /* Fix indent for first paragraph */
         .style-abnt p:first-of-type { text-indent: 1.25cm; }
-        
         .style-abnt h1 { font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0 10px 0; text-indent: 0; }
         .style-abnt h2 { font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; text-align: left; margin: 10px 0; text-indent: 0; }
-        
-        /* Cover specific */
         .style-abnt #cover-page h1 { font-size: 16pt; margin-bottom: 40px; font-weight: bold; text-align: center; }
         .style-abnt #cover-page h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 120px; text-align: center; }
 
-        /* APA (US/Canada - 7th Ed) */
+        /* APA */
         .style-apa #editor-area, .style-apa #cover-page { padding: 1in; }
-        
         .style-apa #editor-area, .style-apa p, .style-apa li {
             font-family: 'Times New Roman', serif;
             font-size: 12pt;
-            line-height: 2; /* Double spacing */
+            line-height: 2; 
             text-align: left;
         }
         .style-apa p { margin-bottom: 0; text-indent: 0.5in; }
         .style-apa h1 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10px; text-indent: 0; }
         .style-apa #cover-page h2 { font-size: 14pt; margin-bottom: 40px; text-align: center;}
         
-        /* MLA (Humanities - 9th Ed) */
+        /* MLA */
         .style-mla #editor-area, .style-mla #cover-page { padding: 1in; }
-        
         .style-mla #editor-area, .style-mla p {
             font-family: 'Times New Roman', serif;
             font-size: 12pt;
@@ -370,7 +365,6 @@
         .modal-header { font-size: 18px; font-weight: 900; margin-bottom: 10px; border-bottom: 3px solid #000; padding-bottom: 10px;}
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
 
-        /* Toast */
         .toast {
             position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
             background: var(--c-primary); color: #000;
@@ -383,90 +377,79 @@
         .toast.hidden { display: none; }
         @keyframes popUp { from {transform: translate(-50%, 100%); opacity: 0;} to {transform: translate(-50%, 0); opacity: 1;} }
 
-        /* Focus Mode */
+        /* ZEN MODE */
         body.focus-mode #sidebar, body.focus-mode header, body.focus-mode footer, 
         body.focus-mode .modal-overlay, body.focus-mode .toast, 
-        body.focus-mode #zen-toggle-wrapper {
-            display: none !important;
-        }
+        body.focus-mode #zen-toggle-wrapper { display: none !important; }
+        
         body.focus-mode #workspace { padding: 0; background: #888; }
         body.focus-mode #paper { box-shadow: none; margin: 40px auto; width: 210mm; }
         
         #zen-toggle-wrapper { position: fixed; top: 70px; right: 20px; z-index: 100; display: none; }
-        body.focus-mode #zen-toggle-wrapper { display: block; }
+        body:not(.focus-mode) #zen-toggle-wrapper { display: block; }
+
+        /* EXIT ZEN BUTTON */
+        #zen-exit-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: none;
+            background: var(--c-danger);
+            color: #fff;
+            border: 3px solid #000;
+            padding: 10px 20px;
+            font-family: var(--font-ui);
+            font-weight: bold;
+            box-shadow: 4px 4px 0px #000;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        #zen-exit-btn:hover {
+            background: #ff3333;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+        body.focus-mode #zen-exit-btn { display: block; }
 
         /* =========================================
-           6. PRINT ENGINE (The critical part)
+           6. PRINT ENGINE
            ========================================= */
         @media print {
-            /* Hide UI */
             body { background: white; height: auto; overflow: visible; display: block; }
-            header, #sidebar, footer, .modal-overlay, .toast, .toolbar-grid, #zen-toggle-wrapper, #mobile-menu-btn { display: none !important; }
-            
-            /* Show only paper content */
+            header, #sidebar, footer, .modal-overlay, .toast, .toolbar-grid, #zen-toggle-wrapper, #mobile-menu-btn, #zen-exit-btn { display: none !important; }
             #workspace { padding: 0; background: white; display: block; overflow: visible; }
-            
-            #paper {
-                box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto;
-                border: none;
-            }
-
-            /* 
-               Remove the visual page separator background for print 
-               because the browser handles actual physical pages.
-            */
-            #editor-area {
-                background-image: none !important;
-                background: white !important;
-                width: 100%;
-            }
-
-            /* FORCE PAGE MARGINS - Use @page to override browser defaults */
-            @page {
-                size: A4;
-                margin: 0; /* We handle margins inside #editor-area to avoid browser double margins */
-            }
-            
-            /* Ensure Cover Page breaks correctly */
-            #cover-page { 
-                page-break-after: always; 
-                border: none; 
-                box-shadow: none;
-                margin: 0;
-                min-height: auto;
-                height: auto;
-                padding-top: 3cm !important; /* Force standard print padding */
-            }
-            
-            /* Handle the bottom of the last page */
-            #editor-area::after {
-                content: "";
-                display: block;
-                height: 20px; /* little buffer */
-            }
+            #paper { box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto; border: none; }
+            #editor-area { background-image: none !important; background: white !important; width: 100%; }
+            @page { size: A4; margin: 0; }
+            #cover-page { page-break-after: always; border: none; box-shadow: none; margin: 0; min-height: auto; height: auto; padding-top: 3cm !important; }
+            #editor-area::after { content: ""; display: block; height: 20px; }
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             #sidebar { position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); background: var(--c-panel); box-shadow: 5px 0 0 #000;}
             #sidebar.mobile-active { transform: translateX(0); }
             #mobile-menu-btn { display: block !important; }
             #zen-toggle-wrapper { display: none !important; }
+            body.focus-mode #zen-exit-btn { top: auto; bottom: 20px; right: 20px; }
         }
         #mobile-menu-btn { display: none; position: absolute; top: 10px; left: 10px; z-index: 60; }
     </style>
 </head>
 <body>
 
+    <!-- ZEN EXIT BUTTON -->
+    <button id="zen-exit-btn" onclick="App.toggleZen()">
+        <i class="fas fa-times"></i> Exit Zen Mode
+    </button>
+
     <!-- HEADER -->
     <header>
         <button class="btn btn-icon" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-        <div class="logo"><i class="fas fa-graduation-cap"></i> THESIS.WEB <span style="font-size:10px; font-weight:normal; margin-left:5px; background:#000; color:#fff; padding:2px 4px;">BETA</span></div>
+        <div class="logo"><i class="fas fa-graduation-cap"></i> THESIS.WEB <span style="font-size:10px; font-weight:normal; margin-left:5px; background:#000; color:#fff; padding:2px 4px;">INFDEV</span></div>
         <div style="display:flex; gap:5px;">
             <button class="btn btn-sm" id="btn-guide" title="Open Guide"><i class="fas fa-book"></i> Guide</button>
             <button class="btn btn-sm btn-accent" id="btn-ref" title="Insert Reference"><i class="fas fa-book-open"></i> Refs</button>
-            <button class="btn btn-sm btn-primary" id="btn-save"><i class="fas fa-save"></i> Save</button>
-            <button class="btn btn-sm" id="btn-print"><i class="fas fa-print"></i> PDF</button>
             <button class="btn btn-sm" id="btn-zen" title="Focus Mode"><i class="fas fa-expand"></i></button>
         </div>
     </header>
@@ -475,9 +458,24 @@
         
         <!-- SIDEBAR -->
         <aside class="panel" id="sidebar">
+            
+            <!-- 1. DOCUMENTS MANAGER -->
+            <div class="sidebar-section">
+                <span class="sidebar-title"><i class="fas fa-folder-open"></i> My Documents</span>
+                <button class="btn btn-sm btn-primary btn-full" onclick="App.openSaveModal()">
+                    <i class="fas fa-plus"></i> Save As New...
+                </button>
+                <button class="btn btn-sm btn-secondary btn-full" style="margin-top:5px;" onclick="App.updateCurrentDoc()" id="btn-update-doc">
+                    <i class="fas fa-save"></i> Update Current
+                </button>
+                <ul id="doc-list">
+                    <!-- Files injected here via JS -->
+                </ul>
+            </div>
+
             <!-- Standard Selection -->
             <div class="sidebar-section">
-                <span class="sidebar-title">1. Standard</span>
+                <span class="sidebar-title">2. Standard</span>
                 <button class="format-option active" data-style="style-abnt" onclick="App.setStandard('abnt')">
                     <i class="fas fa-flag"></i> ABNT (NBR 14724)
                     <div style="font-size:10px; font-weight:normal; margin-left:auto;">Arial 12pt, 1.5</div>
@@ -494,19 +492,35 @@
 
             <!-- Formatting Tools -->
             <div class="sidebar-section">
-                <span class="sidebar-title">2. Text Format</span>
+                <span class="sidebar-title">3. Text & Titles</span>
+                
+                <!-- Basic Style -->
                 <div class="toolbar-grid">
                     <button class="btn btn-sm" onclick="App.exec('bold')"><b>B</b></button>
                     <button class="btn btn-sm" onclick="App.exec('italic')"><i>I</i></button>
                     <button class="btn btn-sm" onclick="App.exec('underline')"><u>U</u></button>
                     <button class="btn btn-sm" onclick="App.exec('strikeThrough')"><s>S</s></button>
                 </div>
-                <div class="toolbar-grid">
-                    <button class="btn btn-sm" onclick="App.exec('justifyLeft')"><i class="fas fa-align-left"></i></button>
-                    <button class="btn btn-sm" onclick="App.exec('justifyCenter')"><i class="fas fa-align-center"></i></button>
-                    <button class="btn btn-sm" onclick="App.exec('justifyRight')"><i class="fas fa-align-right"></i></button>
-                    <button class="btn btn-sm" onclick="App.exec('justifyFull')"><i class="fas fa-align-justify"></i></button>
+
+                <!-- Headings & Size -->
+                <div class="toolbar-grid" style="margin-top:5px; border-top:2px solid #000; padding-top:5px;">
+                    <button class="btn btn-sm" onclick="App.formatBlock('H1')">H1</button>
+                    <button class="btn btn-sm" onclick="App.formatBlock('H2')">H2</button>
+                    <button class="btn btn-sm" onclick="App.formatBlock('P')">P</button>
+                    <button class="btn btn-sm" onclick="App.exec('removeFormat')">Clr</button>
                 </div>
+                
+                <select id="font-size-select" class="toolbar-select" onchange="App.exec('fontSize', this.value)">
+                    <option value="3">Font Size: Normal</option>
+                    <option value="1">Font Size: Tiny</option>
+                    <option value="2">Font Size: Small</option>
+                    <option value="3">Font Size: Normal</option>
+                    <option value="4">Font Size: Large</option>
+                    <option value="5">Font Size: Huge</option>
+                    <option value="6">Font Size: Massive</option>
+                    <option value="7">Font Size: Giant</option>
+                </select>
+
                 <div style="margin-top:10px;">
                     <button class="btn btn-sm btn-full" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i> Bullet List</button>
                     <button class="btn btn-sm btn-full" style="margin-top:5px;" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i> Numbered List</button>
@@ -515,7 +529,7 @@
 
             <!-- Page Tools -->
             <div class="sidebar-section">
-                <span class="sidebar-title">3. Page Tools</span>
+                <span class="sidebar-title">4. Page Tools</span>
                 <button class="btn btn-sm btn-secondary btn-full" id="btn-toggle-cover" onclick="App.toggleCover()">
                     <i class="fas fa-file"></i> <span id="cover-btn-text">Insert Cover Page</span>
                 </button>
@@ -528,23 +542,6 @@
                     <i class="fas fa-book-open"></i> Insert Ref. Header
                 </button>
                 <button class="btn btn-sm btn-danger btn-full" style="margin-top:8px;" onclick="App.clearPaper()"><i class="fas fa-trash"></i> Clear Paper</button>
-            </div>
-
-            <!-- Checklist -->
-            <div class="sidebar-section">
-                <span class="sidebar-title">4. Pre-flight Checklist</span>
-                <div class="checklist-item" onclick="this.querySelector('input').click()">
-                    <input type="checkbox" id="chk-1"><span>Margins correct?</span>
-                </div>
-                <div class="checklist-item" onclick="this.querySelector('input').click()">
-                    <input type="checkbox" id="chk-2"><span>Font size correct?</span>
-                </div>
-                <div class="checklist-item" onclick="this.querySelector('input').click()">
-                    <input type="checkbox" id="chk-3"><span>Refs validated?</span>
-                </div>
-                <div class="checklist-item" onclick="this.querySelector('input').click()">
-                    <input type="checkbox" id="chk-4"><span>Spelling checked?</span>
-                </div>
             </div>
         </aside>
 
@@ -565,12 +562,9 @@
                 <!-- Main Text Editor -->
                 <div id="editor-area" contenteditable="true" spellcheck="false">
                     <h1>Introduction</h1>
-                    <p>Start writing your academic work here. The text will automatically adjust to the selected standard (ABNT, APA, or MLA).</p>
-                    <p>Notice how the editor creates a visual "stack" of pages. As you type past the first page, a new page will appear below. This mimics a real document.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                    <p>Highlight text and use the sidebar buttons to change formatting (H1, H2, Font Size).</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
                 </div>
             </div>
         </main>
@@ -578,7 +572,7 @@
 
     <!-- FOOTER -->
     <footer>
-        <div id="status-std">STD: ABNT (NBR 14724)</div>
+        <div id="status-doc">Doc: Unsaved Draft</div>
         <div id="status-stats">Words: 0 | Chars: 0</div>
         <div id="status-save"><i class="fas fa-check-circle" style="color:var(--c-success)"></i> Ready</div>
     </footer>
@@ -590,20 +584,33 @@
         </button>
     </div>
 
+    <!-- SAVE AS MODAL -->
+    <div class="modal-overlay hidden" id="save-modal">
+        <div class="modal-content">
+            <div class="modal-header">Save Document</div>
+            <div class="form-group">
+                <label>Document Name</label>
+                <input type="text" id="new-doc-name" placeholder="e.g. Thesis Chapter 1">
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="App.closeModal('save-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="App.saveAsNew()">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- GUIDE MODAL -->
     <div class="modal-overlay hidden" id="guide-modal">
         <div class="modal-content">
             <div class="modal-header"><i class="fas fa-info-circle"></i> Quick Guide</div>
             <div style="font-size:12px; line-height:1.6; max-height:300px; overflow-y:auto;">
-                <b>1. Standard:</b> Choose ABNT, APA, or MLA from the sidebar. This sets fonts, margins, and spacing.
+                <b>1. My Documents:</b> Click "Save As" to store your work. Click a file name to open it. Use the <b>Trash Icon</b> to delete.
                 <br><br>
-                <b>2. Writing:</b> Type in the main area. The editor now simulates a stack of pages. When you fill one page, text flows to the next.
+                <b>2. Text & Titles:</b> Select text to apply <b>H1</b> (Main Title), <b>H2</b> (Subtitle), or change <b>Font Size</b> manually.
                 <br><br>
-                <b>3. References:</b> Click the <b>"Refs"</b> button. Fill in the form to generate a correctly formatted Bibliography entry.
+                <b>3. Auto-Formatting:</b> Paste (Ctrl+V) text, and it will automatically format to the selected standard (ABNT/APA).
                 <br><br>
-                <b>4. Export:</b> <b>"Save"</b> downloads an .html file. <b>"PDF"</b> opens the print dialog.
-                <br><br>
-                <i style="color:var(--c-danger)">Important for PDF:</i> In print settings, uncheck "Headers and Footers" and ensure margins are set to "None" or "Default" (the app handles page margins).
+                <b>4. Zen Mode:</b> Click the Expand icon to hide all distractions. Click the red "Exit Zen Mode" button to return.
             </div>
             <div style="text-align:right; margin-top:20px;">
                 <button class="btn btn-primary" onclick="App.closeModal('guide-modal')">Got it</button>
@@ -615,7 +622,6 @@
     <div class="modal-overlay hidden" id="ref-modal">
         <div class="modal-content">
             <div class="modal-header">Reference Generator</div>
-            
             <div class="form-group">
                 <label>Format Standard</label>
                 <select id="ref-std" onchange="App.updateRefPreview()">
@@ -633,32 +639,13 @@
                 <input type="text" id="ref-title" placeholder="Book Title" oninput="App.updateRefPreview()">
             </div>
             <div class="form-group">
-                <label>Subtitle (Optional)</label>
-                <input type="text" id="ref-subtitle" placeholder="Subtitle" oninput="App.updateRefPreview()">
-            </div>
-            <div class="form-group">
-                <label>Edition (Optional)</label>
-                <input type="text" id="ref-edition" placeholder="e.g. 2nd ed." oninput="App.updateRefPreview()">
-            </div>
-            <div class="form-group">
-                <label>City</label>
-                <input type="text" id="ref-city" placeholder="Sao Paulo" oninput="App.updateRefPreview()">
-            </div>
-            <div class="form-group">
-                <label>Publisher</label>
-                <input type="text" id="ref-pub" placeholder="Editora XYZ" oninput="App.updateRefPreview()">
-            </div>
-            <div class="form-group">
                 <label>Year</label>
                 <input type="number" id="ref-year" placeholder="2023" oninput="App.updateRefPreview()">
             </div>
-
-            <!-- Live Preview -->
             <div style="background:#eee; border:2px dashed #000; padding:10px; margin-bottom:10px; font-family:serif; font-size:12px;">
                 <label style="font-family:var(--font-ui); font-size:10px; display:block; margin-bottom:4px;">PREVIEW:</label>
                 <div id="ref-preview-output" style="color:#000;">...</div>
             </div>
-            
             <div class="modal-actions">
                 <button class="btn" onclick="App.closeModal('ref-modal')">Cancel</button>
                 <button class="btn btn-primary" onclick="App.insertReference()"><i class="fas fa-plus"></i> Insert Ref</button>
@@ -675,12 +662,24 @@
                 <ol style="margin-left:20px; margin-top:10px;">
                     <li><b>More settings</b> -> Uncheck <b>"Headers and footers"</b>.</li>
                     <li>Check <b>"Background graphics"</b> (if you want highlight colors).</li>
-                    <li>Set margins to <b>"Default"</b> or <b>"None"</b> (The editor handles the academic margins).</li>
+                    <li>Set margins to <b>"Default"</b> or <b>"None"</b>.</li>
                 </ol>
             </div>
             <div class="modal-actions">
                 <button class="btn" onclick="App.closeModal('print-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.confirmPrint()"><i class="fas fa-print"></i> Print Now</button>
+                <button class="btn btn-primary" onclick="window.print()">Print Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLEAR CONFIRM MODAL -->
+    <div class="modal-overlay hidden" id="clear-modal">
+        <div class="modal-content" style="border-color: var(--c-danger);">
+            <div class="modal-header"><i class="fas fa-exclamation-circle"></i> Confirm Clear</div>
+            <p>Are you sure? This will delete all your text and cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn" onclick="App.closeModal('clear-modal')">Cancel</button>
+                <button class="btn btn-danger" onclick="App.confirmClear()">Yes, Delete All</button>
             </div>
         </div>
     </div>
@@ -694,18 +693,33 @@
             this.paper = document.getElementById('paper');
             this.editor = document.getElementById('editor-area');
             this.currentStandard = 'abnt';
+            this.documents = [];
+            this.currentDocId = null;
             this.saveTimer = null;
         }
 
         init() {
-            this.loadState();
+            this.loadDocuments();
             this.bindEvents();
             this.updateStats();
-            Utils.toast('System Ready');
+            
+            if (this.documents.length === 0) {
+                this.openModal('guide-modal');
+            } else {
+                Utils.toast('System Ready');
+            }
         }
 
         exec(command, value = null) {
             document.execCommand(command, false, value);
+            this.editor.focus();
+            this.triggerAutoSave();
+        }
+
+        // New Function for Headings/Titles
+        formatBlock(tag) {
+            // formatBlock changes the block element type (H1, H2, P, etc.)
+            document.execCommand('formatBlock', false, `<${tag}>`);
             this.editor.focus();
             this.triggerAutoSave();
         }
@@ -716,10 +730,36 @@
                 this.triggerAutoSave();
             });
 
-            document.getElementById('btn-save').onclick = () => this.downloadHTML();
-            document.getElementById('btn-print').onclick = () => this.openModal('print-modal');
-            document.getElementById('btn-ref').onclick = () => this.openRefModal();
+            // === SMART AUTO-FORMAT PASTE ===
+            this.editor.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                const paragraphs = text.split(/\r\n|\r|\n/).filter(line => line.trim() !== '');
+
+                if (paragraphs.length === 0) return;
+
+                const frag = document.createDocumentFragment();
+                paragraphs.forEach((paraText) => {
+                    const p = document.createElement('p');
+                    p.textContent = paraText;
+                    frag.appendChild(p);
+                });
+
+                const selection = window.getSelection();
+                if (selection.rangeCount) {
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(frag);
+                    range.setStartAfter(frag.lastChild);
+                    range.setEndAfter(frag.lastChild);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                Utils.toast('Auto-formatted pasted text');
+            });
+
             document.getElementById('btn-guide').onclick = () => this.openModal('guide-modal');
+            document.getElementById('btn-ref').onclick = () => this.openRefModal();
             document.getElementById('btn-zen').onclick = () => this.toggleZen();
             
             document.getElementById('mobile-menu-btn').onclick = () => {
@@ -733,113 +773,221 @@
             });
         }
 
-        // --- FIXED: CLEAR PAPER LOGIC ---
-        clearPaper() {
-            // Check if custom modal exists
-            const modal = document.getElementById('clear-modal');
-            if (modal) {
+        // ==========================================
+        // DOCUMENT MANAGEMENT SYSTEM
+        // ==========================================
+
+        loadDocuments() {
+            const saved = localStorage.getItem('thesis_files');
+            if (saved) {
+                try {
+                    this.documents = JSON.parse(saved);
+                } catch(e) { this.documents = []; }
+            }
+            this.renderDocList();
+        }
+
+        saveToStorage() {
+            localStorage.setItem('thesis_files', JSON.stringify(this.documents));
+        }
+
+        renderDocList() {
+            const list = document.getElementById('doc-list');
+            list.innerHTML = ''; 
+            
+            this.documents.forEach(doc => {
+                const li = document.createElement('li');
+                li.className = `doc-item ${this.currentDocId === doc.id ? 'active' : ''}`;
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'doc-name';
+                nameDiv.innerHTML = `<i class="fas fa-file-alt"></i> ${doc.name}`;
+                nameDiv.onclick = () => this.loadDocument(doc.id);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'doc-actions';
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'doc-btn-mini';
+                delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                delBtn.title = "Delete Document";
+                delBtn.onclick = (e) => {
+                    e.stopPropagation(); 
+                    e.preventDefault(); 
+                    this.deleteDocument(doc.id);
+                };
+
+                actionsDiv.appendChild(delBtn);
+                li.appendChild(nameDiv);
+                li.appendChild(actionsDiv);
+                
+                list.appendChild(li);
+            });
+        }
+
+        openSaveModal() {
+            document.getElementById('new-doc-name').value = '';
+            this.openModal('save-modal');
+            setTimeout(() => document.getElementById('new-doc-name').focus(), 100);
+        }
+
+        saveAsNew() {
+            const nameInput = document.getElementById('new-doc-name');
+            const name = nameInput.value.trim() || 'Untitled Document';
+            
+            const newDoc = {
+                id: Date.now(),
+                name: name,
+                content: this.paper.outerHTML,
+                standard: this.currentStandard,
+                timestamp: new Date().toISOString()
+            };
+
+            this.documents.unshift(newDoc); 
+            this.currentDocId = newDoc.id;
+            
+            this.saveToStorage();
+            this.renderDocList();
+            this.closeModal('save-modal');
+            this.updateStatusDoc(name);
+            Utils.toast('Document Saved');
+        }
+
+        updateCurrentDoc() {
+            if (!this.currentDocId) {
+                this.openSaveModal();
+                Utils.toast('No document selected. Saving as new...');
+                return;
+            }
+
+            const docIndex = this.documents.findIndex(d => d.id === this.currentDocId);
+            if (docIndex > -1) {
+                this.documents[docIndex].content = this.paper.outerHTML;
+                this.documents[docIndex].standard = this.currentStandard;
+                this.documents[docIndex].timestamp = new Date().toISOString();
+                this.saveToStorage();
+                Utils.toast('Document Updated');
+            }
+        }
+
+        loadDocument(id) {
+            const doc = this.documents.find(d => d.id === id);
+            if (!doc) return;
+
+            const temp = document.createElement('div');
+            temp.innerHTML = doc.content;
+            const newPaper = temp.firstElementChild;
+
+            if (newPaper && (newPaper.id === 'paper' || newPaper.id === 'paper-loaded')) {
+                this.paper.parentNode.replaceChild(newPaper, this.paper);
+                this.paper = newPaper;
+                this.editor = document.getElementById('editor-area');
+            }
+
+            this.currentDocId = id;
+            this.setStandard(doc.standard);
+            
+            this.renderDocList();
+            this.updateStatusDoc(doc.name);
+            this.updateStats();
+            
+            Utils.toast(`Loaded: ${doc.name}`);
+            
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('mobile-active');
+            }
+        }
+
+        deleteDocument(id) {
+            if(confirm('Are you sure you want to delete this document?')) {
+                this.documents = this.documents.filter(d => d.id !== id);
+                if (this.currentDocId === id) {
+                    this.currentDocId = null;
+                    this.clearPaper(false);
+                    this.updateStatusDoc('Unsaved Draft');
+                }
+                this.saveToStorage();
+                this.renderDocList();
+                Utils.toast('Document Deleted');
+            }
+        }
+
+        triggerAutoSave() {
+            const status = document.getElementById('status-save');
+            if(!status) return;
+            status.innerHTML = '<i class="fas fa-pen"></i> Typing...';
+            
+            if(this.saveTimer) clearTimeout(this.saveTimer);
+            
+            this.saveTimer = setTimeout(() => {
+                if (this.currentDocId) {
+                    this.updateCurrentDoc();
+                }
+                status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
+            }, 2000);
+        }
+
+        updateStatusDoc(name) {
+            document.getElementById('status-doc').innerText = `Doc: ${name}`;
+        }
+
+        // ==========================================
+        // EDITOR LOGIC
+        // ==========================================
+
+        clearPaper(confirmAction = true) {
+            if (confirmAction) {
                 this.openModal('clear-modal');
             } else {
-                // Fallback to native confirm if modal HTML is missing
-                if(confirm('Are you sure? This will wipe all text and cannot be undone.')) {
-                    this.confirmClear();
-                }
+                this.editor.innerHTML = '<p>Start writing...</p>';
+                const cover = document.getElementById('cover-page');
+                if(cover) cover.style.display = 'none';
+                this.updateStats();
             }
         }
 
         confirmClear() {
-            // 1. Reset Editor Content
-            this.editor.innerHTML = '<p>Start writing...</p>';
-            
-            // 2. Hide cover page if open
-            const cover = document.getElementById('cover-page');
-            if(cover) {
-                cover.style.display = 'none';
-                // Reset sidebar button state
-                const btnText = document.getElementById('cover-btn-text');
-                const btn = document.getElementById('btn-toggle-cover');
-                if(btnText) btnText.innerText = 'Insert Cover Page';
-                if(btn) {
-                    btn.classList.remove('btn-danger');
-                    btn.classList.add('btn-secondary');
-                }
-            }
-            
-            // 3. Update State
-            this.updateStats();
-            this.triggerAutoSave();
+            this.clearPaper(false);
             this.closeModal('clear-modal');
-            
             Utils.toast('Paper Cleared');
         }
 
-        // --- FIXED: INSERT STRUCTURE LOGIC ---
         insertStructure(type) {
             if (!this.editor) return;
-
             const h2 = document.createElement('h2');
             let label = '';
-            
-            if (type === 'abstract') {
-                label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
-            } else if (type === 'references') {
-                label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
-            }
+            if (type === 'abstract') label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
+            else if (type === 'references') label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
 
             h2.innerText = label;
-
-            // Create a placeholder paragraph so the user can type immediately
             const p = document.createElement('p');
             p.innerHTML = '<br>';
 
-            // Robust DOM Insertion
             try {
                 if (type === 'abstract') {
-                    // Prepend (add to top)
                     this.editor.prepend(h2);
                     this.editor.prepend(p);
-                } else if (type === 'references') {
-                    // Append (add to bottom)
+                } else {
                     this.editor.appendChild(h2);
                     this.editor.appendChild(p);
                 }
-                
-                // Force Focus & Cursor Placement
-                // Use setTimeout to ensure DOM is painted before moving selection
                 setTimeout(() => {
                     this.editor.focus();
-                    
-                    // Place cursor at the end of the new paragraph
                     const range = document.createRange();
                     const sel = window.getSelection();
                     range.selectNodeContents(p);
-                    range.collapse(false); // false collapses to end
+                    range.collapse(false); 
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }, 10);
-
                 this.triggerAutoSave();
                 Utils.toast(`${label} Section Added`);
-                
-            } catch (e) {
-                console.error("Insert failed:", e);
-                Utils.toast("Error inserting section");
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // --- FIXED: REFERENCE GENERATOR ---
         openRefModal() {
-            // Set dropdown to current app standard
-            const stdSelect = document.getElementById('ref-std');
-            if(stdSelect) stdSelect.value = this.currentStandard;
-            
-            // Clear fields
-            const fields = ['ref-author','ref-title','ref-subtitle','ref-edition','ref-city','ref-pub','ref-year'];
-            fields.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.value = '';
-            });
-            
+            document.getElementById('ref-std').value = this.currentStandard;
+            ['ref-author','ref-title','ref-year'].forEach(id => document.getElementById(id).value = '');
             this.updateRefPreview();
             this.openModal('ref-modal');
         }
@@ -848,254 +996,79 @@
             const std = document.getElementById('ref-std').value;
             const auth = document.getElementById('ref-author').value || 'AUTHOR';
             const title = document.getElementById('ref-title').value || 'TITLE';
-            const sub = document.getElementById('ref-subtitle').value;
-            const edition = document.getElementById('ref-edition').value;
-            const city = document.getElementById('ref-city').value || 'CITY';
-            const pub = document.getElementById('ref-pub').value || 'PUBLISHER';
             const year = document.getElementById('ref-year').value || 'YEAR';
-
             let html = '';
-
-            if (std === 'abnt') {
-                html = `${auth}. <b>${title}</b>${sub ? ': ' + sub : ''}${edition ? '. ' + edition : ''}. ${city}: ${pub}, ${year}.`;
-            } else if (std === 'apa') {
-                html = `${auth}. (${year}). <i>${title}</i>. ${pub}.`;
-            } else {
-                // MLA
-                html = `${auth}. <i>${title}</i>. ${pub}, ${year}.`;
-            }
-
-            const preview = document.getElementById('ref-preview-output');
-            if(preview) preview.innerHTML = html;
+            if (std === 'abnt') html = `${auth}. <b>${title}</b>. ${year}.`;
+            else if (std === 'apa') html = `${auth}. (${year}). <i>${title}</i>.`;
+            else html = `${auth}. <i>${title}</i>. ${year}.`;
+            document.getElementById('ref-preview-output').innerHTML = html;
         }
 
-        // --- FIXED: INSERT REFERENCE ---
         insertReference() {
-            const preview = document.getElementById('ref-preview-output');
-            if(!preview) return;
-            
-            const html = preview.innerHTML;
+            const html = document.getElementById('ref-preview-output').innerHTML;
             const p = document.createElement('p');
             p.innerHTML = html;
             p.style.marginBottom = "0"; 
-            
-            try {
-                // Append to editor
-                this.editor.appendChild(p);
-                
-                // Force Focus & Cursor Placement
-                // Create a new paragraph after the reference for convenience
-                const newP = document.createElement('p');
-                newP.innerHTML = '<br>';
-                this.editor.appendChild(newP);
-
-                setTimeout(() => {
-                    this.editor.focus();
-                    const range = document.createRange();
-                    const sel = window.getSelection();
-                    range.selectNodeContents(newP);
-                    range.collapse(false);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }, 10);
-
-                this.closeModal('ref-modal');
-                this.triggerAutoSave();
-                Utils.toast('Reference Added');
-            } catch (e) {
-                console.error("Ref Insert Failed:", e);
-                Utils.toast("Error inserting reference");
-            }
+            this.editor.appendChild(p);
+            const newP = document.createElement('p');
+            newP.innerHTML = '<br>';
+            this.editor.appendChild(newP);
+            this.closeModal('ref-modal');
+            this.triggerAutoSave();
+            Utils.toast('Reference Added');
         }
 
-        // --- STANDARD LOGIC ---
         setStandard(std) {
             this.currentStandard = std;
-            
-            // Update Sidebar UI
             document.querySelectorAll('.format-option').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.querySelector(`.format-option[data-style="style-${std}"]`);
             if(activeBtn) activeBtn.classList.add('active');
 
-            // Update Paper Class
             this.paper.className = '';
             this.paper.classList.add(`style-${std}`);
 
-            // Update Footer Status
-            const names = { 
-                abnt: 'ABNT (NBR 14724)', 
-                apa: 'APA (7th Ed)', 
-                mla: 'MLA (9th Ed)' 
-            };
-            const statusStd = document.getElementById('status-std');
-            if(statusStd) statusStd.innerText = `STD: ${names[std]}`;
-
-            // Update Cover Labels
-            this.updateStandardLabels(std);
-
-            this.saveState();
-            Utils.toast(`Switched to ${names[std]}`);
+            const names = { abnt: 'ABNT (NBR 14724)', apa: 'APA (7th Ed)', mla: 'MLA (9th Ed)' };
+            document.getElementById('status-std').innerText = `STD: ${names[std]}`;
+            this.triggerAutoSave();
         }
 
-        updateStandardLabels(std) {
-            const inst = document.getElementById('cover-inst');
-            const title = document.getElementById('cover-title');
-
-            if (std === 'abnt') {
-                if(inst && (inst.innerText === 'University Name')) inst.innerText = 'NOME DA INSTITUIÇÃO';
-            } else {
-                if(inst && (inst.innerText === 'NOME DA INSTITUIÇÃO')) inst.innerText = 'University Name';
-                if(title && std === 'apa') title.style.textDecoration = 'none';
-            }
-        }
-
-        // --- COVER PAGE ---
         toggleCover() {
             const cover = document.getElementById('cover-page');
             const btnText = document.getElementById('cover-btn-text');
             const btn = document.getElementById('btn-toggle-cover');
-            
             const isHidden = getComputedStyle(cover).display === 'none';
             
             if (isHidden) {
                 cover.style.display = 'flex';
-                if(btnText) btnText.innerText = 'Remove Cover Page';
-                if(btn) {
-                    btn.classList.add('btn-danger');
-                    btn.classList.remove('btn-secondary');
-                }
+                btnText.innerText = 'Remove Cover Page';
+                btn.classList.add('btn-danger');
+                btn.classList.remove('btn-secondary');
             } else {
                 cover.style.display = 'none';
-                if(btnText) btnText.innerText = 'Insert Cover Page';
-                if(btn) {
-                    btn.classList.remove('btn-danger');
-                    btn.classList.add('btn-secondary');
-                }
+                btnText.innerText = 'Insert Cover Page';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-secondary');
             }
             this.triggerAutoSave();
         }
 
-        // --- EXPORT & PRINT ---
-        confirmPrint() {
-            this.closeModal('print-modal');
-            setTimeout(() => {
-                window.print();
-            }, 300);
-        }
-
-        downloadHTML() {
-            const stdName = this.currentStandard.toUpperCase();
-            const date = new Date().toISOString().slice(0,10);
-            
-            let content = this.paper.outerHTML;
-            
-            let css = `
-                body { font-family: Arial, sans-serif; line-height:1.5; }
-                .style-apa, .style-mla { font-family: "Times New Roman", serif; }
-                #paper { width: 210mm; margin: 0 auto; }
-                .style-abnt #editor-area { padding: 3cm 2cm 2cm 3cm; font-size: 12pt; text-align: justify; }
-                .style-apa #editor-area { padding: 1in; font-size: 12pt; line-height: 2; }
-                .style-mla #editor-area { padding: 1in; font-size: 12pt; }
-                #cover-page { min-height: 297mm; border-bottom: 1px solid #ccc; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; page-break-after: always; }
-                h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 10px; }
-                h2 { font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
-                p { margin-bottom: 0; }
-            `;
-
-            const htmlFull = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Thesis_${date}_${stdName}</title>
-    <style>
-        ${css}
-    </style>
-</head>
-<body>
-    ${content}
-</body>
-</html>
-            `;
-            
-            const blob = new Blob([htmlFull], {type: 'text/html'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `Thesis_${date}_${stdName.toLowerCase()}.html`;
-            a.click();
-            Utils.toast('HTML Downloaded');
-        }
-
-        // --- UTILITIES ---
         updateStats() {
             const text = this.editor.innerText || '';
-            // Better word count regex
             const words = text.trim().split(/[\s\n]+/).filter(w => w.length > 0 && w.match(/[a-zA-Z0-9\u00C0-\u00FF]/)).length;
             const chars = text.length;
             const stats = document.getElementById('status-stats');
             if(stats) stats.innerText = `Words: ${words} | Chars: ${chars}`;
         }
 
-        triggerAutoSave() {
-            const status = document.getElementById('status-save');
-            if(!status) return;
-            status.innerHTML = '<i class="fas fa-pen"></i> Saving...';
-            
-            if(this.saveTimer) clearTimeout(this.saveTimer);
-            
-            this.saveTimer = setTimeout(() => {
-                this.saveState();
-                status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
-            }, 1000);
-        }
-
-        saveState() {
-            localStorage.setItem('thesis-content', this.paper.outerHTML);
-            localStorage.setItem('thesis-std', this.currentStandard);
-            const sidebar = document.getElementById('sidebar');
-            if(sidebar) localStorage.setItem('thesis-checklist', sidebar.innerHTML);
-        }
-
-        loadState() {
-            const savedStd = localStorage.getItem('thesis-std');
-            if(savedStd) {
-                this.setStandard(savedStd);
-            } else {
-                this.setStandard('abnt');
-            }
-            
-            const saved = localStorage.getItem('thesis-content');
-            if(saved) {
-                const temp = document.createElement('div');
-                temp.innerHTML = saved;
-                const newPaper = temp.firstElementChild;
-                
-                // Only swap if valid
-                if(newPaper && newPaper.id === 'paper') {
-                    newPaper.id = 'paper-loaded'; 
-                    if(this.paper && this.paper.parentNode) {
-                        this.paper.parentNode.replaceChild(newPaper, this.paper);
-                    }
-                    newPaper.id = 'paper'; 
-                    this.paper = newPaper; 
-                    this.editor = document.getElementById('editor-area'); 
-                }
-            }
-            
-            this.updateStats();
-        }
-
-        // --- MODAL SYSTEM ---
+        // UTILS
         openModal(id) {
             const modal = document.getElementById(id);
             if(modal) modal.classList.remove('hidden');
         }
-
         closeModal(id) {
             const modal = document.getElementById(id);
             if(modal) modal.classList.add('hidden');
         }
-
         toggleZen() {
             document.body.classList.toggle('focus-mode');
             const isActive = document.body.classList.contains('focus-mode');
