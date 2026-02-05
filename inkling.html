@@ -199,9 +199,19 @@
         .vector-element.selected { 
             stroke: var(--c-accent) !important; 
             stroke-width: 3px !important; 
-            stroke-dasharray: none; 
+            stroke-dasharray: 5,3; 
             animation: dash 1s linear infinite;
+            paint-order: stroke fill;
         }
+        /* State when editing color: remove the selection highlight to see the real color */
+        .vector-element.editing-color { 
+            stroke: inherit !important; 
+            stroke-width: inherit !important; 
+            stroke-dasharray: none !important; 
+            animation: none !important;
+        }
+        
+        @keyframes dash { to { stroke-dashoffset: 16; } }
 
         /* NODE EDITOR */
         #node-editor-layer {
@@ -219,6 +229,28 @@
         
         .node-anchor { fill: #000; stroke: #fff; stroke-width: 2px; cursor: move; pointer-events: all; }
         .node-anchor.selected { fill: var(--c-accent); stroke: #fff; stroke-width: 3px; }
+
+        /* HOVER DELETE BUTTON */
+        #hover-delete-btn {
+            position: absolute;
+            width: 24px; height: 24px;
+            background: #ff4d4d;
+            color: #fff;
+            border: 2px solid #000;
+            display: none; /* Flex when shown */
+            align-items: center; justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 500;
+            box-shadow: 2px 2px 0 0 #000;
+            font-family: var(--font-head);
+            font-size: 14px;
+        }
+        #hover-delete-btn:hover {
+            background: #000;
+            color: #ff4d4d;
+            transform: scale(1.1);
+        }
 
         /* PROPERTIES */
         #properties {
@@ -285,11 +317,11 @@
     <div id="workspace">
         <nav class="panel" id="toolbar">
             <button class="btn btn-icon active" id="tool-select" title="Select (V)"><i class="fas fa-mouse-pointer"></i></button>
-            <button class="btn btn-icon" id="tool-node" title="Node Tool (N)"><i class="fas fa-bezier-curve"></i></button>
+            <button class="btn btn-icon" id="tool-node" title="Node Tool (N) - Edit Paths"><i class="fas fa-bezier-curve"></i></button>
             <div style="width:60%; height:3px; background:#000; margin:4px 0;"></div>
             <button class="btn btn-icon" id="tool-rect" title="Rect (R)"><i class="far fa-square"></i></button>
             <button class="btn btn-icon" id="tool-circle" title="Circle (C)"><i class="far fa-circle"></i></button>
-            <button class="btn btn-icon" id="tool-pen" title="Pen Tool (P)"><i class="fas fa-pen-nib"></i></button>
+            <button class="btn btn-icon" id="tool-pen" title="Pen Tool (P) - Click to add point, Drag to curve, Enter to finish"><i class="fas fa-pen-nib"></i></button>
         </nav>
 
         <main id="viewport">
@@ -300,6 +332,8 @@
                         <g id="drawing-layer"></g>
                     </svg>
                     <svg id="node-gizmo-svg" viewBox="0 0 800 600" style="position: absolute; top:0; left:0; width:100%; height:100%;"></svg>
+                    <!-- Floating Delete Button -->
+                    <div id="hover-delete-btn">X</div>
                 </div>
             </div>
         </main>
@@ -338,6 +372,7 @@
                         <span class="prop-label">Stroke</span> 
                         <div style="display:flex; gap:5px; flex:1;">
                             <input type="color" id="inp-stroke">
+                            <!-- Fixed ID for JS access -->
                             <input type="number" id="inp-stroke-width" placeholder="px" style="width:50px;">
                         </div>
                     </div>
@@ -352,7 +387,7 @@
                         <i class="fas fa-vector-square"></i> Convert to Path
                     </button>
                     <div style="display:flex; gap:5px;">
-                        <button class="btn btn-sm" id="btn-dup" style="flex:1"><i class="fas fa-copy"></i></button>
+                        <button class="btn btn-sm" id="btn-dup" style="flex:1;"><i class="fas fa-copy"></i></button>
                         <button class="btn btn-sm" id="btn-del" style="flex:1; background:#000; color:#fff;"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
@@ -598,6 +633,7 @@
                 this.nodeEditor = new NodeEditor(this);
                 this.history = [];
                 this.redoStack = [];
+                this.hoverDelBtn = document.getElementById('hover-delete-btn');
                 this.init();
             }
 
@@ -625,9 +661,29 @@
                     const el = document.getElementById(this.selectedId);
                     if(el) { el.setAttribute(attr, val); this.saveState(); }
                 };
-                ['fill', 'stroke', 'stroke-width', 'opacity'].forEach(k => {
-                    const el = document.getElementById(`inp-${k.replace('-','')}`);
+                ['fill', 'stroke', 'opacity'].forEach(k => {
+                    const el = document.getElementById(`inp-${k}`);
                     if(el) el.oninput = (e) => updateAttr(k, e.target.value);
+                });
+
+                // --- FIX: STROKE WIDTH ---
+                // Manually bind the stroke width input because the generic loop logic had ID mismatch issues
+                const swEl = document.getElementById('inp-stroke-width');
+                swEl.oninput = (e) => updateAttr('stroke-width', e.target.value);
+
+                // --- FIX: LIVE PREVIEW COLOR ---
+                // Remove selection highlight when editing color
+                const colorInputs = ['inp-fill', 'inp-stroke'];
+                colorInputs.forEach(id => {
+                    const input = document.getElementById(id);
+                    input.addEventListener('focus', () => {
+                        const el = document.getElementById(this.selectedId);
+                        if(el) el.classList.add('editing-color');
+                    });
+                    input.addEventListener('blur', () => {
+                        const el = document.getElementById(this.selectedId);
+                        if(el) el.classList.remove('editing-color');
+                    });
                 });
 
                 // RADIUS LOGIC
@@ -650,6 +706,16 @@
                 document.getElementById('btn-undo').onclick = () => this.undo();
                 document.getElementById('btn-redo').onclick = () => this.redo();
                 document.getElementById('btn-export').onclick = () => this.exportSVG();
+                
+                // Floating Delete Button Logic
+                this.hoverDelBtn.onclick = (e) => {
+                    e.stopPropagation(); // Prevent selecting the shape under it
+                    if(this.hoverDelTargetId) {
+                        this.select(this.hoverDelTargetId);
+                        this.deleteSelection();
+                        this.hoverDelBtn.style.display = 'none';
+                    }
+                };
             }
 
             bindEvents() {
@@ -658,6 +724,17 @@
                 window.addEventListener('mouseup', (e) => this.onEnd(e));
                 this.svg.addEventListener('click', (e) => this.onClick(e));
                 document.getElementById('node-gizmo-svg').addEventListener('mousedown', (e) => this.nodeEditor.handleMouseDown(e));
+
+                // HOVER DELETE LOGIC
+                this.svg.addEventListener('mouseover', (e) => {
+                    if(e.target.classList.contains('vector-element') && e.target.id !== this.hoverDelTargetId) {
+                        this.hoverDelTargetId = e.target.id;
+                        this.showHoverDelete(e.target);
+                    } else if (!e.target.classList.contains('vector-element') && !e.target.closest('#hover-delete-btn')) {
+                        this.hoverDelBtn.style.display = 'none';
+                        this.hoverDelTargetId = null;
+                    }
+                });
 
                 window.addEventListener('keydown', (e) => {
                     if(e.key === 'Delete' || e.key === 'Backspace') {
@@ -674,10 +751,26 @@
                 });
             }
 
+            showHoverDelete(el) {
+                const bbox = el.getBBox();
+                const btn = this.hoverDelBtn;
+                btn.style.display = 'flex';
+                
+                // Position button at top-right of bounding box
+                // Need to account for SVG viewBox scale
+                const artboard = document.getElementById('artboard');
+                const rect = artboard.getBoundingClientRect();
+                const scaleX = rect.width / 800;
+                const scaleY = rect.height / 600;
+
+                btn.style.left = (bbox.x + bbox.width) * scaleX + 'px';
+                btn.style.top = bbox.y * scaleY + 'px';
+            }
+
             getMouse(e) { return Utils.getMousePos(e); }
 
             onStart(e) {
-                if (e.target.closest('#node-gizmo-svg')) return;
+                if (e.target.closest('#node-gizmo-svg') || e.target.closest('#hover-delete-btn')) return;
                 const pos = this.getMouse(e);
                 this.startPos = pos;
 
@@ -716,9 +809,22 @@
             }
 
             onClick(e) {
+                if (e.target.closest('#node-gizmo-svg') || e.target.closest('#hover-delete-btn')) return;
+
                 if (this.tool === 'pen') {
                     e.stopPropagation();
                     const pos = this.getMouse(e);
+                    
+                    // Check if clicking first point to close path
+                    if (this.penPoints.length > 2) {
+                        const first = this.penPoints[0];
+                        const dist = Math.sqrt(Math.pow(pos.x - first.x, 2) + Math.pow(pos.y - first.y, 2));
+                        if(dist < 10) {
+                            this.finishPen();
+                            return;
+                        }
+                    }
+
                     if (!this.currentShape) {
                         this.currentShape = Utils.createSVG('path', {
                             d: `M ${pos.x} ${pos.y}`, fill: 'none', stroke: '#000', 'stroke-width': 2, class: 'vector-element'
@@ -744,6 +850,8 @@
                     const t = el.transform.baseVal.getItem(0);
                     t.setTranslate(this.initialTx + dx, this.initialTy + dy);
                     if(this.nodeEditor.active) this.nodeEditor.render();
+                    // Also move delete button if visible
+                    if(this.hoverDelTargetId === this.selectedId) this.showHoverDelete(el);
                 }
                 else if (this.tool === 'rect') {
                     const w = pos.x - this.startPos.x;
@@ -770,9 +878,25 @@
                 if (this.isDrawing) {
                     if (this.tool !== 'select') {
                         if(this.currentShape) {
-                            this.currentShape.id = Utils.uid();
-                            this.select(this.currentShape.id);
-                            this.saveState();
+                            // --- FIX: ZERO SIZE PROTECTION ---
+                            let isTooSmall = false;
+                            if(this.tool === 'rect') {
+                                const w = parseFloat(this.currentShape.getAttribute('width'));
+                                const h = parseFloat(this.currentShape.getAttribute('height'));
+                                if(w < 5 || h < 5) isTooSmall = true;
+                            } else if (this.tool === 'circle') {
+                                const r = parseFloat(this.currentShape.getAttribute('r'));
+                                if(r < 5) isTooSmall = true;
+                            }
+
+                            if(isTooSmall) {
+                                this.currentShape.remove();
+                                Utils.toast("Shape too small");
+                            } else {
+                                this.currentShape.id = Utils.uid();
+                                this.select(this.currentShape.id);
+                                this.saveState();
+                            }
                         }
                     } else {
                         this.saveState();
@@ -832,6 +956,7 @@
                 this.selectedId = null;
                 document.getElementById('selection-props').style.display = 'none';
                 this.nodeEditor.deactivate();
+                this.hoverDelBtn.style.display = 'none';
                 this.renderLayers();
             }
 

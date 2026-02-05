@@ -11,7 +11,7 @@
     <!-- NEO-BRUTALIST FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -19,17 +19,19 @@
             --c-panel: #ffffff;       
             --c-surface: #f4f4f4;     
             --c-text: #000000;       
-            --c-border: #000000;      /* ALWAYS BLACK */
+            --c-border: #000000;      
             
-            --c-primary: #FFDE59;     /* BRUTALIST YELLOW */
-            --c-secondary: #FF90E8;   /* BRUTALIST PINK */
-            --c-accent: #23C9FF;      /* BRUTALIST BLUE */
+            --c-primary: #FFDE59;     
+            --c-secondary: #FF90E8;   
+            --c-accent: #23C9FF;      
             --c-danger: #FF4D4D;      
            
             --border-width: 3px;
-            --shadow-hard: 5px 5px 0px 0px #000000;
-            --shadow-active: 2px 2px 0px 0px #000000;
-            --shadow-hover: 7px 7px 0px 0px #000000;
+            
+            /* LIGHT MODE SHADOWS */
+            --shadow-hard: 6px 6px 0px 0px #888888; 
+            --shadow-active: 3px 3px 0px 0px #666666;
+            --shadow-hover: 8px 8px 0px 0px #666666;
             
             --font-ui: 'Space Mono', monospace; 
             --font-head: 'Archivo Black', sans-serif;
@@ -45,11 +47,13 @@
             --c-surface: #2a2a2a;
             --c-text: #ffffff;
             --c-border: #ffffff;
-            --c-primary: #bfa300; /* Dimmer yellow for dark mode */
+            --c-primary: #bfa300; 
             --c-secondary: #d966cc;
-            --shadow-hard: 5px 5px 0px 0px #ffffff;
-            --shadow-active: 2px 2px 0px 0px #ffffff;
-            --shadow-hover: 7px 7px 0px 0px #ffffff;
+            
+            /* DARK MODE SHADOWS */
+            --shadow-hard: 6px 6px 0px 0px #333333; 
+            --shadow-active: 3px 3px 0px 0px #000000;
+            --shadow-hover: 8px 8px 0px 0px #000000;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; -webkit-user-select: none; }
@@ -81,7 +85,6 @@
             font-size: 12px;
             letter-spacing: 0.5px;
             box-shadow: var(--shadow-hard);
-            /* No border-radius for pure brutalism, or very slight */
             border-radius: 0px; 
         }
         .btn:hover { 
@@ -92,7 +95,7 @@
         }
         .btn:active, .btn.active { 
             background: var(--c-secondary); 
-            transform: translate(2px, 2px); 
+            transform: translate(4px, 4px); 
             color: #000;
             box-shadow: var(--shadow-active);
         }
@@ -103,8 +106,8 @@
 
         /* Sliders */
         input[type="range"] { 
-            width: 100%; accent-color: var(--c-text); cursor: pointer; height: 6px; background: var(--c-border);
-            appearance: none; /* Remove default styling */
+            width: 100%; cursor: pointer; height: 6px; background: var(--c-panel);
+            appearance: none; 
             background: var(--c-panel);
             border: 2px solid var(--c-border);
         }
@@ -156,7 +159,7 @@
         
         .menubar {
             height: 36px;
-            background: #000; /* Brutalist High Contrast */
+            background: #000; 
             color: #fff;
             border-bottom: var(--border-width) solid var(--c-border);
             display: flex; align-items: center; padding: 0 15px; gap: 15px;
@@ -178,7 +181,6 @@
             flex-shrink: 0;
             padding: 15px;
             gap: 20px;
-            /* Scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: #000 #f0f0f0;
         }
@@ -214,13 +216,12 @@
         /* --- VIEWPORT --- */
         .viewport {
             flex: 1;
-            /* Brutalist Checkerboard */
             background-color: #fff;
             background-image: 
-                linear-gradient(45deg, #000 25%, transparent 25%), 
-                linear-gradient(-45deg, #000 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #000 75%), 
-                linear-gradient(-45deg, transparent 75%, #000 75%);
+                linear-gradient(45deg, #ddd 25%, transparent 25%), 
+                linear-gradient(-45deg, #ddd 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ddd 75%), 
+                linear-gradient(-45deg, transparent 75%, #ddd 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             overflow: hidden; 
@@ -234,13 +235,35 @@
             position: absolute;
             top: 0; left: 0;
             background: #fff; 
-            box-shadow: 15px 15px 0px 0px #000; /* Massive shadow */
+            box-shadow: 15px 15px 0px 0px #000;
             transform-origin: 0 0; 
             border: var(--border-width) solid #000;
         }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; image-rendering: pixelated; }
         canvas.active-canvas { pointer-events: auto; }
         #preview-canvas { z-index: 999; pointer-events: none; }
+
+        /* --- TEXT OVERLAY --- */
+        .text-overlay {
+            position: absolute;
+            min-width: 50px;
+            min-height: 1em;
+            background: transparent;
+            border: 1px dashed var(--c-accent);
+            color: var(--c-text);
+            padding: 4px;
+            z-index: 5000;
+            white-space: pre;
+            cursor: move;
+            line-height: 1.2;
+            overflow: hidden;
+            user-select: text; /* Allow text selection */
+        }
+        .text-overlay:focus {
+            background: rgba(255, 222, 89, 0.2); /* Highlight yellow when active */
+            border: 2px solid var(--c-accent);
+            outline: none;
+        }
 
         /* --- BOTTOM BAR --- */
         .bottom-bar {
@@ -330,7 +353,7 @@
             background: rgba(0,0,0,0.7);
             z-index: 2000;
             display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px); /* Slight blur for focus */
+            backdrop-filter: blur(5px);
         }
         .modal-overlay.hidden { display: none; pointer-events: none; }
         
@@ -368,29 +391,25 @@
         }
         @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
 
-        /* Inputs for tools */
-        #text-tool-input {
-            position: absolute; background: #fff;
-            border: 3px solid #000; padding: 8px;
-            font-family: var(--font-head); font-weight: 900; color: #000;
-            display: none; z-index: 1000; min-width: 50px; outline: none; 
-            box-shadow: 4px 4px 0px 0px #000;
-            text-transform: uppercase;
-        }
-
         #clone-cursor-ui {
             position: absolute; pointer-events: none;
             border: 2px solid #000; background: rgba(35, 201, 255, 0.4);
-            display: none; z-index: 1001; border-radius: 0%; /* Square */
+            display: none; z-index: 1001; border-radius: 50%; 
         }
         #clone-source-indicator {
             position: absolute; width: 16px; height: 16px;
             background: var(--c-accent); border: 2px solid #000; 
             transform: translate(-50%, -50%); pointer-events: none;
             display: none; z-index: 1001; box-shadow: 0 0 0 4px rgba(255,255,255,0.8);
+            border-radius: 50%;
         }
         
         .hidden-file { display: none; }
+        
+        /* Text Settings Panel Visibility */
+        .text-settings-panel { display: none; }
+        .text-settings-panel.visible { display: block; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from {opacity:0; transform:translateY(-5px);} to {opacity:1; transform:translateY(0);} }
     </style>
 </head>
 <body>
@@ -443,7 +462,7 @@
                 </div>
             </div>
 
-            <div class="tool-group">
+            <div class="tool-group" id="std-settings">
                 <div class="tool-label">Settings</div>
                 <div class="adj-row">
                     <div class="adj-header"><span>Brush Size</span> <span id="lbl-size">10px</span></div>
@@ -455,6 +474,38 @@
                         <input type="color" id="native-color-picker" style="width:40px; height:40px; padding:0; border:3px solid #000; cursor:pointer; box-shadow:2px 2px 0 #000;">
                         <span id="hex-display" style="font-family: var(--font-ui); font-weight: bold; font-size: 13px;">#000000</span>
                      </div>
+                </div>
+            </div>
+
+            <!-- NEW TEXT SETTINGS PANEL -->
+            <div class="tool-group text-settings-panel" id="text-settings">
+                <div class="tool-label">Text Settings</div>
+                
+                <div class="adj-row">
+                    <div class="adj-header"><span>Font Family</span></div>
+                    <select id="text-font">
+                        <option value="'Archivo Black', sans-serif">Archivo Black</option>
+                        <option value="'Space Mono', monospace">Space Mono</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="'Courier New', monospace">Courier</option>
+                    </select>
+                </div>
+
+                <div class="adj-row">
+                    <div class="adj-header"><span>Size</span> <span id="lbl-text-size">40px</span></div>
+                    <input type="range" id="text-size" min="10" max="200" value="40">
+                </div>
+
+                <div class="tools-2-grid" style="margin-top:5px;">
+                    <button class="btn btn-tgl" id="btn-bold" onclick="App.toggleTextStyle('bold')">B</button>
+                    <button class="btn btn-tgl" id="btn-italic" onclick="App.toggleTextStyle('italic')">I</button>
+                </div>
+                
+                <div class="tools-2-grid" style="margin-top:5px;">
+                    <button class="btn" onclick="App.textApply()" style="background:var(--c-primary);">BAKE TEXT</button>
+                    <button class="btn" onclick="App.textCancel()" style="background:var(--c-danger);">CANCEL</button>
                 </div>
             </div>
 
@@ -500,7 +551,6 @@
         <!-- MAIN VIEWPORT -->
         <main class="viewport" id="viewport" data-cursor="default">
             <div id="canvas-wrapper"></div>
-            <input type="text" id="text-tool-input" placeholder="TYPE HERE...">
             <div id="clone-cursor-ui"></div>
             <div id="clone-source-indicator"></div>
         </main>
@@ -730,17 +780,29 @@
             startX: 0, startY: 0,
             snapshot: null,
             
+            // Text System State
+            activeTextObj: null, // The DOM element
+            textState: {
+                isBold: false,
+                isItalic: false,
+                fontSize: 40,
+                fontFamily: "'Archivo Black', sans-serif"
+            },
+            
             ui: {
                 wrapper: document.getElementById('canvas-wrapper'),
                 list: document.getElementById('layers-list'),
                 viewport: document.getElementById('viewport'),
                 previewCanvas: null,
                 previewCtx: null,
-                textInput: document.getElementById('text-tool-input'),
                 cloneCursor: document.getElementById('clone-cursor-ui'),
                 sourceIndicator: document.getElementById('clone-source-indicator'),
                 overlay: document.getElementById('modal-overlay'),
+                textPanel: document.getElementById('text-settings'),
+                stdPanel: document.getElementById('std-settings'),
                 openModal: (id) => {
+                    // Bake text before opening modal
+                    if(App.tool === 'text') App.textApply();
                     document.querySelectorAll('.modal-box').forEach(b => b.classList.add('hidden'));
                     document.getElementById(id).classList.remove('hidden');
                     App.ui.overlay.classList.remove('hidden');
@@ -784,6 +846,11 @@
             updateTransform() {
                 this.ui.wrapper.style.transform = `translate(${this.pan.x}px, ${this.pan.y}px) scale(${this.zoom})`;
                 document.getElementById('zoom-level').innerText = Math.round(this.zoom * 100) + '%';
+                
+                // Sync active text element position if exists
+                if(this.activeTextObj && this.textState.x !== undefined) {
+                    this.activeTextObj.style.transform = `translate(${this.textState.x}px, ${this.textState.y}px)`;
+                }
             },
 
             resizeCanvas(w, h, save = true) {
@@ -796,7 +863,6 @@
                 this.ui.previewCanvas.height = h;
 
                 this.layers.forEach(l => {
-                    // Preserve existing content
                     const buff = document.createElement('canvas');
                     buff.width = l.canvas.width;
                     buff.height = l.canvas.height;
@@ -818,6 +884,7 @@
             },
 
             addLayer(name, fill = null) {
+                this.textApply(); // Bake text before layer changes
                 const id = Utils.uid();
                 const canvas = document.createElement('canvas');
                 canvas.id = id;
@@ -1099,13 +1166,133 @@
                 };
             },
 
+            // --- TEXT TOOL LOGIC ---
+            
+            createTextOverlay(x, y) {
+                // Bake existing text if any
+                if (this.activeTextObj) this.textApply();
+
+                const div = document.createElement('div');
+                div.className = 'text-overlay';
+                div.contentEditable = true;
+                div.innerText = 'TEXT';
+                
+                // Position
+                this.textState.x = x;
+                this.textState.y = y;
+                div.style.transform = `translate(${x}px, ${y}px)`;
+                
+                // Styles
+                this.applyTextStyles(div);
+
+                this.ui.wrapper.appendChild(div);
+                this.activeTextObj = div;
+
+                // Focus
+                setTimeout(() => {
+                    div.focus();
+                    document.execCommand('selectAll', false, null);
+                }, 10);
+
+                // Setup Panel UI
+                document.getElementById('text-font').value = this.textState.fontFamily;
+                document.getElementById('text-size').value = this.textState.fontSize;
+                this.updateTextToggles();
+                this.ui.textPanel.classList.add('visible');
+                this.ui.stdPanel.classList.add('hidden');
+            },
+
+            applyTextStyles(el) {
+                if(!el) return;
+                el.style.color = this.color;
+                el.style.fontSize = (this.textState.fontSize * this.zoom) + 'px'; // Scale visual size
+                el.style.fontFamily = this.textState.fontFamily;
+                el.style.fontWeight = this.textState.isBold ? 'bold' : 'normal';
+                el.style.fontStyle = this.textState.isItalic ? 'italic' : 'normal';
+            },
+
+            updateTextToggles() {
+                const b = document.getElementById('btn-bold');
+                const i = document.getElementById('btn-italic');
+                if(this.textState.isBold) b.classList.add('active'); else b.classList.remove('active');
+                if(this.textState.isItalic) i.classList.add('active'); else i.classList.remove('active');
+            },
+
+            toggleTextStyle(type) {
+                if(type === 'bold') this.textState.isBold = !this.textState.isBold;
+                if(type === 'italic') this.textState.isItalic = !this.textState.isItalic;
+                this.updateTextToggles();
+                this.applyTextStyles(this.activeTextObj);
+            },
+
+            textApply() {
+                if (!this.activeTextObj) return;
+
+                const el = this.activeTextObj;
+                const l = this.getLayer(this.activeLayerId);
+                if (!l) return;
+
+                // Rasterize
+                // We need to draw text relative to the canvas coords (unzoomed)
+                const canvasX = this.textState.x;
+                const canvasY = this.textState.y;
+
+                l.ctx.save();
+                l.ctx.font = `${this.textState.isItalic ? 'italic ' : ''}${this.textState.isBold ? 'bold ' : ''}${this.textState.fontSize}px ${this.textState.fontFamily}`;
+                l.ctx.fillStyle = this.color;
+                l.ctx.textBaseline = 'top';
+                
+                // Handle multiline
+                const lines = el.innerText.split('\n');
+                const lineHeight = this.textState.fontSize * 1.2;
+                
+                lines.forEach((line, index) => {
+                    l.ctx.fillText(line, canvasX + 4, canvasY + 4 + (index * lineHeight)); // +4 for padding offset
+                });
+
+                l.ctx.restore();
+
+                el.remove();
+                this.activeTextObj = null;
+                this.ui.textPanel.classList.remove('visible');
+                this.ui.stdPanel.classList.remove('hidden');
+                
+                this.history.save(this.layers, this.width, this.height);
+                this.updateLayerThumb(this.activeLayerId);
+            },
+
+            textCancel() {
+                if (this.activeTextObj) {
+                    this.activeTextObj.remove();
+                    this.activeTextObj = null;
+                }
+                this.ui.textPanel.classList.remove('visible');
+                this.ui.stdPanel.classList.remove('hidden');
+                document.querySelector('[data-tool="move"]').click();
+            },
+
+            // --- EVENT BINDING ---
+            
             bindEvents() {
+                // Tool Buttons
                 document.querySelectorAll('.btn[data-tool]').forEach(b => {
                     b.onclick = () => {
+                        // If switching away from text, bake it
+                        if(this.tool === 'text' && b.dataset.tool !== 'text') {
+                            this.textApply();
+                        }
+
                         document.querySelectorAll('.btn[data-tool]').forEach(x => x.classList.remove('active'));
                         b.classList.add('active');
                         this.tool = b.dataset.tool;
-                        this.ui.textInput.style.display = 'none';
+                        
+                        if(this.tool === 'text') {
+                            this.ui.textPanel.classList.add('visible');
+                            this.ui.stdPanel.classList.add('hidden');
+                        } else {
+                            this.ui.textPanel.classList.remove('visible');
+                            this.ui.stdPanel.classList.remove('hidden');
+                        }
                         
                         if(this.tool === 'move') this.ui.viewport.setAttribute('data-cursor', 'move');
                         else if(this.tool === 'pan-layer') this.ui.viewport.setAttribute('data-cursor', 'move');
@@ -1121,12 +1308,30 @@
                     };
                 });
 
+                // Text Settings Events
+                document.getElementById('text-font').onchange = (e) => {
+                    this.textState.fontFamily = e.target.value;
+                    this.applyTextStyles(this.activeTextObj);
+                };
+                document.getElementById('text-size').oninput = (e) => {
+                    this.textState.fontSize = parseInt(e.target.value);
+                    document.getElementById('lbl-text-size').innerText = this.textState.fontSize + 'px';
+                    this.applyTextStyles(this.activeTextObj);
+                };
+
                 const wrapper = this.ui.wrapper; 
                 
                 const start = (e) => {
                     if(e.button !== 0 && !e.touches) return; 
                     const l = this.getLayer(this.activeLayerId);
                     if(!l || !l.visible) return;
+
+                    // If text tool active and we click the active text object, do nothing (allow editing)
+                    if (this.tool === 'text' && this.activeTextObj && e.target === this.activeTextObj) return;
+                    
+                    // If text tool active and click elsewhere, maybe create new? 
+                    // We'll only create new on explicit tool selection or if current text is baked/cancelled.
+                    // Actually, for simplicity: Click outside active text -> Bake old text -> Create New Text
                     
                     const pos = this.getCoords(e);
                     const drawX = pos.x - l.x;
@@ -1135,6 +1340,16 @@
                     this.isDrawing = true;
                     this.startX = pos.x; 
                     this.startY = pos.y;
+
+                    // TEXT TOOL LOGIC
+                    if (this.tool === 'text') {
+                        // If we have active text, bake it first
+                        if (this.activeTextObj) this.textApply();
+                        // Then create new
+                        this.createTextOverlay(pos.x, pos.y);
+                        this.isDrawing = false;
+                        return;
+                    }
 
                     if (this.tool === 'clone' && e.altKey) {
                         this.cloneState.active = true;
@@ -1151,12 +1366,16 @@
                     if(['brush', 'eraser'].includes(this.tool)) {
                         l.ctx.beginPath();
                         l.ctx.moveTo(drawX, drawY);
-                        l.ctx.lineCap = 'square'; /* Brutalist brush cap */
-                        l.ctx.lineJoin = 'miter';
+                        l.ctx.lineCap = 'round';
+                        l.ctx.lineJoin = 'round';
                         l.ctx.lineWidth = this.brushSize;
-                        if(this.tool === 'eraser') l.ctx.globalCompositeOperation = 'destination-out';
-                        else l.ctx.globalCompositeOperation = 'source-over';
-                        l.ctx.strokeStyle = this.color;
+                        if(this.tool === 'eraser') {
+                            l.ctx.globalCompositeOperation = 'destination-out';
+                        }
+                        else {
+                            l.ctx.globalCompositeOperation = 'source-over';
+                            l.ctx.strokeStyle = this.color;
+                        }
                     } 
                     else if (this.tool === 'clone') {
                         if(!this.cloneState.active) return Utils.toast("ALT+CLICK TO SET SOURCE");
@@ -1179,10 +1398,6 @@
                         this.floodFill(Math.floor(drawX), Math.floor(drawY), this.hexToRgb(this.color));
                         this.history.save(this.layers, this.width, this.height);
                         this.updateLayerThumb(this.activeLayerId);
-                        this.isDrawing = false;
-                    }
-                    else if (this.tool === 'text') {
-                        this.showTextInput(drawX, drawY, l);
                         this.isDrawing = false;
                     }
                     else if (this.tool === 'move') {
@@ -1242,7 +1457,7 @@
 
                         l.ctx.save();
                         l.ctx.beginPath();
-                        l.ctx.rect(drawX - r, drawY - r, r*2, r*2); /* Rectangular brush area */
+                        l.ctx.arc(drawX, drawY, r, 0, Math.PI * 2);
                         l.ctx.clip();
                         l.ctx.drawImage(this.cloneState.snapshot, 
                             srcX - r, srcY - r, r*2, r*2, 
@@ -1259,8 +1474,8 @@
                         this.ui.previewCtx.beginPath();
                         this.ui.previewCtx.strokeStyle = this.tool === 'crop' ? '#000' : this.color;
                         this.ui.previewCtx.lineWidth = this.brushSize;
-                        this.ui.previewCtx.lineCap = 'square';
-                        this.ui.previewCtx.lineJoin = 'miter';
+                        this.ui.previewCtx.lineCap = 'round';
+                        this.ui.previewCtx.lineJoin = 'round';
                         
                         if (this.tool === 'crop') {
                             this.ui.previewCtx.setLineDash([8, 4]);
@@ -1303,8 +1518,9 @@
                     this.ui.viewport.classList.remove('grabbing');
                     const l = this.getLayer(this.activeLayerId);
 
+                    if(l) l.ctx.globalCompositeOperation = 'source-over';
+
                     if(['brush', 'eraser', 'clone', 'pan-layer'].includes(this.tool)) {
-                        l.ctx.globalCompositeOperation = 'source-over';
                         this.history.save(this.layers, this.width, this.height);
                         this.updateLayerThumb(this.activeLayerId);
                     }
@@ -1422,32 +1638,6 @@
                 ctx.putImageData(imgData, 0, 0);
             },
 
-            showTextInput(x, y, layer) {
-                const input = this.ui.textInput;
-                input.style.display = 'block';
-                input.style.left = (x * this.zoom + this.pan.x) + 'px';
-                input.style.top = (y * this.zoom + this.pan.y) + 'px';
-                input.style.fontSize = (this.brushSize * 2 * this.zoom) + 'px';
-                input.style.color = this.color;
-                input.style.fontFamily = 'var(--font-head)';
-                input.value = '';
-                input.focus();
-                
-                const finish = () => {
-                    if(input.style.display === 'none') return;
-                    layer.ctx.font = `900 ${this.brushSize * 2}px var(--font-head)`;
-                    layer.ctx.fillStyle = this.color;
-                    layer.ctx.textBaseline = 'top';
-                    layer.ctx.fillText(input.value.toUpperCase(), x, y + (this.brushSize * 0.5)); /* Shift baseline slightly */
-                    input.style.display = 'none';
-                    input.onblur = null; input.onkeydown = null;
-                    this.history.save(this.layers, this.width, this.height);
-                    this.updateLayerThumb(this.activeLayerId);
-                };
-                input.onblur = finish;
-                input.onkeydown = (e) => { if(e.key === 'Enter') finish(); };
-            },
-
             hexToRgb(hex) {
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? {
@@ -1459,6 +1649,10 @@
                 this.color = hex;
                 document.getElementById('native-color-picker').value = hex;
                 document.getElementById('hex-display').innerText = hex.toUpperCase();
+                // Update active text if exists
+                if(this.activeTextObj) {
+                    this.applyTextStyles(this.activeTextObj);
+                }
             },
 
             updateLayerFilters(layer) {
@@ -1702,7 +1896,7 @@
             };
 
             document.addEventListener('keydown', (e) => {
-                if(e.target.tagName === 'INPUT') return;
+                if(e.target.tagName === 'INPUT' || e.target.isContentEditable) return;
                 const k = e.key.toLowerCase();
                 
                 if(k === 'v') document.querySelector('[data-tool="pan-layer"]').click();
@@ -1722,6 +1916,11 @@
                     App.brushSize = Math.max(1, App.brushSize-5); 
                     document.getElementById('brush-size').value = App.brushSize;
                     document.getElementById('lbl-size').innerText = App.brushSize + 'px';
+                }
+
+                // Text specific shortcuts
+                if(k === 'enter' && App.tool === 'text' && App.activeTextObj) {
+                    App.textApply();
                 }
 
                 if((e.ctrlKey || e.metaKey)) {
