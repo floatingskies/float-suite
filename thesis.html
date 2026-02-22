@@ -1,144 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Thesis.web - Academic Suite</title>
-    
-    <!-- PWA Meta -->
     <meta name="theme-color" content="#FFDE59">
-    <meta name="description" content="ABNT, APA, MLA Academic Editor">
-
-    <!-- Icons -->
+    <meta name="description" content="Editor Academico ABNT, APA, MLA">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         :root {
-            /* Palette */
-            --c-bg: #e0e0e0;
-            --c-panel: #ffffff;
-            --c-border: #000000;
-            --c-text: #000000;
+            --c-bg: #f5f0e8;
+            --c-panel: #fffef9;
+            --c-panel-alt: #f8f5ed;
+            --c-border: #1a1a1a;
+            --c-text: #1a1a1a;
+            --c-text-muted: #666655;
+            --c-text-light: #999988;
             
-            /* Accents */
-            --c-primary: #FFDE59;   /* Acid Yellow */
-            --c-secondary: #FF90E8; /* Hot Pink */
-            --c-accent: #23C9FF;    /* Cyan */
-            --c-success: #00E096;   /* Green */
-            --c-danger: #FF5C5C;    /* Red */
+            --c-primary: #FFDE59;
+            --c-primary-dark: #e6c84a;
+            --c-secondary: #FF7EB3;
+            --c-accent: #00D4AA;
+            --c-info: #4DA6FF;
+            --c-warning: #FFB347;
+            --c-danger: #FF6B6B;
+            --c-purple: #9B7EDE;
             
-            /* Structural */
-            --border-width: 3px;
-            --shadow-hard: 4px 4px 0px var(--c-border);
-            --shadow-active: 2px 2px 0px var(--c-border);
+            --border-width: 2px;
+            --radius: 0px;
+            --shadow-sm: 2px 2px 0px var(--c-border);
+            --shadow-md: 4px 4px 0px var(--c-border);
+            --shadow-lg: 6px 6px 0px var(--c-border);
+            --shadow-hover: 3px 3px 0px var(--c-border);
             
-            --font-ui: 'Courier New', Courier, monospace;
+            --font-ui: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
             
-            /* Document Dimensions */
             --page-width: 210mm;
             --page-height: 297mm;
-            --page-gap: 20px;
+            --page-gap: 24px;
+            
+            --sidebar-width: 320px;
+            --header-height: 60px;
+            --footer-height: 32px;
         }
 
-        /* Dark Mode Override */
         [data-theme="dark"] {
-            --c-bg: #121212;
-            --c-panel: #1e1e1e;
-            --c-text: #ffffff;
-            --c-border: #ffffff;
-            --c-primary: #bfa300;
+            --c-bg: #0d0d0d;
+            --c-panel: #1a1a1a;
+            --c-panel-alt: #242424;
+            --c-text: #f0f0e8;
+            --c-text-muted: #999988;
+            --c-border: #3a3a3a;
+            --c-primary: #e6c84a;
+            --shadow-sm: 2px 2px 0px #000;
+            --shadow-md: 4px 4px 0px #000;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--c-bg);
+            background: var(--c-bg);
             color: var(--c-text);
             font-family: var(--font-ui);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
+        /* Buttons */
         .btn {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
-            box-shadow: 2px 2px 0px var(--c-border);
-            padding: 8px 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 10px 16px;
             font-family: var(--font-ui);
-            font-weight: 700;
-            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 12px;
             cursor: pointer;
-            transition: all 0.1s;
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px;
-            font-size: 11px;
-            color: #000;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--c-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             user-select: none;
+            white-space: nowrap;
         }
-        .btn:hover { 
-            background: var(--c-primary); 
-            transform: translate(-1px, -1px); 
-            box-shadow: 3px 3px 0px var(--c-border); 
+        .btn:hover:not(:disabled) {
+            transform: translate(-1px, -1px);
+            box-shadow: var(--shadow-hover);
         }
-        .btn:active, .btn.active { 
-            background: var(--c-secondary); 
-            transform: translate(2px, 2px); 
-            box-shadow: 0px 0px 0px var(--c-border); 
+        .btn:active:not(:disabled) {
+            transform: translate(1px, 1px);
+            box-shadow: none;
         }
-        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .btn-primary { background: var(--c-primary); }
-        .btn-secondary { background: var(--c-secondary); }
-        .btn-accent { background: var(--c-accent); }
+        .btn-secondary { background: var(--c-secondary); color: #fff; }
+        .btn-accent { background: var(--c-accent); color: #fff; }
+        .btn-info { background: var(--c-info); color: #fff; }
         .btn-danger { background: var(--c-danger); color: #fff; }
+        .btn-purple { background: var(--c-purple); color: #fff; }
+        .btn-warning { background: var(--c-warning); }
+        .btn-ghost { background: transparent; box-shadow: none; border-color: transparent; }
+        .btn-ghost:hover { background: var(--c-panel-alt); box-shadow: none; transform: none; }
         
-        .btn-sm { padding: 4px 8px; font-size: 10px; }
-        .btn-icon { width: 36px; height: 36px; padding: 0; }
+        .btn-sm { padding: 6px 10px; font-size: 10px; }
+        .btn-xs { padding: 4px 8px; font-size: 9px; }
+        .btn-icon { width: 38px; height: 38px; padding: 0; }
         .btn-full { width: 100%; }
+        .btn-group { display: flex; gap: 0; }
+        .btn-group .btn { border-radius: 0; }
+        .btn-group .btn:first-child { border-radius: 0; }
+        .btn-group .btn:not(:last-child) { border-right: none; }
 
+        /* Panel */
         .panel {
             background: var(--c-panel);
             border: var(--border-width) solid var(--c-border);
-            z-index: 10;
         }
 
         /* Form Elements */
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 8px; border: 2px solid #000; font-family: var(--font-ui);
-            background: var(--c-bg); color: var(--c-text);
-            font-size: 13px; transition: background 0.2s;
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--c-text-muted);
         }
-        .form-group input:focus, .form-group textarea:focus { background: #fff; }
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: var(--border-width) solid var(--c-border);
+            font-family: var(--font-ui);
+            font-size: 13px;
+            background: var(--c-panel);
+            color: var(--c-text);
+            transition: all 0.15s;
+        }
+        .form-input:focus {
+            outline: none;
+            box-shadow: var(--shadow-sm);
+        }
+        .form-input::placeholder { color: var(--c-text-light); }
+        
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
 
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Header */
         header {
-            height: 56px;
+            height: var(--header-height);
             border-bottom: var(--border-width) solid var(--c-border);
-            background: var(--c-primary);
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 0 15px;
-            z-index: 20;
+            background: var(--c-panel);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
             flex-shrink: 0;
+            gap: 16px;
         }
-        .logo { font-size: 18px; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 8px;}
 
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--c-primary);
+            border: var(--border-width) solid var(--c-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .logo-badge {
+            font-size: 9px;
+            font-weight: 600;
+            background: var(--c-border);
+            color: var(--c-panel);
+            padding: 3px 6px;
+            letter-spacing: 1px;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Quick Toolbar */
+        .quick-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            background: var(--c-panel-alt);
+            border: var(--border-width) solid var(--c-border);
+        }
+
+        /* Main Container */
         #app-container {
-            display: flex; 
-            flex: 1; 
-            overflow: hidden; 
+            display: flex;
+            flex: 1;
+            overflow: hidden;
             position: relative;
         }
 
-        /* SIDEBAR */
+        /* Sidebar */
         #sidebar {
-            width: 300px;
+            width: var(--sidebar-width);
             border-right: var(--border-width) solid var(--c-border);
             display: flex;
             flex-direction: column;
@@ -148,598 +258,1549 @@
             transition: transform 0.3s ease;
         }
 
-        .sidebar-section { padding: 15px; border-bottom: 2px solid var(--c-border); }
-        .sidebar-title { font-weight: 900; margin-bottom: 10px; display: block; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--c-primary); padding-bottom: 4px; display: inline-block;}
-
-        .format-option {
-            display: flex; align-items: center; width: 100%; text-align: left;
-            margin-bottom: 8px; padding: 8px;
-            border: 2px solid var(--c-border);
-            cursor: pointer;
-            background: #fff;
-            font-weight: bold; font-size: 12px;
-            transition: 0.1s;
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: var(--border-width) solid var(--c-border);
         }
-        .format-option:hover { background: #eee; transform: translateX(2px); }
-        .format-option.active { background: var(--c-accent); color: #fff; border-color: #000; box-shadow: 2px 2px 0 #000; }
+        .sidebar-section:last-child { border-bottom: none; }
+        
+        .sidebar-title {
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--c-text-muted);
+        }
+        .sidebar-title i { color: var(--c-primary); }
+
+        /* Document List */
+        #doc-list {
+            list-style: none;
+            max-height: 180px;
+            overflow-y: auto;
+            border: var(--border-width) solid var(--c-border);
+            background: var(--c-panel-alt);
+        }
+        #doc-list:empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--c-text-light);
+            font-size: 12px;
+        }
+        #doc-list:empty::after { content: 'No saved documents'; }
+        
+        .doc-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--c-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.15s;
+            background: var(--c-panel);
+        }
+        .doc-item:last-child { border-bottom: none; }
+        .doc-item:hover { background: var(--c-panel-alt); }
+        .doc-item.active {
+            background: var(--c-primary);
+            font-weight: 600;
+        }
+        .doc-item-icon { color: var(--c-text-muted); }
+        .doc-item-info { flex: 1; min-width: 0; }
+        .doc-item-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+        .doc-item-date {
+            font-size: 10px;
+            color: var(--c-text-light);
+        }
+        .doc-item-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .doc-item-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--c-text-muted);
+            padding: 4px;
+            font-size: 12px;
+            transition: color 0.15s;
+        }
+        .doc-item-btn:hover { color: var(--c-danger); }
+
+        /* Format Options */
+        .format-option {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 8px;
+            padding: 12px;
+            border: var(--border-width) solid var(--c-border);
+            cursor: pointer;
+            background: var(--c-panel);
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.15s;
+            gap: 12px;
+        }
+        .format-option:hover {
+            background: var(--c-panel-alt);
+            transform: translateX(2px);
+        }
+        .format-option.active {
+            background: var(--c-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .format-option-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--c-panel-alt);
+            border: 1px solid var(--c-border);
+            font-size: 14px;
+        }
+        .format-option-info { flex: 1; }
+        .format-option-name { font-weight: 600; }
+        .format-option-desc {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--c-text-muted);
+            margin-top: 2px;
+        }
 
         /* Toolbar Grid */
         .toolbar-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 5px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
         }
-        
-        .toolbar-select {
-            width: 100%; padding: 5px; border: 2px solid #000; font-family: var(--font-ui);
-            font-size: 11px; margin-top: 5px; background: #fff;
+        .toolbar-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
         }
 
-        /* Document List Styles */
-        #doc-list {
-            list-style: none;
-            margin-top: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 2px solid #000;
-            padding: 0;
+        .toolbar-divider {
+            height: 1px;
+            background: var(--c-border);
+            margin: 12px 0;
         }
-        .doc-item {
-            padding: 8px;
-            border-bottom: 1px solid #000;
-            background: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-        .doc-item:hover { background: #f0f0f0; }
-        .doc-item.active { background: var(--c-primary); font-weight: bold; }
-        .doc-item .doc-name { 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-            max-width: 180px; flex: 1; 
-            pointer-events: none; 
-        }
-        .doc-item .doc-actions { display: flex; gap: 5px; margin-left: 5px; }
-        .doc-btn-mini {
-            background: transparent; border: none; cursor: pointer; color: #666; padding: 4px;
-            transition: color 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .doc-btn-mini:hover { color: var(--c-danger); transform: scale(1.1); }
 
-        /* WORKSPACE (The Gray Area) */
+        /* Workspace */
         #workspace {
             flex: 1;
-            background-color: #bbb;
-            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: var(--c-bg);
+            background: var(--c-bg);
+            background-image: 
+                radial-gradient(circle at 1px 1px, var(--c-border) 1px, transparent 0);
+            background-size: 24px 24px;
+            opacity: 0.4;
             overflow: auto;
             padding: 40px 20px;
-            display: flex; 
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* THE A4 PAPER STACK CONTAINER */
-        #paper {
-            width: var(--page-width); 
-            background: transparent; 
-            box-shadow: none;
             display: flex;
             flex-direction: column;
+            align-items: center;
             position: relative;
-            margin-bottom: 40px;
         }
 
-        /* EDITOR AREA - Multi-Page Logic */
-        #editor-area {
-            flex: 1;
-            outline: none;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            padding: 0; 
-            min-height: calc(var(--page-height) * 1);
-            width: 100%;
-            background-color: #fff;
-            background-image: 
-                linear-gradient(to bottom, 
-                    #fff 0px, 
-                    #fff calc(var(--page-height) - 3px), 
-                    #000 calc(var(--page-height) - 3px), 
-                    #000 var(--page-height), 
-                    transparent var(--page-height), 
-                    transparent calc(var(--page-height) + var(--page-gap))
-                );
-            background-size: 100% calc(var(--page-height) + var(--page-gap));
-            background-repeat: repeat-y;
-            background-attachment: local;
-            color: #000;
+        /* Zoom Controls */
+        .zoom-controls {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 50;
+        }
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--c-panel);
+            border: var(--border-width) solid var(--c-border);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        .zoom-btn:hover {
+            background: var(--c-primary);
+        }
+
+        /* Paper */
+        #paper {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            background: #fff;
+            border: var(--border-width) solid var(--c-border);
+            box-shadow: var(--shadow-lg);
             position: relative;
+            margin-bottom: 40px;
+            transform-origin: top center;
+            transition: transform 0.2s;
         }
 
         /* Cover Page */
         #cover-page {
-            height: var(--page-height); 
-            display: none; 
+            min-height: var(--page-height);
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            margin-bottom: 0;
-            background-color: #fff;
-            width: var(--page-width);
-            border: 3px solid #000;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-            margin-bottom: var(--page-gap);
-            padding: 0; 
+            padding: 3cm;
+            background: #fff;
+            border-bottom: var(--border-width) solid var(--c-border);
         }
 
-        /* FOOTER */
-        footer {
-            height: 30px; background: var(--c-panel); border-top: var(--border-width) solid var(--c-border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-size: 11px;
-            font-weight: bold; flex-shrink: 0;
-        }
-
-        /* =========================================
-           4. ACADEMIC STYLES
-           ========================================= */
-        
-        #editor-area p, #editor-area li {
-            orphans: 3;
-            widows: 3;
-        }
-        
-        @media print {
-            #editor-area p, #editor-area h1, #editor-area h2, #editor-area li {
-                break-inside: avoid;
-            }
-        }
-
-        /* ABNT */
-        .style-abnt #editor-area, .style-abnt #cover-page {
-            padding: 3cm 2cm 2cm 3cm;
-        }
-        .style-abnt #editor-area, .style-abnt p, .style-abnt li {
+        /* Editor Area */
+        #editor-area {
+            min-height: calc(var(--page-height) - 6cm);
+            outline: none;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 3cm;
+            color: #000;
             font-family: Arial, sans-serif;
             font-size: 12pt;
             line-height: 1.5;
             text-align: justify;
-            margin-bottom: 0; 
-            text-indent: 1.25cm;
         }
-        .style-abnt p:first-of-type { text-indent: 1.25cm; }
-        .style-abnt h1 { font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; text-align: center; margin: 20px 0 10px 0; text-indent: 0; }
-        .style-abnt h2 { font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; text-align: left; margin: 10px 0; text-indent: 0; }
-        .style-abnt #cover-page h1 { font-size: 16pt; margin-bottom: 40px; font-weight: bold; text-align: center; }
-        .style-abnt #cover-page h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 120px; text-align: center; }
-
-        /* APA */
-        .style-apa #editor-area, .style-apa #cover-page { padding: 1in; }
-        .style-apa #editor-area, .style-apa p, .style-apa li {
-            font-family: 'Times New Roman', serif;
-            font-size: 12pt;
-            line-height: 2; 
-            text-align: left;
-        }
-        .style-apa p { margin-bottom: 0; text-indent: 0.5in; }
-        .style-apa h1 { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 10px; text-indent: 0; }
-        .style-apa #cover-page h2 { font-size: 14pt; margin-bottom: 40px; text-align: center;}
+        #editor-area:focus { outline: none; }
         
-        /* MLA */
-        .style-mla #editor-area, .style-mla #cover-page { padding: 1in; }
-        .style-mla #editor-area, .style-mla p {
+        #editor-area img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+        }
+        
+        #editor-area figure {
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        #editor-area figcaption {
+            font-size: 10pt;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        #editor-area table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        #editor-area table td,
+        #editor-area table th {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        #editor-area table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+
+        #editor-area blockquote {
+            border-left: 4px solid var(--c-primary);
+            margin: 16px 0;
+            padding: 8px 16px;
+            background: #f9f9f9;
+            font-style: italic;
+        }
+
+        #editor-area code {
+            font-family: var(--font-mono);
+            background: #f0f0f0;
+            padding: 2px 6px;
+            font-size: 11pt;
+        }
+
+        #editor-area pre {
+            background: #f5f5f5;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 10pt;
+            border: 1px solid #ddd;
+            margin: 12px 0;
+        }
+
+        #editor-area hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 24px 0;
+        }
+
+        #editor-area a {
+            color: var(--c-info);
+            text-decoration: underline;
+        }
+
+        #editor-area .page-break {
+            page-break-after: always;
+            border-top: 2px dashed #ccc;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        /* Academic Styles */
+        .style-abnt #editor-area,
+        .style-abnt #cover-page {
+            padding: 3cm 2cm 2cm 3cm;
+        }
+        .style-abnt #editor-area,
+        .style-abnt p,
+        .style-abnt li {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            text-align: justify;
+            text-indent: 1.25cm;
+            margin-bottom: 0;
+        }
+        .style-abnt h1 {
+            font-family: Arial, sans-serif;
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 24px 0 12px;
+            text-indent: 0;
+        }
+        .style-abnt h2 {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 12px 0;
+            text-indent: 0;
+        }
+        .style-abnt h3 {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 12px 0;
+            text-indent: 0;
+        }
+
+        .style-apa #editor-area,
+        .style-apa #cover-page {
+            padding: 1in;
+        }
+        .style-apa #editor-area,
+        .style-apa p,
+        .style-apa li {
             font-family: 'Times New Roman', serif;
             font-size: 12pt;
-            line-height: 1;
+            line-height: 2;
             text-align: left;
-            margin-bottom: 10px;
+            text-indent: 0.5in;
+            margin-bottom: 0;
         }
-        .style-mla h1 { font-size: 14pt; font-weight: bold; text-align: left; margin-bottom: 5px; }
+        .style-apa h1 {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 12px 0;
+            text-indent: 0;
+        }
+        .style-apa h2 {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 12px 0;
+            text-indent: 0;
+        }
 
-        /* =========================================
-           5. MODALS & UTILS
-           ========================================= */
+        .style-mla #editor-area,
+        .style-mla #cover-page {
+            padding: 1in;
+        }
+        .style-mla #editor-area,
+        .style-mla p {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 2;
+            text-align: left;
+            margin-bottom: 0;
+            text-indent: 0.5in;
+        }
+        .style-mla h1 {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 12px 0;
+            text-indent: 0;
+        }
+        .style-mla h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 12px 0;
+            text-indent: 0;
+        }
+
+        /* Footer */
+        footer {
+            height: var(--footer-height);
+            background: var(--c-panel);
+            border-top: var(--border-width) solid var(--c-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            gap: 16px;
+        }
+        .footer-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--c-text-muted);
+        }
+        .footer-item i { font-size: 10px; }
+
+        /* Modals */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
+            padding: 20px;
         }
         .modal-overlay.hidden { display: none; }
-        .modal-content {
-            background: var(--c-panel); border: var(--border-width) solid var(--c-border);
-            width: 90%; max-width: 500px;
-            padding: 20px;
-            box-shadow: 10px 10px 0px #000;
-            display: flex; flex-direction: column; gap: 10px;
-            animation: slideIn 0.2s ease-out;
+        
+        .modal {
+            background: var(--c-panel);
+            border: var(--border-width) solid var(--c-border);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 480px;
             max-height: 90vh;
             overflow-y: auto;
+            animation: modalIn 0.2s ease;
         }
-        @keyframes slideIn { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+        @keyframes modalIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
         
-        .modal-header { font-size: 18px; font-weight: 900; margin-bottom: 10px; border-bottom: 3px solid #000; padding-bottom: 10px;}
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: var(--border-width) solid var(--c-border);
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--c-text-muted);
+            padding: 4px;
+        }
+        .modal-close:hover { color: var(--c-danger); }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: var(--border-width) solid var(--c-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
 
-        .toast {
-            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
-            background: var(--c-primary); color: #000;
-            padding: 10px 20px; border: 2px solid #000;
-            box-shadow: 4px 4px 0px #000;
-            font-weight: bold; z-index: 2000;
-            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: var(--border-width) solid var(--c-border);
+        }
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--c-panel-alt);
+            border: none;
+            border-right: var(--border-width) solid var(--c-border);
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--c-text-muted);
+        }
+        .tab:last-child { border-right: none; }
+        .tab:hover { background: var(--c-panel); }
+        .tab.active {
+            background: var(--c-panel);
+            color: var(--c-text);
+            border-bottom: 2px solid var(--c-primary);
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            padding: 20px;
+        }
+        .tab-content.hidden { display: none; }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             pointer-events: none;
         }
-        .toast.hidden { display: none; }
-        @keyframes popUp { from {transform: translate(-50%, 100%); opacity: 0;} to {transform: translate(-50%, 0); opacity: 1;} }
+        .toast {
+            background: var(--c-panel);
+            color: var(--c-text);
+            padding: 12px 20px;
+            border: var(--border-width) solid var(--c-border);
+            box-shadow: var(--shadow-md);
+            font-weight: 600;
+            font-size: 12px;
+            animation: toastIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.success { border-left: 4px solid var(--c-accent); }
+        .toast.error { border-left: 4px solid var(--c-danger); }
+        .toast.info { border-left: 4px solid var(--c-info); }
+        @keyframes toastIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
 
-        /* ZEN MODE */
-        body.focus-mode #sidebar, body.focus-mode header, body.focus-mode footer, 
-        body.focus-mode .modal-overlay, body.focus-mode .toast, 
-        body.focus-mode #zen-toggle-wrapper { display: none !important; }
-        
-        body.focus-mode #workspace { padding: 0; background: #888; }
-        body.focus-mode #paper { box-shadow: none; margin: 40px auto; width: 210mm; }
-        
-        #zen-toggle-wrapper { position: fixed; top: 70px; right: 20px; z-index: 100; display: none; }
-        body:not(.focus-mode) #zen-toggle-wrapper { display: block; }
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: var(--c-panel);
+            border: var(--border-width) solid var(--c-border);
+            box-shadow: var(--shadow-md);
+            z-index: 1500;
+            min-width: 160px;
+            padding: 4px 0;
+        }
+        .context-menu.hidden { display: none; }
+        .context-menu-item {
+            padding: 10px 16px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover { background: var(--c-panel-alt); }
+        .context-menu-item i { width: 16px; text-align: center; }
+        .context-menu-divider {
+            height: 1px;
+            background: var(--c-border);
+            margin: 4px 0;
+        }
 
-        /* EXIT ZEN BUTTON */
-        #zen-exit-btn {
+        /* Focus/Zen Mode */
+        body.zen-mode #sidebar,
+        body.zen-mode header,
+        body.zen-mode footer,
+        body.zen-mode .zoom-controls {
+            display: none !important;
+        }
+        body.zen-mode #workspace {
+            padding: 20px;
+            background: #888;
+        }
+        body.zen-mode #paper {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .zen-exit {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
             display: none;
-            background: var(--c-danger);
-            color: #fff;
-            border: 3px solid #000;
-            padding: 10px 20px;
-            font-family: var(--font-ui);
-            font-weight: bold;
-            box-shadow: 4px 4px 0px #000;
-            cursor: pointer;
+        }
+        body.zen-mode .zen-exit { display: flex; }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 4px;
+            background: var(--c-panel-alt);
+            border: 1px solid var(--c-border);
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--c-primary);
+            transition: width 0.3s;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            border: 1px solid var(--c-border);
             text-transform: uppercase;
         }
-        #zen-exit-btn:hover {
-            background: #ff3333;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #000;
-        }
-        body.focus-mode #zen-exit-btn { display: block; }
+        .badge-primary { background: var(--c-primary); }
+        .badge-accent { background: var(--c-accent); color: #fff; }
+        .badge-info { background: var(--c-info); color: #fff; }
 
-        /* =========================================
-           6. PRINT ENGINE
-           ========================================= */
+        /* Print */
         @media print {
-            body { background: white; height: auto; overflow: visible; display: block; }
-            header, #sidebar, footer, .modal-overlay, .toast, .toolbar-grid, #zen-toggle-wrapper, #mobile-menu-btn, #zen-exit-btn { display: none !important; }
-            #workspace { padding: 0; background: white; display: block; overflow: visible; }
-            #paper { box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto; border: none; }
-            #editor-area { background-image: none !important; background: white !important; width: 100%; }
+            body { background: #fff; height: auto; overflow: visible; display: block; }
+            header, #sidebar, footer, .modal-overlay, .toast-container, .zoom-controls, .zen-exit, #mobile-menu-btn { display: none !important; }
+            #workspace { padding: 0; background: #fff; display: block; overflow: visible; }
+            #paper { box-shadow: none; margin: 0; width: 100%; border: none; }
+            #editor-area { min-height: auto; }
             @page { size: A4; margin: 0; }
-            #cover-page { page-break-after: always; border: none; box-shadow: none; margin: 0; min-height: auto; height: auto; padding-top: 3cm !important; }
-            #editor-area::after { content: ""; display: block; height: 20px; }
+            #cover-page { page-break-after: always; border: none; }
         }
 
+        /* Mobile */
         @media (max-width: 768px) {
-            #sidebar { position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); background: var(--c-panel); box-shadow: 5px 0 0 #000;}
-            #sidebar.mobile-active { transform: translateX(0); }
-            #mobile-menu-btn { display: block !important; }
-            #zen-toggle-wrapper { display: none !important; }
-            body.focus-mode #zen-exit-btn { top: auto; bottom: 20px; right: 20px; }
+            :root { --sidebar-width: 280px; }
+            
+            #sidebar {
+                position: fixed;
+                height: 100%;
+                z-index: 200;
+                transform: translateX(-100%);
+            }
+            #sidebar.mobile-open { transform: translateX(0); }
+            
+            #mobile-menu-btn { display: flex !important; }
+            
+            .header-center { display: none; }
+            
+            .modal { max-width: 95%; }
+            
+            .zoom-controls { bottom: 70px; }
+            
+            body.zen-mode .zen-exit {
+                top: auto;
+                bottom: 20px;
+            }
         }
-        #mobile-menu-btn { display: none; position: absolute; top: 10px; left: 10px; z-index: 60; }
+        
+        #mobile-menu-btn { display: none; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--c-panel-alt); }
+        ::-webkit-scrollbar-thumb { background: var(--c-border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--c-text-muted); }
+
+        /* Color Picker */
+        .color-picker-container {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border: var(--border-width) solid var(--c-border);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .color-swatch:hover { transform: scale(1.1); }
+
+        /* File Drop */
+        .file-drop-zone {
+            border: 2px dashed var(--c-border);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .file-drop-zone:hover,
+        .file-drop-zone.dragover {
+            background: var(--c-panel-alt);
+            border-color: var(--c-primary);
+        }
+        .file-drop-zone i {
+            font-size: 32px;
+            color: var(--c-text-muted);
+            margin-bottom: 12px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .stat-card {
+            padding: 12px;
+            background: var(--c-panel-alt);
+            border: var(--border-width) solid var(--c-border);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--c-text-muted);
+            margin-top: 4px;
+        }
+
+        /* Keyboard shortcuts hint */
+        .kbd {
+            display: inline-block;
+            padding: 2px 6px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            background: var(--c-panel-alt);
+            border: 1px solid var(--c-border);
+            border-radius: 2px;
+        }
+
+        /* Find & Replace */
+        .find-replace-bar {
+            background: var(--c-panel);
+            border-bottom: var(--border-width) solid var(--c-border);
+            padding: 10px 16px;
+            display: none;
+            gap: 8px;
+            align-items: center;
+        }
+        .find-replace-bar.open { display: flex; }
+        .find-replace-bar input {
+            flex: 1;
+            padding: 8px 12px;
+            border: var(--border-width) solid var(--c-border);
+            font-family: var(--font-ui);
+            font-size: 12px;
+            max-width: 200px;
+        }
     </style>
 </head>
 <body>
-
-    <!-- ZEN EXIT BUTTON -->
-    <button id="zen-exit-btn" onclick="App.toggleZen()">
-        <i class="fas fa-times"></i> Exit Zen Mode
-    </button>
-
-    <!-- HEADER -->
+    <!-- Header -->
     <header>
-        <button class="btn btn-icon" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-        <div class="logo"><i class="fas fa-graduation-cap"></i> THESIS.WEB <span style="font-size:10px; font-weight:normal; margin-left:5px; background:#000; color:#fff; padding:2px 4px;">INFDEV</span></div>
-        <div style="display:flex; gap:5px;">
-            <button class="btn btn-sm" id="btn-guide" title="Open Guide"><i class="fas fa-book"></i> Guide</button>
-            <button class="btn btn-sm btn-accent" id="btn-ref" title="Insert Reference"><i class="fas fa-book-open"></i> Refs</button>
-            <button class="btn btn-sm" id="btn-zen" title="Focus Mode"><i class="fas fa-expand"></i></button>
+        <button class="btn btn-icon btn-ghost" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <span>THESIS<span style="color: var(--c-primary-dark)">.WEB</span></span>
+            <span class="logo-badge">V1</span>
+        </div>
+        
+        <div class="header-center">
+            <div class="quick-toolbar">
+                <button class="btn btn-xs" onclick="App.exec('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                <button class="btn btn-xs" onclick="App.exec('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                <button class="btn btn-xs" onclick="App.exec('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                <button class="btn btn-xs" onclick="App.exec('strikeThrough')" title="Strikethrough"><s>S</s></button>
+            </div>
+            <div class="quick-toolbar">
+                <button class="btn btn-xs" onclick="App.formatBlock('H1')">H1</button>
+                <button class="btn btn-xs" onclick="App.formatBlock('H2')">H2</button>
+                <button class="btn btn-xs" onclick="App.formatBlock('H3')">H3</button>
+                <button class="btn btn-xs" onclick="App.formatBlock('P')">P</button>
+            </div>
+            <div class="quick-toolbar">
+                <button class="btn btn-xs" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                <button class="btn btn-xs" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                <button class="btn btn-xs" onclick="App.exec('justifyLeft')"><i class="fas fa-align-left"></i></button>
+                <button class="btn btn-xs" onclick="App.exec('justifyCenter')"><i class="fas fa-align-center"></i></button>
+                <button class="btn btn-xs" onclick="App.exec('justifyRight')"><i class="fas fa-align-right"></i></button>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <button class="btn btn-xs" onclick="App.toggleFindReplace()" title="Find & Replace (Ctrl+H)">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="btn btn-xs" onclick="App.toggleZen()" title="Zen Mode (F11)">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button class="btn btn-xs btn-primary" onclick="App.openModal('export-modal')">
+                <i class="fas fa-download"></i> Export
+            </button>
         </div>
     </header>
 
+    <!-- Find & Replace Bar -->
+    <div class="find-replace-bar" id="find-replace-bar">
+        <input type="text" id="find-input" placeholder="Find...">
+        <input type="text" id="replace-input" placeholder="Replace...">
+        <button class="btn btn-xs" onclick="App.findNext()">Find Next</button>
+        <button class="btn btn-xs" onclick="App.replaceNext()">Replace</button>
+        <button class="btn btn-xs" onclick="App.replaceAll()">Replace All</button>
+        <button class="btn btn-xs btn-ghost" onclick="App.toggleFindReplace()"><i class="fas fa-times"></i></button>
+    </div>
+
     <div id="app-container">
-        
-        <!-- SIDEBAR -->
-        <aside class="panel" id="sidebar">
-            
-            <!-- 1. DOCUMENTS MANAGER -->
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <!-- Documents -->
             <div class="sidebar-section">
-                <span class="sidebar-title"><i class="fas fa-folder-open"></i> My Documents</span>
-                <button class="btn btn-sm btn-primary btn-full" onclick="App.openSaveModal()">
-                    <i class="fas fa-plus"></i> Save As New...
-                </button>
-                <button class="btn btn-sm btn-secondary btn-full" style="margin-top:5px;" onclick="App.updateCurrentDoc()" id="btn-update-doc">
-                    <i class="fas fa-save"></i> Update Current
-                </button>
-                <ul id="doc-list">
-                    <!-- Files injected here via JS -->
-                </ul>
+                <div class="sidebar-title"><i class="fas fa-folder"></i> Documents</div>
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <button class="btn btn-xs btn-primary btn-full" onclick="App.openModal('save-modal')">
+                        <i class="fas fa-plus"></i> New
+                    </button>
+                    <button class="btn btn-xs btn-full" onclick="App.updateCurrentDoc()" id="btn-save" disabled>
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+                <ul id="doc-list"></ul>
             </div>
 
-            <!-- Standard Selection -->
+            <!-- Standard -->
             <div class="sidebar-section">
-                <span class="sidebar-title">2. Standard</span>
-                <button class="format-option active" data-style="style-abnt" onclick="App.setStandard('abnt')">
-                    <i class="fas fa-flag"></i> ABNT (NBR 14724)
-                    <div style="font-size:10px; font-weight:normal; margin-left:auto;">Arial 12pt, 1.5</div>
+                <div class="sidebar-title"><i class="fas fa-ruler"></i> Standard</div>
+                <button class="format-option active" data-style="abnt" onclick="App.setStandard('abnt')">
+                    <div class="format-option-icon"><i class="fas fa-flag"></i></div>
+                    <div class="format-option-info">
+                        <div class="format-option-name">ABNT</div>
+                        <div class="format-option-desc">NBR 14724 - Arial 12pt, 1.5</div>
+                    </div>
                 </button>
-                <button class="format-option" data-style="style-apa" onclick="App.setStandard('apa')">
-                    <i class="fas fa-landmark"></i> APA (7th Ed)
-                    <div style="font-size:10px; font-weight:normal; margin-left:auto;">Times, Double</div>
+                <button class="format-option" data-style="apa" onclick="App.setStandard('apa')">
+                    <div class="format-option-icon"><i class="fas fa-landmark"></i></div>
+                    <div class="format-option-info">
+                        <div class="format-option-name">APA</div>
+                        <div class="format-option-desc">7th Edition - Times, Double</div>
+                    </div>
                 </button>
-                <button class="format-option" data-style="style-mla" onclick="App.setStandard('mla')">
-                    <i class="fas fa-university"></i> MLA (9th Ed)
-                    <div style="font-size:10px; font-weight:normal; margin-left:auto;">Times, Single</div>
+                <button class="format-option" data-style="mla" onclick="App.setStandard('mla')">
+                    <div class="format-option-icon"><i class="fas fa-university"></i></div>
+                    <div class="format-option-info">
+                        <div class="format-option-name">MLA</div>
+                        <div class="format-option-desc">9th Edition - Times, Double</div>
+                    </div>
                 </button>
             </div>
 
-            <!-- Formatting Tools -->
+            <!-- Insert -->
             <div class="sidebar-section">
-                <span class="sidebar-title">3. Text & Titles</span>
-                
-                <!-- Basic Style -->
+                <div class="sidebar-title"><i class="fas fa-plus-circle"></i> Insert</div>
                 <div class="toolbar-grid">
-                    <button class="btn btn-sm" onclick="App.exec('bold')"><b>B</b></button>
-                    <button class="btn btn-sm" onclick="App.exec('italic')"><i>I</i></button>
-                    <button class="btn btn-sm" onclick="App.exec('underline')"><u>U</u></button>
-                    <button class="btn btn-sm" onclick="App.exec('strikeThrough')"><s>S</s></button>
+                    <button class="btn btn-xs" onclick="App.insertImage()"><i class="fas fa-image"></i> Image</button>
+                    <button class="btn btn-xs" onclick="App.insertTable()"><i class="fas fa-table"></i> Table</button>
+                    <button class="btn btn-xs" onclick="App.insertLink()"><i class="fas fa-link"></i> Link</button>
+                    <button class="btn btn-xs" onclick="App.insertHR()"><i class="fas fa-minus"></i> Line</button>
                 </div>
-
-                <!-- Headings & Size -->
-                <div class="toolbar-grid" style="margin-top:5px; border-top:2px solid #000; padding-top:5px;">
-                    <button class="btn btn-sm" onclick="App.formatBlock('H1')">H1</button>
-                    <button class="btn btn-sm" onclick="App.formatBlock('H2')">H2</button>
-                    <button class="btn btn-sm" onclick="App.formatBlock('P')">P</button>
-                    <button class="btn btn-sm" onclick="App.exec('removeFormat')">Clr</button>
+                <div class="toolbar-grid">
+                    <button class="btn btn-xs" onclick="App.openModal('ref-modal')"><i class="fas fa-book"></i> Ref</button>
+                    <button class="btn btn-xs" onclick="App.insertStructure('abstract')"><i class="fas fa-file-alt"></i> Abstract</button>
+                    <button class="btn btn-xs" onclick="App.insertStructure('toc')"><i class="fas fa-list"></i> TOC</button>
+                    <button class="btn btn-xs" onclick="App.insertPageBreak()"><i class="fas fa-file-powerpoint"></i> Break</button>
                 </div>
-                
-                <select id="font-size-select" class="toolbar-select" onchange="App.exec('fontSize', this.value)">
-                    <option value="3">Font Size: Normal</option>
-                    <option value="1">Font Size: Tiny</option>
-                    <option value="2">Font Size: Small</option>
-                    <option value="3">Font Size: Normal</option>
-                    <option value="4">Font Size: Large</option>
-                    <option value="5">Font Size: Huge</option>
-                    <option value="6">Font Size: Massive</option>
-                    <option value="7">Font Size: Giant</option>
-                </select>
-
-                <div style="margin-top:10px;">
-                    <button class="btn btn-sm btn-full" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i> Bullet List</button>
-                    <button class="btn btn-sm btn-full" style="margin-top:5px;" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i> Numbered List</button>
+                <div class="toolbar-grid toolbar-grid-3">
+                    <button class="btn btn-xs" onclick="App.exec('subscript')"><i class="fas fa-subscript"></i></button>
+                    <button class="btn btn-xs" onclick="App.exec('superscript')"><i class="fas fa-superscript"></i></button>
+                    <button class="btn btn-xs" onclick="App.insertBlockquote()"><i class="fas fa-quote-right"></i></button>
                 </div>
             </div>
 
             <!-- Page Tools -->
             <div class="sidebar-section">
-                <span class="sidebar-title">4. Page Tools</span>
-                <button class="btn btn-sm btn-secondary btn-full" id="btn-toggle-cover" onclick="App.toggleCover()">
-                    <i class="fas fa-file"></i> <span id="cover-btn-text">Insert Cover Page</span>
+                <div class="sidebar-title"><i class="fas fa-file"></i> Page</div>
+                <button class="btn btn-sm btn-full" onclick="App.toggleCover()" id="btn-cover">
+                    <i class="fas fa-file-alt"></i> <span id="cover-btn-text">Add Cover Page</span>
                 </button>
-                <small style="display:block; margin:8px 0; color:#666; line-height:1.2;">Auto-formats cover for selected standard.</small>
-                
-                <button class="btn btn-sm btn-secondary btn-full" style="margin-bottom:8px;" onclick="App.insertStructure('abstract')">
-                    <i class="fas fa-heading"></i> Insert Abstract
+                <button class="btn btn-sm btn-full" style="margin-top: 6px;" onclick="App.openModal('settings-modal')">
+                    <i class="fas fa-cog"></i> Page Settings
                 </button>
-                <button class="btn btn-sm btn-secondary btn-full" onclick="App.insertStructure('references')">
-                    <i class="fas fa-book-open"></i> Insert Ref. Header
+                <button class="btn btn-sm btn-danger btn-full" style="margin-top: 6px;" onclick="App.openModal('clear-modal')">
+                    <i class="fas fa-trash"></i> Clear Document
                 </button>
-                <button class="btn btn-sm btn-danger btn-full" style="margin-top:8px;" onclick="App.clearPaper()"><i class="fas fa-trash"></i> Clear Paper</button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="sidebar-section">
+                <div class="sidebar-title"><i class="fas fa-chart-bar"></i> Statistics</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-words">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-chars">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-pages">1</div>
+                        <div class="stat-label">Pages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-time">0m</div>
+                        <div class="stat-label">Read Time</div>
+                    </div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <label style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--c-text-muted);">
+                        Daily Goal: <span id="goal-current">0</span> / <span id="goal-target">1000</span> words
+                    </label>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="goal-progress" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
         </aside>
 
-        <!-- MAIN WORKSPACE -->
+        <!-- Workspace -->
         <main id="workspace">
             <div id="paper" class="style-abnt">
-                <!-- Cover Page (Dynamic Content) -->
                 <div id="cover-page">
-                    <h2 contenteditable="true" id="cover-inst">INSTITUTION NAME</h2>
-                    <h3 contenteditable="true" id="cover-author">Author Name</h3>
-                    <h1 contenteditable="true" id="cover-title">Title of the Work</h1>
-                    <div style="margin-top:100px; text-align:center; line-height:1.5; text-indent:0;">
-                        <p contenteditable="true">City</p>
-                        <p contenteditable="true">Year</p>
+                    <h2 contenteditable="true" id="cover-inst" style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">INSTITUTION NAME</h2>
+                    <h3 contenteditable="true" id="cover-author" style="font-size: 12pt; margin-bottom: 60px;">Author Name</h3>
+                    <h1 contenteditable="true" id="cover-title" style="font-size: 16pt; font-weight: bold; max-width: 80%;">Title of the Academic Work</h1>
+                    <div style="margin-top: 80px; text-align: center;">
+                        <p contenteditable="true" style="margin: 4px 0;">City</p>
+                        <p contenteditable="true" style="margin: 4px 0;">Year</p>
                     </div>
                 </div>
-
-                <!-- Main Text Editor -->
-                <div id="editor-area" contenteditable="true" spellcheck="false">
+                <div id="editor-area" contenteditable="true" spellcheck="true">
                     <h1>Introduction</h1>
-                    <p>Highlight text and use the sidebar buttons to change formatting (H1, H2, Font Size).</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    <p>Welcome to Thesis.web Web - your complete academic writing suite. This editor supports ABNT, APA, and MLA formatting standards.</p>
+                    <p>Start writing your document here. Use the toolbar above or the sidebar on the left to format your text, insert images, tables, references, and more.</p>
+                    <h2>Features</h2>
+                    <p>This editor includes auto-save, export to PDF and Word, image support, table insertion, reference generator, and many other tools to help you create professional academic documents.</p>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer>
-        <div id="status-doc">Doc: Unsaved Draft</div>
-        <div id="status-stats">Words: 0 | Chars: 0</div>
-        <div id="status-save"><i class="fas fa-check-circle" style="color:var(--c-success)"></i> Ready</div>
+        <div class="footer-section">
+            <span class="footer-item" id="footer-doc">
+                <i class="fas fa-file"></i> Unsaved Document
+            </span>
+            <span class="footer-item" id="footer-standard">
+                <i class="fas fa-ruler"></i> ABNT
+            </span>
+        </div>
+        <div class="footer-section">
+            <span class="footer-item" id="footer-status">
+                <i class="fas fa-check-circle" style="color: var(--c-accent);"></i> Ready
+            </span>
+            <span class="footer-item">
+                <i class="fas fa-keyboard"></i> <span class="kbd">Ctrl</span>+<span class="kbd">S</span> Save
+            </span>
+        </div>
     </footer>
 
-    <!-- FOCUS MODE TOGGLE -->
-    <div id="zen-toggle-wrapper">
-        <button class="btn btn-icon" onclick="App.toggleZen()">
-            <i class="fas fa-compress"></i>
-        </button>
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+        <button class="zoom-btn" onclick="App.zoomIn()" title="Zoom In"><i class="fas fa-plus"></i></button>
+        <button class="zoom-btn" id="zoom-level" onclick="App.zoomReset()" title="Reset Zoom">100%</button>
+        <button class="zoom-btn" onclick="App.zoomOut()" title="Zoom Out"><i class="fas fa-minus"></i></button>
     </div>
 
-    <!-- SAVE AS MODAL -->
+    <!-- Zen Exit Button -->
+    <button class="btn btn-danger zen-exit" onclick="App.toggleZen()">
+        <i class="fas fa-times"></i> Exit Zen Mode
+    </button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Context Menu -->
+    <div class="context-menu hidden" id="context-menu">
+        <div class="context-menu-item" onclick="App.exec('cut')"><i class="fas fa-cut"></i> Cut</div>
+        <div class="context-menu-item" onclick="App.exec('copy')"><i class="fas fa-copy"></i> Copy</div>
+        <div class="context-menu-item" onclick="App.exec('paste')"><i class="fas fa-paste"></i> Paste</div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="App.exec('bold')"><i class="fas fa-bold"></i> Bold</div>
+        <div class="context-menu-item" onclick="App.exec('italic')"><i class="fas fa-italic"></i> Italic</div>
+        <div class="context-menu-item" onclick="App.exec('underline')"><i class="fas fa-underline"></i> Underline</div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="App.insertLink()"><i class="fas fa-link"></i> Insert Link</div>
+    </div>
+
+    <!-- Save Modal -->
     <div class="modal-overlay hidden" id="save-modal">
-        <div class="modal-content">
-            <div class="modal-header">Save Document</div>
-            <div class="form-group">
-                <label>Document Name</label>
-                <input type="text" id="new-doc-name" placeholder="e.g. Thesis Chapter 1">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-save"></i> Save Document</span>
+                <button class="modal-close" onclick="App.closeModal('save-modal')">&times;</button>
             </div>
-            <div class="modal-actions">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Document Name</label>
+                    <input type="text" class="form-input" id="save-name" placeholder="Enter document name...">
+                </div>
+            </div>
+            <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('save-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.saveAsNew()">Save</button>
+                <button class="btn btn-primary" onclick="App.saveDocument()">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- GUIDE MODAL -->
-    <div class="modal-overlay hidden" id="guide-modal">
-        <div class="modal-content">
-            <div class="modal-header"><i class="fas fa-info-circle"></i> Quick Guide</div>
-            <div style="font-size:12px; line-height:1.6; max-height:300px; overflow-y:auto;">
-                <b>1. My Documents:</b> Click "Save As" to store your work. Click a file name to open it. Use the <b>Trash Icon</b> to delete.
-                <br><br>
-                <b>2. Text & Titles:</b> Select text to apply <b>H1</b> (Main Title), <b>H2</b> (Subtitle), or change <b>Font Size</b> manually.
-                <br><br>
-                <b>3. Auto-Formatting:</b> Paste (Ctrl+V) text, and it will automatically format to the selected standard (ABNT/APA).
-                <br><br>
-                <b>4. Zen Mode:</b> Click the Expand icon to hide all distractions. Click the red "Exit Zen Mode" button to return.
+    <!-- Export Modal -->
+    <div class="modal-overlay hidden" id="export-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-download"></i> Export Document</span>
+                <button class="modal-close" onclick="App.closeModal('export-modal')">&times;</button>
             </div>
-            <div style="text-align:right; margin-top:20px;">
-                <button class="btn btn-primary" onclick="App.closeModal('guide-modal')">Got it</button>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab active" onclick="App.switchTab('export', 'pdf')">PDF</button>
+                    <button class="tab" onclick="App.switchTab('export', 'word')">Word</button>
+                    <button class="tab" onclick="App.switchTab('export', 'html')">HTML</button>
+                </div>
+                <div class="tab-content" id="export-tab-pdf">
+                    <div class="form-group">
+                        <label>PDF Options</label>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 400; text-transform: none;">
+                                <input type="checkbox" id="pdf-cover" checked> Include Cover
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 400; text-transform: none;">
+                                <input type="checkbox" id="pdf-toc"> Include TOC
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="App.exportPDF()">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
+                <div class="tab-content hidden" id="export-tab-word">
+                    <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
+                        Export as a Word document (.docx) that can be opened in Microsoft Word, Google Docs, or LibreOffice.
+                    </p>
+                    <button class="btn btn-primary btn-full" onclick="App.exportWord()">
+                        <i class="fas fa-file-word"></i> Download Word
+                    </button>
+                </div>
+                <div class="tab-content hidden" id="export-tab-html">
+                    <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
+                        Export as a standalone HTML file with all formatting preserved.
+                    </p>
+                    <button class="btn btn-primary btn-full" onclick="App.exportHTML()">
+                        <i class="fas fa-file-code"></i> Download HTML
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- REFERENCE GENERATOR MODAL -->
+    <!-- Reference Modal -->
     <div class="modal-overlay hidden" id="ref-modal">
-        <div class="modal-content">
-            <div class="modal-header">Reference Generator</div>
-            <div class="form-group">
-                <label>Format Standard</label>
-                <select id="ref-std" onchange="App.updateRefPreview()">
-                    <option value="abnt">ABNT (NBR 14724)</option>
-                    <option value="apa">APA (7th Ed.)</option>
-                    <option value="mla">MLA (9th Ed.)</option>
-                </select>
+        <div class="modal" style="max-width: 560px;">
+            <div class="modal-header">
+                <span><i class="fas fa-book"></i> Reference Generator</span>
+                <button class="modal-close" onclick="App.closeModal('ref-modal')">&times;</button>
             </div>
-            <div class="form-group">
-                <label>Author (Surname, Name)</label>
-                <input type="text" id="ref-author" placeholder="Silva, João" oninput="App.updateRefPreview()">
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab active" onclick="App.switchTab('ref', 'book')">Book</button>
+                    <button class="tab" onclick="App.switchTab('ref', 'article')">Article</button>
+                    <button class="tab" onclick="App.switchTab('ref', 'web')">Website</button>
+                </div>
+                
+                <div class="tab-content" id="ref-tab-book">
+                    <div class="form-group">
+                        <label>Authors (Surname, Name; separated by ;)</label>
+                        <input type="text" class="form-input" id="ref-authors" placeholder="Silva, João; Santos, Maria">
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-input" id="ref-title" placeholder="Book Title">
+                    </div>
+                    <div class="row" style="display: flex; gap: 12px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Year</label>
+                            <input type="text" class="form-input" id="ref-year" placeholder="2024">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Edition</label>
+                            <input type="text" class="form-input" id="ref-edition" placeholder="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" class="form-input" id="ref-city" placeholder="São Paulo">
+                    </div>
+                    <div class="form-group">
+                        <label>Publisher</label>
+                        <input type="text" class="form-input" id="ref-publisher" placeholder="Publisher Name">
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="ref-tab-article">
+                    <div class="form-group">
+                        <label>Authors</label>
+                        <input type="text" class="form-input" id="ref-art-authors" placeholder="Silva, João">
+                    </div>
+                    <div class="form-group">
+                        <label>Article Title</label>
+                        <input type="text" class="form-input" id="ref-art-title" placeholder="Article Title">
+                    </div>
+                    <div class="form-group">
+                        <label>Journal Name</label>
+                        <input type="text" class="form-input" id="ref-art-journal" placeholder="Journal Name">
+                    </div>
+                    <div class="row" style="display: flex; gap: 12px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Year</label>
+                            <input type="text" class="form-input" id="ref-art-year" placeholder="2024">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Volume</label>
+                            <input type="text" class="form-input" id="ref-art-volume" placeholder="1">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Pages</label>
+                            <input type="text" class="form-input" id="ref-art-pages" placeholder="1-10">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="ref-tab-web">
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" class="form-input" id="ref-web-author" placeholder="Author or Organization">
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-input" id="ref-web-title" placeholder="Page Title">
+                    </div>
+                    <div class="form-group">
+                        <label>Website Name</label>
+                        <input type="text" class="form-input" id="ref-web-site" placeholder="Website Name">
+                    </div>
+                    <div class="form-group">
+                        <label>URL</label>
+                        <input type="text" class="form-input" id="ref-web-url" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Access Date</label>
+                        <input type="date" class="form-input" id="ref-web-date">
+                    </div>
+                </div>
+                
+                <div style="background: var(--c-panel-alt); border: var(--border-width) solid var(--c-border); padding: 12px; margin-top: 16px;">
+                    <label style="font-size: 10px; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 8px; display: block;">Preview</label>
+                    <div id="ref-preview" style="font-size: 12px; line-height: 1.6;"></div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="ref-title" placeholder="Book Title" oninput="App.updateRefPreview()">
-            </div>
-            <div class="form-group">
-                <label>Year</label>
-                <input type="number" id="ref-year" placeholder="2023" oninput="App.updateRefPreview()">
-            </div>
-            <div style="background:#eee; border:2px dashed #000; padding:10px; margin-bottom:10px; font-family:serif; font-size:12px;">
-                <label style="font-family:var(--font-ui); font-size:10px; display:block; margin-bottom:4px;">PREVIEW:</label>
-                <div id="ref-preview-output" style="color:#000;">...</div>
-            </div>
-            <div class="modal-actions">
+            <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('ref-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.insertReference()"><i class="fas fa-plus"></i> Insert Ref</button>
+                <button class="btn btn-primary" onclick="App.insertReference()">
+                    <i class="fas fa-plus"></i> Insert Reference
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- PRINT INSTRUCTION MODAL -->
-    <div class="modal-overlay hidden" id="print-modal">
-        <div class="modal-content" style="border-color: var(--c-accent);">
-            <div class="modal-header"><i class="fas fa-exclamation-triangle"></i> Print Setup</div>
-            <div style="font-size:13px; line-height:1.5;">
-                <p>To get a professional PDF without browser junk (URLs, dates), please check these settings in the print dialog:</p>
-                <ol style="margin-left:20px; margin-top:10px;">
-                    <li><b>More settings</b> -> Uncheck <b>"Headers and footers"</b>.</li>
-                    <li>Check <b>"Background graphics"</b> (if you want highlight colors).</li>
-                    <li>Set margins to <b>"Default"</b> or <b>"None"</b>.</li>
-                </ol>
+    <!-- Settings Modal -->
+    <div class="modal-overlay hidden" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-cog"></i> Settings</span>
+                <button class="modal-close" onclick="App.closeModal('settings-modal')">&times;</button>
             </div>
-            <div class="modal-actions">
-                <button class="btn" onclick="App.closeModal('print-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="window.print()">Print Now</button>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Daily Word Goal</label>
+                    <input type="number" class="form-input" id="setting-goal" value="1000" min="100">
+                </div>
+                <div class="form-group">
+                    <label>Auto-save Interval (seconds)</label>
+                    <input type="number" class="form-input" id="setting-autosave" value="30" min="10" max="300">
+                </div>
+                <div class="form-group">
+                    <label>Theme</label>
+                    <select class="form-input" id="setting-theme" onchange="App.setTheme(this.value)">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Spell Check</label>
+                    <select class="form-input" id="setting-spell" onchange="App.toggleSpellCheck(this.value)">
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="App.saveSettings()">Save Settings</button>
             </div>
         </div>
     </div>
 
-    <!-- CLEAR CONFIRM MODAL -->
+    <!-- Image Modal -->
+    <div class="modal-overlay hidden" id="image-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-image"></i> Insert Image</span>
+                <button class="modal-close" onclick="App.closeModal('image-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab active" onclick="App.switchTab('image', 'upload')">Upload</button>
+                    <button class="tab" onclick="App.switchTab('image', 'url')">URL</button>
+                </div>
+                <div class="tab-content" id="image-tab-upload">
+                    <div class="file-drop-zone" id="image-drop-zone" onclick="document.getElementById('image-file').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div style="font-weight: 600;">Click or drag image here</div>
+                        <div style="font-size: 11px; color: var(--c-text-muted); margin-top: 4px;">PNG, JPG, GIF up to 5MB</div>
+                        <input type="file" id="image-file" accept="image/*" style="display: none;" onchange="App.handleImageUpload(this)">
+                    </div>
+                </div>
+                <div class="tab-content hidden" id="image-tab-url">
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input type="text" class="form-input" id="image-url" placeholder="https://example.com/image.jpg">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Caption (optional)</label>
+                    <input type="text" class="form-input" id="image-caption" placeholder="Figure 1: Description">
+                </div>
+                <div class="form-group">
+                    <label>Alignment</label>
+                    <select class="form-input" id="image-align">
+                        <option value="left">Left</option>
+                        <option value="center" selected>Center</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="App.closeModal('image-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="App.insertImageConfirm()">
+                    <i class="fas fa-plus"></i> Insert Image
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Modal -->
+    <div class="modal-overlay hidden" id="table-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-table"></i> Insert Table</span>
+                <button class="modal-close" onclick="App.closeModal('table-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Rows</label>
+                        <input type="number" class="form-input" id="table-rows" value="3" min="1" max="20">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Columns</label>
+                        <input type="number" class="form-input" id="table-cols" value="3" min="1" max="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>First Row as Header</label>
+                    <select class="form-input" id="table-header">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Caption (optional)</label>
+                    <input type="text" class="form-input" id="table-caption" placeholder="Table 1: Description">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="App.closeModal('table-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="App.insertTableConfirm()">
+                    <i class="fas fa-plus"></i> Insert Table
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Modal -->
+    <div class="modal-overlay hidden" id="link-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span><i class="fas fa-link"></i> Insert Link</span>
+                <button class="modal-close" onclick="App.closeModal('link-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="text" class="form-input" id="link-url" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>Text</label>
+                    <input type="text" class="form-input" id="link-text" placeholder="Link text (leave empty to use URL)">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="App.closeModal('link-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="App.insertLinkConfirm()">
+                    <i class="fas fa-plus"></i> Insert Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Modal -->
     <div class="modal-overlay hidden" id="clear-modal">
-        <div class="modal-content" style="border-color: var(--c-danger);">
-            <div class="modal-header"><i class="fas fa-exclamation-circle"></i> Confirm Clear</div>
-            <p>Are you sure? This will delete all your text and cannot be undone.</p>
-            <div class="modal-actions">
+        <div class="modal">
+            <div class="modal-header" style="background: var(--c-danger); color: #fff;">
+                <span><i class="fas fa-exclamation-triangle"></i> Clear Document</span>
+                <button class="modal-close" style="color: #fff;" onclick="App.closeModal('clear-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px;">Are you sure you want to clear all content?</p>
+                <p style="font-size: 12px; color: var(--c-text-muted); margin-top: 8px;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('clear-modal')">Cancel</button>
-                <button class="btn btn-danger" onclick="App.confirmClear()">Yes, Delete All</button>
+                <button class="btn btn-danger" onclick="App.clearDocument()">Clear All</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div class="toast hidden" id="toast-msg">Action Successful</div>
-
-   <script>
-    class ThesisApp {
-        constructor() {
-            this.paper = document.getElementById('paper');
-            this.editor = document.getElementById('editor-area');
-            this.currentStandard = 'abnt';
-            this.documents = [];
-            this.currentDocId = null;
-            this.saveTimer = null;
-        }
-
-        init() {
-            this.loadDocuments();
-            this.bindEvents();
-            this.updateStats();
-            
-            if (this.documents.length === 0) {
-                this.openModal('guide-modal');
-            } else {
-                Utils.toast('System Ready');
+    <script>
+        // ============================================
+        // THESIS.WEB v1 - MAIN APPLICATION
+        // ============================================
+        
+        class ThesisApp {
+            constructor() {
+                this.paper = document.getElementById('paper');
+                this.editor = document.getElementById('editor-area');
+                this.cover = document.getElementById('cover-page');
+                this.currentStandard = 'abnt';
+                this.currentDocId = null;
+                this.documents = [];
+                this.zoomLevel = 1;
+                this.settings = {
+                    goal: 1000,
+                    autosave: 30,
+                    theme: 'light'
+                };
+                this.autosaveTimer = null;
+                this.pendingImageData = null;
+                this.currentRefTab = 'book';
             }
-        }
 
-        exec(command, value = null) {
-            document.execCommand(command, false, value);
-            this.editor.focus();
-            this.triggerAutoSave();
-        }
-
-        // New Function for Headings/Titles
-        formatBlock(tag) {
-            // formatBlock changes the block element type (H1, H2, P, etc.)
-            document.execCommand('formatBlock', false, `<${tag}>`);
-            this.editor.focus();
-            this.triggerAutoSave();
-        }
-
-        bindEvents() {
-            this.editor.addEventListener('input', () => {
+            init() {
+                this.loadSettings();
+                this.loadDocuments();
+                this.bindEvents();
                 this.updateStats();
-                this.triggerAutoSave();
-            });
+                this.startAutosave();
+                
+                if (this.documents.length === 0) {
+                    this.toast('Welcome to Thesis.web Pro!', 'info');
+                } else {
+                    this.toast('Ready to continue writing', 'success');
+                }
+            }
 
-            // === SMART AUTO-FORMAT PASTE ===
-            this.editor.addEventListener('paste', (e) => {
+            // ============================================
+            // EVENT BINDING
+            // ============================================
+            
+            bindEvents() {
+                // Editor events
+                this.editor.addEventListener('input', () => {
+                    this.updateStats();
+                    this.scheduleAutosave();
+                });
+
+                // Smart paste
+                this.editor.addEventListener('paste', (e) => this.handlePaste(e));
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+                // Context menu
+                this.editor.addEventListener('contextmenu', (e) => this.showContextMenu(e));
+                document.addEventListener('click', () => this.hideContextMenu());
+
+                // Mobile menu
+                document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('mobile-open');
+                });
+
+                // Close modals on overlay click
+                document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                    overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) {
+                            this.closeModal(overlay.id);
+                        }
+                    });
+                });
+
+                // Image drag and drop
+                const dropZone = document.getElementById('image-drop-zone');
+                if (dropZone) {
+                    dropZone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        dropZone.classList.add('dragover');
+                    });
+                    dropZone.addEventListener('dragleave', () => {
+                        dropZone.classList.remove('dragover');
+                    });
+                    dropZone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        dropZone.classList.remove('dragover');
+                        const file = e.dataTransfer.files[0];
+                        if (file && file.type.startsWith('image/')) {
+                            this.processImageFile(file);
+                        }
+                    });
+                }
+
+                // Reference preview update
+                ['ref-tab-book', 'ref-tab-article', 'ref-tab-web'].forEach(tabId => {
+                    const tab = document.getElementById(tabId);
+                    if (tab) {
+                        tab.addEventListener('input', () => this.updateRefPreview());
+                    }
+                });
+
+                // Find & Replace
+                document.getElementById('find-input')?.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.findNext();
+                });
+            }
+
+            handleKeyboard(e) {
+                // Ctrl/Cmd shortcuts
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key.toLowerCase()) {
+                        case 's':
+                            e.preventDefault();
+                            if (this.currentDocId) {
+                                this.updateCurrentDoc();
+                            } else {
+                                this.openModal('save-modal');
+                            }
+                            break;
+                        case 'b':
+                            e.preventDefault();
+                            this.exec('bold');
+                            break;
+                        case 'i':
+                            e.preventDefault();
+                            this.exec('italic');
+                            break;
+                        case 'u':
+                            e.preventDefault();
+                            this.exec('underline');
+                            break;
+                        case 'h':
+                            e.preventDefault();
+                            this.toggleFindReplace();
+                            break;
+                        case 'p':
+                            e.preventDefault();
+                            this.openModal('export-modal');
+                            break;
+                    }
+                }
+
+                // F11 for Zen mode
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                    this.toggleZen();
+                }
+
+                // Escape to close modals
+                if (e.key === 'Escape') {
+                    const visibleModal = document.querySelector('.modal-overlay:not(.hidden)');
+                    if (visibleModal) {
+                        this.closeModal(visibleModal.id);
+                    }
+                    if (document.body.classList.contains('zen-mode')) {
+                        this.toggleZen();
+                    }
+                }
+            }
+
+            handlePaste(e) {
+                // Check if pasting image
+                const items = e.clipboardData?.items;
+                if (items) {
+                    for (let item of items) {
+                        if (item.type.startsWith('image/')) {
+                            e.preventDefault();
+                            const file = item.getAsFile();
+                            this.processImageFile(file);
+                            return;
+                        }
+                    }
+                }
+
+                // Handle text paste with auto-formatting
                 e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-                const paragraphs = text.split(/\r\n|\r|\n/).filter(line => line.trim() !== '');
+                const text = e.clipboardData?.getData('text/plain');
+                if (!text) return;
 
+                const paragraphs = text.split(/\r\n|\r|\n/).filter(line => line.trim() !== '');
                 if (paragraphs.length === 0) return;
 
                 const frag = document.createDocumentFragment();
-                paragraphs.forEach((paraText) => {
+                paragraphs.forEach(paraText => {
                     const p = document.createElement('p');
                     p.textContent = paraText;
                     frag.appendChild(p);
@@ -755,341 +1816,810 @@
                     selection.removeAllRanges();
                     selection.addRange(range);
                 }
-                Utils.toast('Auto-formatted pasted text');
-            });
 
-            document.getElementById('btn-guide').onclick = () => this.openModal('guide-modal');
-            document.getElementById('btn-ref').onclick = () => this.openRefModal();
-            document.getElementById('btn-zen').onclick = () => this.toggleZen();
-            
-            document.getElementById('mobile-menu-btn').onclick = () => {
-                document.getElementById('sidebar').classList.toggle('mobile-active');
-            };
-
-            document.querySelectorAll('.modal-overlay').forEach(overlay => {
-                overlay.addEventListener('click', (e) => {
-                    if(e.target === overlay) this.closeModal(overlay.id);
-                });
-            });
-        }
-
-        // ==========================================
-        // DOCUMENT MANAGEMENT SYSTEM
-        // ==========================================
-
-        loadDocuments() {
-            const saved = localStorage.getItem('thesis_files');
-            if (saved) {
-                try {
-                    this.documents = JSON.parse(saved);
-                } catch(e) { this.documents = []; }
+                this.toast('Text auto-formatted', 'success');
             }
-            this.renderDocList();
-        }
 
-        saveToStorage() {
-            localStorage.setItem('thesis_files', JSON.stringify(this.documents));
-        }
+            // ============================================
+            // DOCUMENT MANAGEMENT
+            // ============================================
 
-        renderDocList() {
-            const list = document.getElementById('doc-list');
-            list.innerHTML = ''; 
-            
-            this.documents.forEach(doc => {
-                const li = document.createElement('li');
-                li.className = `doc-item ${this.currentDocId === doc.id ? 'active' : ''}`;
-                
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'doc-name';
-                nameDiv.innerHTML = `<i class="fas fa-file-alt"></i> ${doc.name}`;
-                nameDiv.onclick = () => this.loadDocument(doc.id);
+            loadDocuments() {
+                try {
+                    const saved = localStorage.getItem('thesis_documents');
+                    this.documents = saved ? JSON.parse(saved) : [];
+                } catch (e) {
+                    this.documents = [];
+                }
+                this.renderDocList();
+            }
 
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'doc-actions';
+            saveToStorage() {
+                localStorage.setItem('thesis_documents', JSON.stringify(this.documents));
+            }
 
-                const delBtn = document.createElement('button');
-                delBtn.className = 'doc-btn-mini';
-                delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                delBtn.title = "Delete Document";
-                delBtn.onclick = (e) => {
-                    e.stopPropagation(); 
-                    e.preventDefault(); 
-                    this.deleteDocument(doc.id);
+            renderDocList() {
+                const list = document.getElementById('doc-list');
+                list.innerHTML = '';
+
+                this.documents.forEach(doc => {
+                    const li = document.createElement('li');
+                    li.className = `doc-item ${this.currentDocId === doc.id ? 'active' : ''}`;
+                    
+                    li.innerHTML = `
+                        <i class="fas fa-file-alt doc-item-icon"></i>
+                        <div class="doc-item-info">
+                            <div class="doc-item-name">${this.escapeHtml(doc.name)}</div>
+                            <div class="doc-item-date">${this.formatDate(doc.updatedAt)}</div>
+                        </div>
+                        <div class="doc-item-actions">
+                            <button class="doc-item-btn" onclick="event.stopPropagation(); App.deleteDocument(${doc.id})" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    li.addEventListener('click', () => this.loadDocument(doc.id));
+                    list.appendChild(li);
+                });
+
+                document.getElementById('btn-save').disabled = !this.currentDocId;
+            }
+
+            saveDocument() {
+                const nameInput = document.getElementById('save-name');
+                const name = nameInput.value.trim() || 'Untitled Document';
+
+                const doc = {
+                    id: Date.now(),
+                    name: name,
+                    content: this.editor.innerHTML,
+                    cover: this.cover.style.display !== 'none' ? this.cover.innerHTML : null,
+                    standard: this.currentStandard,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
                 };
 
-                actionsDiv.appendChild(delBtn);
-                li.appendChild(nameDiv);
-                li.appendChild(actionsDiv);
-                
-                list.appendChild(li);
-            });
-        }
-
-        openSaveModal() {
-            document.getElementById('new-doc-name').value = '';
-            this.openModal('save-modal');
-            setTimeout(() => document.getElementById('new-doc-name').focus(), 100);
-        }
-
-        saveAsNew() {
-            const nameInput = document.getElementById('new-doc-name');
-            const name = nameInput.value.trim() || 'Untitled Document';
-            
-            const newDoc = {
-                id: Date.now(),
-                name: name,
-                content: this.paper.outerHTML,
-                standard: this.currentStandard,
-                timestamp: new Date().toISOString()
-            };
-
-            this.documents.unshift(newDoc); 
-            this.currentDocId = newDoc.id;
-            
-            this.saveToStorage();
-            this.renderDocList();
-            this.closeModal('save-modal');
-            this.updateStatusDoc(name);
-            Utils.toast('Document Saved');
-        }
-
-        updateCurrentDoc() {
-            if (!this.currentDocId) {
-                this.openSaveModal();
-                Utils.toast('No document selected. Saving as new...');
-                return;
-            }
-
-            const docIndex = this.documents.findIndex(d => d.id === this.currentDocId);
-            if (docIndex > -1) {
-                this.documents[docIndex].content = this.paper.outerHTML;
-                this.documents[docIndex].standard = this.currentStandard;
-                this.documents[docIndex].timestamp = new Date().toISOString();
+                this.documents.unshift(doc);
+                this.currentDocId = doc.id;
                 this.saveToStorage();
-                Utils.toast('Document Updated');
-            }
-        }
-
-        loadDocument(id) {
-            const doc = this.documents.find(d => d.id === id);
-            if (!doc) return;
-
-            const temp = document.createElement('div');
-            temp.innerHTML = doc.content;
-            const newPaper = temp.firstElementChild;
-
-            if (newPaper && (newPaper.id === 'paper' || newPaper.id === 'paper-loaded')) {
-                this.paper.parentNode.replaceChild(newPaper, this.paper);
-                this.paper = newPaper;
-                this.editor = document.getElementById('editor-area');
+                this.renderDocList();
+                this.closeModal('save-modal');
+                this.updateFooterDoc(name);
+                this.toast('Document saved', 'success');
             }
 
-            this.currentDocId = id;
-            this.setStandard(doc.standard);
-            
-            this.renderDocList();
-            this.updateStatusDoc(doc.name);
-            this.updateStats();
-            
-            Utils.toast(`Loaded: ${doc.name}`);
-            
-            if(window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('mobile-active');
-            }
-        }
+            updateCurrentDoc() {
+                if (!this.currentDocId) {
+                    this.openModal('save-modal');
+                    return;
+                }
 
-        deleteDocument(id) {
-            if(confirm('Are you sure you want to delete this document?')) {
+                const doc = this.documents.find(d => d.id === this.currentDocId);
+                if (doc) {
+                    doc.content = this.editor.innerHTML;
+                    doc.cover = this.cover.style.display !== 'none' ? this.cover.innerHTML : null;
+                    doc.standard = this.currentStandard;
+                    doc.updatedAt = new Date().toISOString();
+                    this.saveToStorage();
+                    this.renderDocList();
+                    this.toast('Document updated', 'success');
+                }
+            }
+
+            loadDocument(id) {
+                const doc = this.documents.find(d => d.id === id);
+                if (!doc) return;
+
+                this.editor.innerHTML = doc.content || '';
+                if (doc.cover) {
+                    this.cover.innerHTML = doc.cover;
+                    this.cover.style.display = 'flex';
+                    document.getElementById('cover-btn-text').textContent = 'Remove Cover';
+                } else {
+                    this.cover.style.display = 'none';
+                    document.getElementById('cover-btn-text').textContent = 'Add Cover Page';
+                }
+
+                this.currentDocId = id;
+                this.setStandard(doc.standard);
+                this.renderDocList();
+                this.updateStats();
+                this.updateFooterDoc(doc.name);
+                this.toast(`Loaded: ${doc.name}`, 'success');
+
+                // Close mobile sidebar
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
+
+            deleteDocument(id) {
+                if (!confirm('Delete this document?')) return;
+
                 this.documents = this.documents.filter(d => d.id !== id);
                 if (this.currentDocId === id) {
                     this.currentDocId = null;
-                    this.clearPaper(false);
-                    this.updateStatusDoc('Unsaved Draft');
+                    this.editor.innerHTML = '<p>Start writing...</p>';
+                    this.cover.style.display = 'none';
+                    this.updateFooterDoc('Unsaved Document');
                 }
                 this.saveToStorage();
                 this.renderDocList();
-                Utils.toast('Document Deleted');
+                this.toast('Document deleted', 'info');
             }
-        }
 
-        triggerAutoSave() {
-            const status = document.getElementById('status-save');
-            if(!status) return;
-            status.innerHTML = '<i class="fas fa-pen"></i> Typing...';
-            
-            if(this.saveTimer) clearTimeout(this.saveTimer);
-            
-            this.saveTimer = setTimeout(() => {
-                if (this.currentDocId) {
-                    this.updateCurrentDoc();
-                }
-                status.innerHTML = '<i class="fas fa-check-circle" style="color:var(--c-success)"></i> Saved';
-            }, 2000);
-        }
-
-        updateStatusDoc(name) {
-            document.getElementById('status-doc').innerText = `Doc: ${name}`;
-        }
-
-        // ==========================================
-        // EDITOR LOGIC
-        // ==========================================
-
-        clearPaper(confirmAction = true) {
-            if (confirmAction) {
-                this.openModal('clear-modal');
-            } else {
+            clearDocument() {
                 this.editor.innerHTML = '<p>Start writing...</p>';
-                const cover = document.getElementById('cover-page');
-                if(cover) cover.style.display = 'none';
+                this.cover.style.display = 'none';
+                this.currentDocId = null;
+                this.renderDocList();
+                this.updateStats();
+                this.closeModal('clear-modal');
+                this.toast('Document cleared', 'info');
+            }
+
+            // ============================================
+            // EDITOR COMMANDS
+            // ============================================
+
+            exec(command, value = null) {
+                document.execCommand(command, false, value);
+                this.editor.focus();
+                this.scheduleAutosave();
+            }
+
+            formatBlock(tag) {
+                document.execCommand('formatBlock', false, `<${tag}>`);
+                this.editor.focus();
+                this.scheduleAutosave();
+            }
+
+            setStandard(standard) {
+                this.currentStandard = standard;
+                
+                // Update UI
+                document.querySelectorAll('.format-option').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.style === standard);
+                });
+                
+                // Update paper class
+                this.paper.className = '';
+                this.paper.classList.add(`style-${standard}`);
+                
+                // Update footer
+                document.getElementById('footer-standard').innerHTML = `<i class="fas fa-ruler"></i> ${standard.toUpperCase()}`;
+                
+                this.scheduleAutosave();
+            }
+
+            toggleCover() {
+                const isHidden = this.cover.style.display === 'none';
+                this.cover.style.display = isHidden ? 'flex' : 'none';
+                document.getElementById('cover-btn-text').textContent = isHidden ? 'Remove Cover' : 'Add Cover Page';
+                this.scheduleAutosave();
+            }
+
+            // ============================================
+            // INSERT FUNCTIONS
+            // ============================================
+
+            insertImage() {
+                this.pendingImageData = null;
+                document.getElementById('image-url').value = '';
+                document.getElementById('image-caption').value = '';
+                document.getElementById('image-file').value = '';
+                this.openModal('image-modal');
+            }
+
+            handleImageUpload(input) {
+                const file = input.files[0];
+                if (file) {
+                    this.processImageFile(file);
+                }
+            }
+
+            processImageFile(file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    this.toast('Image too large (max 5MB)', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.pendingImageData = e.target.result;
+                    this.toast('Image ready to insert', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            insertImageConfirm() {
+                const url = this.pendingImageData || document.getElementById('image-url').value.trim();
+                const caption = document.getElementById('image-caption').value.trim();
+                const align = document.getElementById('image-align').value;
+
+                if (!url) {
+                    this.toast('Please provide an image', 'error');
+                    return;
+                }
+
+                const figure = document.createElement('figure');
+                figure.style.textAlign = align;
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.style.maxWidth = '100%';
+                img.alt = caption || 'Image';
+                figure.appendChild(img);
+
+                if (caption) {
+                    const figcaption = document.createElement('figcaption');
+                    figcaption.textContent = caption;
+                    figure.appendChild(figcaption);
+                }
+
+                this.insertNodeAtCursor(figure);
+                this.closeModal('image-modal');
+                this.toast('Image inserted', 'success');
+            }
+
+            insertTable() {
+                this.openModal('table-modal');
+            }
+
+            insertTableConfirm() {
+                const rows = parseInt(document.getElementById('table-rows').value) || 3;
+                const cols = parseInt(document.getElementById('table-cols').value) || 3;
+                const hasHeader = document.getElementById('table-header').value === 'yes';
+                const caption = document.getElementById('table-caption').value.trim();
+
+                const table = document.createElement('table');
+                table.style.width = '100%';
+
+                for (let i = 0; i < rows; i++) {
+                    const tr = document.createElement('tr');
+                    for (let j = 0; j < cols; j++) {
+                        const cell = document.createElement(i === 0 && hasHeader ? 'th' : 'td');
+                        cell.textContent = i === 0 && hasHeader ? `Header ${j + 1}` : '';
+                        tr.appendChild(cell);
+                    }
+                    table.appendChild(tr);
+                }
+
+                if (caption) {
+                    const fig = document.createElement('figure');
+                    const figcaption = document.createElement('figcaption');
+                    figcaption.textContent = caption;
+                    fig.appendChild(table);
+                    fig.appendChild(figcaption);
+                    this.insertNodeAtCursor(fig);
+                } else {
+                    this.insertNodeAtCursor(table);
+                }
+
+                this.closeModal('table-modal');
+                this.toast('Table inserted', 'success');
+            }
+
+            insertLink() {
+                const selection = window.getSelection();
+                const selectedText = selection.toString();
+                document.getElementById('link-text').value = selectedText;
+                document.getElementById('link-url').value = '';
+                this.openModal('link-modal');
+            }
+
+            insertLinkConfirm() {
+                const url = document.getElementById('link-url').value.trim();
+                const text = document.getElementById('link-text').value.trim() || url;
+
+                if (!url) {
+                    this.toast('Please enter a URL', 'error');
+                    return;
+                }
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.textContent = text;
+                a.target = '_blank';
+                
+                this.insertNodeAtCursor(a);
+                this.closeModal('link-modal');
+                this.toast('Link inserted', 'success');
+            }
+
+            insertHR() {
+                const hr = document.createElement('hr');
+                this.insertNodeAtCursor(hr);
+                this.toast('Horizontal line inserted', 'success');
+            }
+
+            insertBlockquote() {
+                const quote = document.createElement('blockquote');
+                quote.innerHTML = '<p>Quote text here...</p>';
+                this.insertNodeAtCursor(quote);
+            }
+
+            insertStructure(type) {
+                let html = '';
+                
+                switch(type) {
+                    case 'abstract':
+                        const abstractTitle = this.currentStandard === 'abnt' ? 'RESUMO' : 'ABSTRACT';
+                        html = `<h2>${abstractTitle}</h2><p>Write your abstract here...</p>`;
+                        break;
+                    case 'references':
+                        const refTitle = this.currentStandard === 'abnt' ? 'REFERÊNCIAS' : 'REFERENCES';
+                        html = `<h2>${refTitle}</h2><p>References will be listed here...</p>`;
+                        break;
+                    case 'toc':
+                        html = `<h2>SUMÁRIO</h2><p style="color: #666;">[Table of Contents - Update manually]</p>`;
+                        break;
+                }
+
+                if (html) {
+                    document.execCommand('insertHTML', false, html);
+                    this.toast(`${type} section inserted`, 'success');
+                }
+            }
+
+            insertPageBreak() {
+                const div = document.createElement('div');
+                div.className = 'page-break';
+                div.innerHTML = '<p style="color:#999;font-size:10pt;text-align:center;">--- Page Break ---</p>';
+                this.insertNodeAtCursor(div);
+                this.toast('Page break inserted', 'success');
+            }
+
+            insertNodeAtCursor(node) {
+                const selection = window.getSelection();
+                if (selection.rangeCount) {
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(node);
+                    range.setStartAfter(node);
+                    range.setEndAfter(node);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else {
+                    this.editor.appendChild(node);
+                }
+                this.editor.focus();
+                this.scheduleAutosave();
+            }
+
+            // ============================================
+            // REFERENCE GENERATOR
+            // ============================================
+
+            updateRefPreview() {
+                const preview = document.getElementById('ref-preview');
+                if (!preview) return;
+
+                let ref = '';
+
+                if (this.currentRefTab === 'book') {
+                    const authors = document.getElementById('ref-authors')?.value || '';
+                    const title = document.getElementById('ref-title')?.value || '';
+                    const year = document.getElementById('ref-year')?.value || '';
+                    const edition = document.getElementById('ref-edition')?.value || '';
+                    const city = document.getElementById('ref-city')?.value || '';
+                    const publisher = document.getElementById('ref-publisher')?.value || '';
+
+                    if (this.currentStandard === 'abnt') {
+                        ref = `${authors}. <b>${title}</b>. ${edition ? edition + '. ed. ' : ''}${city}: ${publisher}, ${year}.`;
+                    } else if (this.currentStandard === 'apa') {
+                        ref = `${authors} (${year}). <i>${title}</i>. ${edition ? `(${edition}th ed.)` : ''} ${publisher}.`;
+                    } else {
+                        ref = `${authors}. <i>${title}</i>. ${publisher}, ${year}.`;
+                    }
+                } else if (this.currentRefTab === 'article') {
+                    const authors = document.getElementById('ref-art-authors')?.value || '';
+                    const title = document.getElementById('ref-art-title')?.value || '';
+                    const journal = document.getElementById('ref-art-journal')?.value || '';
+                    const year = document.getElementById('ref-art-year')?.value || '';
+                    const volume = document.getElementById('ref-art-volume')?.value || '';
+                    const pages = document.getElementById('ref-art-pages')?.value || '';
+
+                    if (this.currentStandard === 'abnt') {
+                        ref = `${authors}. ${title}. <b>${journal}</b>, ${city || 'S.l.'}, v. ${volume}, p. ${pages}, ${year}.`;
+                    } else {
+                        ref = `${authors} (${year}). ${title}. <i>${journal}</i>, <i>${volume}</i>, ${pages}.`;
+                    }
+                } else if (this.currentRefTab === 'web') {
+                    const author = document.getElementById('ref-web-author')?.value || '';
+                    const title = document.getElementById('ref-web-title')?.value || '';
+                    const site = document.getElementById('ref-web-site')?.value || '';
+                    const url = document.getElementById('ref-web-url')?.value || '';
+                    const date = document.getElementById('ref-web-date')?.value || '';
+
+                    if (this.currentStandard === 'abnt') {
+                        ref = `${author}. ${title}. ${site}, ${date ? new Date(date).toLocaleDateString('pt-BR') : 's.d.'}. Available at: ${url}. Accessed: ${new Date().toLocaleDateString('pt-BR')}.`;
+                    } else {
+                        ref = `${author} (${date ? new Date(date).getFullYear() : 'n.d.'}). <i>${title}</i>. ${site}. Retrieved from ${url}`;
+                    }
+                }
+
+                preview.innerHTML = ref || 'Fill in the fields to see preview...';
+            }
+
+            insertReference() {
+                const preview = document.getElementById('ref-preview');
+                const p = document.createElement('p');
+                p.innerHTML = preview.innerHTML;
+                p.style.marginBottom = '6pt';
+                p.style.textIndent = '0';
+                
+                this.insertNodeAtCursor(p);
+                this.closeModal('ref-modal');
+                this.toast('Reference inserted', 'success');
+            }
+
+            // ============================================
+            // FIND & REPLACE
+            // ============================================
+
+            toggleFindReplace() {
+                const bar = document.getElementById('find-replace-bar');
+                bar.classList.toggle('open');
+                if (bar.classList.contains('open')) {
+                    document.getElementById('find-input').focus();
+                }
+            }
+
+            findNext() {
+                const searchText = document.getElementById('find-input').value;
+                if (!searchText) return;
+
+                const selection = window.getSelection();
+                const range = document.createRange();
+                
+                // Simple find implementation
+                const content = this.editor.textContent;
+                const currentIndex = content.indexOf(searchText);
+                
+                if (currentIndex >= 0) {
+                    this.toast(`Found: "${searchText}"`, 'info');
+                } else {
+                    this.toast('Not found', 'info');
+                }
+            }
+
+            replaceNext() {
+                const searchText = document.getElementById('find-input').value;
+                const replaceText = document.getElementById('replace-input').value;
+                if (!searchText) return;
+
+                document.execCommand('insertText', false, replaceText);
+            }
+
+            replaceAll() {
+                const searchText = document.getElementById('find-input').value;
+                const replaceText = document.getElementById('replace-input').value;
+                if (!searchText) return;
+
+                const content = this.editor.innerHTML;
+                const newContent = content.split(searchText).join(replaceText);
+                this.editor.innerHTML = newContent;
+                this.toast('All occurrences replaced', 'success');
+            }
+
+            // ============================================
+            // EXPORT FUNCTIONS
+            // ============================================
+
+            exportPDF() {
+                this.toast('Generating PDF...', 'info');
+                
+                const element = this.paper.cloneNode(true);
+                const cover = element.querySelector('#cover-page');
+                if (cover && getComputedStyle(cover).display === 'none') {
+                    cover.remove();
+                }
+
+                // Remove page break indicators
+                element.querySelectorAll('.page-break').forEach(pb => {
+                    pb.style.borderTop = 'none';
+                    pb.innerHTML = '';
+                });
+
+                const opt = {
+                    margin: 0,
+                    filename: `thesis-document-${Date.now()}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    this.toast('PDF downloaded successfully', 'success');
+                    this.closeModal('export-modal');
+                }).catch(err => {
+                    console.error(err);
+                    this.toast('Error generating PDF', 'error');
+                });
+            }
+
+            exportWord() {
+                const content = this.generateHTMLContent();
+                const blob = new Blob(['\ufeff', content], {
+                    type: 'application/msword'
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `thesis-document-${Date.now()}.doc`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.toast('Word document downloaded', 'success');
+                this.closeModal('export-modal');
+            }
+
+            exportHTML() {
+                const content = this.generateHTMLContent();
+                const blob = new Blob([content], { type: 'text/html' });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `thesis-document-${Date.now()}.html`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.toast('HTML document downloaded', 'success');
+                this.closeModal('export-modal');
+            }
+
+            generateHTMLContent() {
+                const style = this.currentStandard === 'abnt' ? `
+                    body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: justify; padding: 3cm 2cm 2cm 3cm; }
+                    h1 { font-size: 14pt; text-align: center; }
+                    h2 { font-size: 12pt; font-weight: bold; }
+                    p { text-indent: 1.25cm; margin-bottom: 0; }
+                ` : this.currentStandard === 'apa' ? `
+                    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2; padding: 1in; }
+                    h1 { font-size: 12pt; text-align: center; font-weight: bold; }
+                    p { text-indent: 0.5in; margin-bottom: 0; }
+                ` : `
+                    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2; padding: 1in; }
+                    h1 { font-size: 14pt; text-align: center; }
+                    p { text-indent: 0.5in; }
+                `;
+
+                return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Thesis Document</title>
+    <style>${style}</style>
+</head>
+<body>
+ ${this.cover.style.display !== 'none' ? this.cover.outerHTML : ''}
+ ${this.editor.innerHTML}
+</body>
+</html>`;
+            }
+
+            // ============================================
+            // ZOOM FUNCTIONS
+            // ============================================
+
+            zoomIn() {
+                this.zoomLevel = Math.min(1.5, this.zoomLevel + 0.1);
+                this.applyZoom();
+            }
+
+            zoomOut() {
+                this.zoomLevel = Math.max(0.5, this.zoomLevel - 0.1);
+                this.applyZoom();
+            }
+
+            zoomReset() {
+                this.zoomLevel = 1;
+                this.applyZoom();
+            }
+
+            applyZoom() {
+                this.paper.style.transform = `scale(${this.zoomLevel})`;
+                document.getElementById('zoom-level').textContent = Math.round(this.zoomLevel * 100) + '%';
+            }
+
+            // ============================================
+            // ZEN MODE
+            // ============================================
+
+            toggleZen() {
+                document.body.classList.toggle('zen-mode');
+                const isActive = document.body.classList.contains('zen-mode');
+                this.toast(isActive ? 'Zen mode enabled' : 'Zen mode disabled', 'info');
+            }
+
+            // ============================================
+            // CONTEXT MENU
+            // ============================================
+
+            showContextMenu(e) {
+                e.preventDefault();
+                const menu = document.getElementById('context-menu');
+                menu.style.left = e.pageX + 'px';
+                menu.style.top = e.pageY + 'px';
+                menu.classList.remove('hidden');
+            }
+
+            hideContextMenu() {
+                document.getElementById('context-menu').classList.add('hidden');
+            }
+
+            // ============================================
+            // STATISTICS
+            // ============================================
+
+            updateStats() {
+                const text = this.editor.innerText || '';
+                const words = text.trim().split(/\s+/).filter(w => w.length > 0 && /[\w\u00C0-\u00FF]/.test(w)).length;
+                const chars = text.length;
+                const pages = Math.max(1, Math.ceil(words / 300));
+                const readTime = Math.max(1, Math.ceil(words / 200));
+
+                document.getElementById('stat-words').textContent = words.toLocaleString();
+                document.getElementById('stat-chars').textContent = chars.toLocaleString();
+                document.getElementById('stat-pages').textContent = pages;
+                document.getElementById('stat-time').textContent = readTime + 'm';
+
+                // Update goal progress
+                const goal = this.settings.goal || 1000;
+                const progress = Math.min(100, (words / goal) * 100);
+                document.getElementById('goal-current').textContent = words;
+                document.getElementById('goal-target').textContent = goal;
+                document.getElementById('goal-progress').style.width = progress + '%';
+            }
+
+            // ============================================
+            // SETTINGS
+            // ============================================
+
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem('thesis_settings');
+                    if (saved) {
+                        this.settings = { ...this.settings, ...JSON.parse(saved) };
+                    }
+                } catch (e) {}
+
+                // Apply theme
+                if (this.settings.theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.getElementById('setting-theme').value = 'dark';
+                }
+
+                // Apply goal
+                document.getElementById('setting-goal').value = this.settings.goal;
+                document.getElementById('setting-autosave').value = this.settings.autosave;
+            }
+
+            saveSettings() {
+                this.settings.goal = parseInt(document.getElementById('setting-goal').value) || 1000;
+                this.settings.autosave = parseInt(document.getElementById('setting-autosave').value) || 30;
+                
+                localStorage.setItem('thesis_settings', JSON.stringify(this.settings));
+                this.closeModal('settings-modal');
+                this.toast('Settings saved', 'success');
                 this.updateStats();
             }
-        }
 
-        confirmClear() {
-            this.clearPaper(false);
-            this.closeModal('clear-modal');
-            Utils.toast('Paper Cleared');
-        }
-
-        insertStructure(type) {
-            if (!this.editor) return;
-            const h2 = document.createElement('h2');
-            let label = '';
-            if (type === 'abstract') label = (this.currentStandard === 'abnt') ? 'RESUMO' : 'ABSTRACT';
-            else if (type === 'references') label = (this.currentStandard === 'abnt') ? 'REFERÊNCIAS' : 'REFERENCES';
-
-            h2.innerText = label;
-            const p = document.createElement('p');
-            p.innerHTML = '<br>';
-
-            try {
-                if (type === 'abstract') {
-                    this.editor.prepend(h2);
-                    this.editor.prepend(p);
+            setTheme(theme) {
+                this.settings.theme = theme;
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
                 } else {
-                    this.editor.appendChild(h2);
-                    this.editor.appendChild(p);
+                    document.documentElement.removeAttribute('data-theme');
                 }
-                setTimeout(() => {
-                    this.editor.focus();
-                    const range = document.createRange();
-                    const sel = window.getSelection();
-                    range.selectNodeContents(p);
-                    range.collapse(false); 
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }, 10);
-                this.triggerAutoSave();
-                Utils.toast(`${label} Section Added`);
-            } catch (e) { console.error(e); }
-        }
-
-        openRefModal() {
-            document.getElementById('ref-std').value = this.currentStandard;
-            ['ref-author','ref-title','ref-year'].forEach(id => document.getElementById(id).value = '');
-            this.updateRefPreview();
-            this.openModal('ref-modal');
-        }
-
-        updateRefPreview() {
-            const std = document.getElementById('ref-std').value;
-            const auth = document.getElementById('ref-author').value || 'AUTHOR';
-            const title = document.getElementById('ref-title').value || 'TITLE';
-            const year = document.getElementById('ref-year').value || 'YEAR';
-            let html = '';
-            if (std === 'abnt') html = `${auth}. <b>${title}</b>. ${year}.`;
-            else if (std === 'apa') html = `${auth}. (${year}). <i>${title}</i>.`;
-            else html = `${auth}. <i>${title}</i>. ${year}.`;
-            document.getElementById('ref-preview-output').innerHTML = html;
-        }
-
-        insertReference() {
-            const html = document.getElementById('ref-preview-output').innerHTML;
-            const p = document.createElement('p');
-            p.innerHTML = html;
-            p.style.marginBottom = "0"; 
-            this.editor.appendChild(p);
-            const newP = document.createElement('p');
-            newP.innerHTML = '<br>';
-            this.editor.appendChild(newP);
-            this.closeModal('ref-modal');
-            this.triggerAutoSave();
-            Utils.toast('Reference Added');
-        }
-
-        setStandard(std) {
-            this.currentStandard = std;
-            document.querySelectorAll('.format-option').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.querySelector(`.format-option[data-style="style-${std}"]`);
-            if(activeBtn) activeBtn.classList.add('active');
-
-            this.paper.className = '';
-            this.paper.classList.add(`style-${std}`);
-
-            const names = { abnt: 'ABNT (NBR 14724)', apa: 'APA (7th Ed)', mla: 'MLA (9th Ed)' };
-            document.getElementById('status-std').innerText = `STD: ${names[std]}`;
-            this.triggerAutoSave();
-        }
-
-        toggleCover() {
-            const cover = document.getElementById('cover-page');
-            const btnText = document.getElementById('cover-btn-text');
-            const btn = document.getElementById('btn-toggle-cover');
-            const isHidden = getComputedStyle(cover).display === 'none';
-            
-            if (isHidden) {
-                cover.style.display = 'flex';
-                btnText.innerText = 'Remove Cover Page';
-                btn.classList.add('btn-danger');
-                btn.classList.remove('btn-secondary');
-            } else {
-                cover.style.display = 'none';
-                btnText.innerText = 'Insert Cover Page';
-                btn.classList.remove('btn-danger');
-                btn.classList.add('btn-secondary');
             }
-            this.triggerAutoSave();
+
+            toggleSpellCheck(value) {
+                this.editor.spellcheck = value === 'true';
+            }
+
+            // ============================================
+            // AUTOSAVE
+            // ============================================
+
+            startAutosave() {
+                setInterval(() => {
+                    if (this.currentDocId) {
+                        this.updateCurrentDoc();
+                    }
+                }, (this.settings.autosave || 30) * 1000);
+            }
+
+            scheduleAutosave() {
+                document.getElementById('footer-status').innerHTML = '<i class="fas fa-pen"></i> Editing...';
+            }
+
+            // ============================================
+            // MODAL FUNCTIONS
+            // ============================================
+
+            openModal(id) {
+                document.getElementById(id)?.classList.remove('hidden');
+            }
+
+            closeModal(id) {
+                document.getElementById(id)?.classList.add('hidden');
+            }
+
+            switchTab(context, tab) {
+                this.currentRefTab = tab;
+                
+                // Update tab buttons
+                document.querySelectorAll(`[onclick*="App.switchTab('${context}'"]`).forEach(btn => {
+                    btn.classList.toggle('active', btn.textContent.toLowerCase() === tab);
+                });
+
+                // Update tab content
+                document.querySelectorAll(`[id^="${context}-tab-"]`).forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${context}-tab-${tab}`)?.classList.remove('hidden');
+
+                // Update reference preview if in reference modal
+                if (context === 'ref') {
+                    this.updateRefPreview();
+                }
+            }
+
+            // ============================================
+            // UTILITY FUNCTIONS
+            // ============================================
+
+            toast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icons = {
+                    success: 'check-circle',
+                    error: 'exclamation-circle',
+                    info: 'info-circle'
+                };
+                
+                toast.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${message}`;
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            formatDate(dateStr) {
+                if (!dateStr) return '';
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('pt-BR', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+
+            updateFooterDoc(name) {
+                document.getElementById('footer-doc').innerHTML = `<i class="fas fa-file"></i> ${this.escapeHtml(name)}`;
+            }
         }
 
-        updateStats() {
-            const text = this.editor.innerText || '';
-            const words = text.trim().split(/[\s\n]+/).filter(w => w.length > 0 && w.match(/[a-zA-Z0-9\u00C0-\u00FF]/)).length;
-            const chars = text.length;
-            const stats = document.getElementById('status-stats');
-            if(stats) stats.innerText = `Words: ${words} | Chars: ${chars}`;
-        }
-
-        // UTILS
-        openModal(id) {
-            const modal = document.getElementById(id);
-            if(modal) modal.classList.remove('hidden');
-        }
-        closeModal(id) {
-            const modal = document.getElementById(id);
-            if(modal) modal.classList.add('hidden');
-        }
-        toggleZen() {
-            document.body.classList.toggle('focus-mode');
-            const isActive = document.body.classList.contains('focus-mode');
-            Utils.toast(isActive ? 'Zen Mode On' : 'Zen Mode Off');
-        }
-    }
-
-    const Utils = {
-        toast: (msg) => {
-            const t = document.getElementById('toast-msg');
-            if(!t) return;
-            t.innerText = msg;
-            t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 2500);
-        }
-    };
-
-    window.addEventListener('DOMContentLoaded', () => {
-        window.App = new ThesisApp();
-        window.App.init();
-    });
-</script>
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            window.App = new ThesisApp();
+            window.App.init();
+        });
+    </script>
 </body>
 </html>

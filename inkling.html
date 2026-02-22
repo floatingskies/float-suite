@@ -3,43 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inkling.Web - SVG Editor</title>
+    <title>Inkling.Web - Complete Vector Editor</title>
     
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#0f0f0f">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Archivo+Black&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Abril+Fatface&family=Bebas+Neue&family=Caveat:wght@700&family=JetBrains+Mono:wght@400;700&family=Lobster&family=Montserrat:wght@400;700;900&family=Oswald:wght@700&family=Playfair+Display:wght@700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --c-bg: #f0f0f0; /* Light concrete */
-            --c-panel: #ffffff;
-            --c-border: #000000; 
-            --c-text: #000000;
+            --c-bg: #0f0f0f;
+            --c-panel: #1a1a1a;
+            --c-border: #333;
+            --c-text: #e0e0e0;
+            --c-muted: #666;
+            --c-primary: #fff;
+            --c-accent: #00ffaa;
+            --c-danger: #ff3333;
             
-            --c-primary: #000000;
-            --c-accent: #3b82f6; /* Pure Blue for selection */
-            --c-hover: #f4f4f4;
-            
-            --border-width: 3px;
-            --shadow-hard: 4px 4px 0px 0px #000000;
-            --shadow-active: 2px 2px 0px 0px #000000;
-            --shadow-panel: 6px 6px 0px 0px #000000;
+            --border-width: 2px;
+            --shadow-brutal: 4px 4px 0px 0px rgba(0,0,0,0.8);
             
             --font-ui: 'Space Mono', monospace;
             --font-head: 'Archivo Black', sans-serif;
             
             --sidebar-w: 300px;
             --header-h: 50px;
+            --toolbar-w: 50px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
         body {
             background-color: var(--c-bg);
-            /* Graph paper pattern */
-            background-image: radial-gradient(#000 1px, transparent 1px);
-            background-size: 20px 20px;
-            
             color: var(--c-text);
             font-family: var(--font-ui);
             font-size: 12px;
@@ -51,277 +48,163 @@
             user-select: none;
         }
 
-        /* BRUTALIST BUTTONS */
         .btn {
-            background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-            color: var(--c-text);
-            padding: 8px 12px;
-            font-family: var(--font-ui);
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 11px;
-            transition: all 0.1s;
-            box-shadow: 2px 2px 0px 0px #000;
+            background: var(--c-panel); border: var(--border-width) solid var(--c-border);
+            color: var(--c-text); padding: 8px 12px; font-family: var(--font-ui);
+            font-weight: 700; cursor: pointer; display: inline-flex;
+            align-items: center; justify-content: center; gap: 8px;
+            font-size: 11px; transition: all 0.1s; box-shadow: var(--shadow-brutal);
         }
-        .btn:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 4px 4px 0px 0px #000;
-            background: #fff;
-        }
-        .btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px 0px #000;
-        }
-        .btn.active {
-            background: var(--c-accent);
-            color: #fff;
-            border-color: #000;
-            box-shadow: 2px 2px 0px 0px #000;
-        }
-        .btn-sm { padding: 4px 8px; font-size: 10px; }
-        .btn-icon { width: 40px; padding: 0; font-size: 14px; justify-content: center; }
+        .btn:hover { background: #222; border-color: var(--c-accent); color: var(--c-accent); transform: translate(-2px, -2px); }
+        .btn:active { transform: translate(2px, 2px); box-shadow: none; }
+        .btn.active { background: var(--c-accent); color: #000; border-color: #fff; }
+        .btn-icon { width: 40px; height: 40px; padding: 0; }
+        .btn-sm { padding: 4px 8px; font-size: 10px; box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.8); }
 
-        /* PANELS */
-        .panel {
-            background: var(--c-panel);
-            border-right: var(--border-width) solid var(--c-border);
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-        }
-
+        .panel { background: var(--c-panel); display: flex; flex-direction: column; z-index: 10; }
         .panel-header {
-            background: #000;
-            color: #fff;
+            background: #000; color: var(--c-accent);
             border-bottom: var(--border-width) solid var(--c-border);
-            padding: 8px 15px;
-            font-family: var(--font-head);
-            font-size: 14px;
-            letter-spacing: 1px;
-            display: flex; justify-content: space-between; align-items: center;
-            text-transform: uppercase;
+            padding: 10px; font-family: var(--font-head); font-size: 12px;
+            letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* INPUTS */
-        input[type="text"], input[type="number"], select {
-            width: 100%; 
-            border: 2px solid #000; 
-            padding: 6px 8px;
-            background: #fff; 
-            color: #000; 
-            font-family: var(--font-ui); 
-            font-weight: bold;
+        input, select {
+            width: 100%; border: 2px solid #333; padding: 6px;
+            background: #222; color: #fff; font-family: var(--font-ui); font-weight: bold; border-radius: 0;
         }
-        input[type="color"] {
-            width: 100%; height: 35px; 
-            border: 2px solid #000; 
-            padding: 0; background: none; cursor: pointer; 
-        }
-        input[type="range"] {
-            width: 100%; 
-            accent-color: #000; 
-            cursor: pointer; 
-            height: 4px;
-            background: #ddd;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 20px; width: 20px;
-            background: #000;
-            border: 2px solid #fff;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 0 #000;
-        }
+        input:focus { border-color: var(--c-accent); }
+        input[type="color"] { height: 32px; padding: 0; cursor: pointer; border: 2px solid #444; }
+        input[type="range"] { accent-color: var(--c-accent); }
 
         header {
-            height: var(--header-h);
-            border-bottom: var(--border-width) solid var(--c-border);
-            background: var(--c-panel);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            z-index: 100;
-            box-shadow: 0 4px 0 0 #000;
+            height: var(--header-h); border-bottom: var(--border-width) solid #000;
+            background: #111; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+            z-index: 100; box-shadow: 0 4px 0 0 #000;
         }
-        .logo { 
-            font-family: var(--font-head); 
-            font-size: 20px; 
-            text-transform: uppercase; 
-            background: #000; 
-            color: #fff; 
-            padding: 2px 8px;
-            transform: rotate(-1deg);
-        }
+        .logo { font-family: var(--font-head); font-size: 22px; color: #fff; letter-spacing: -1px; }
+        .logo span { color: var(--c-accent); }
 
         #workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
 
         #toolbar {
-            width: 60px;
-            border-right: var(--border-width) solid var(--c-border);
-            padding: 15px 0;
-            gap: 15px;
-            display: flex; flex-direction: column;
-            align-items: center;
-            background: var(--c-panel);
+            width: var(--toolbar-w); border-right: var(--border-width) solid #000;
+            padding: 10px 0; gap: 2px;
+            display: flex; flex-direction: column; align-items: center; background: #111;
         }
+        .tool-separator { width: 30px; height: 2px; background: #333; margin: 8px 0; }
 
         #viewport {
-            flex: 1;
-            background-color: #fff;
-            position: relative;
-            overflow: hidden;
+            flex: 1; background-color: #1a1a1a;
+            position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
+            background-image: linear-gradient(45deg, #111 25%, transparent 25%), linear-gradient(-45deg, #111 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111 75%), linear-gradient(-45deg, transparent 75%, #111 75%);
+            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
         
+        /* Container for Zoom */
         #artboard-container {
-            width: 100%; height: 100%;
             position: relative;
-            display: flex; align-items: center; justify-content: center;
-            /* Shadow behind artboard */
+            width: 800px; height: 600px; /* Base size for coordinate system */
+            transform-origin: center center;
         }
 
         #artboard {
-            width: 800px; height: 600px;
+            width: 100%; height: 100%;
             background: #fff;
-            box-shadow: var(--shadow-panel);
+            box-shadow: 0 0 0 2px #fff, 0 0 30px rgba(0,0,0,0.5), 0 0 0 4px #000;
             position: relative;
-            overflow: visible; 
-            flex-shrink: 0;
-            border: var(--border-width) solid #000;
+            overflow: visible; flex-shrink: 0;
         }
         
         svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
-        /* ELEMENTS */
-        .vector-element { cursor: pointer; vector-effect: non-scaling-stroke; }
-        .vector-element:hover { stroke: var(--c-accent); stroke-width: 2px; stroke-dasharray: 5,5; }
+        .vector-element { cursor: move; vector-effect: non-scaling-stroke; }
+        .vector-element:hover { filter: drop-shadow(0 0 5px var(--c-accent)); }
         .vector-element.selected { 
-            stroke: var(--c-accent) !important; 
-            stroke-width: 3px !important; 
-            stroke-dasharray: 5,3; 
-            animation: dash 1s linear infinite;
+            stroke: var(--c-accent) !important; stroke-width: 2px !important; stroke-dasharray: 5,5; animation: dash 0.5s linear infinite;
             paint-order: stroke fill;
         }
-        /* State when editing color: remove the selection highlight to see the real color */
-        .vector-element.editing-color { 
-            stroke: inherit !important; 
-            stroke-width: inherit !important; 
-            stroke-dasharray: none !important; 
-            animation: none !important;
-        }
-        
+
         @keyframes dash { to { stroke-dashoffset: 16; } }
 
-        /* NODE EDITOR */
-        #node-editor-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1000; overflow: visible;
-        }
-        #node-gizmo-svg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; overflow: visible;
-        }
+        /* SIDEBAR */
+        #properties { width: var(--sidebar-w); border-left: var(--border-width) solid #000; }
+        .prop-section { padding: 15px; border-bottom: var(--border-width) solid #000; }
+        .prop-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .prop-label { min-width: 30px; font-size: 10px; color: var(--c-muted); }
+        .section-title { font-family: var(--font-head); font-size: 11px; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .section-title::after { content: ''; flex: 1; height: 2px; background: #333; }
 
-        .gizmo-line { stroke: #000; stroke-width: 2px; opacity: 0.5; }
-        .gizmo-handle { fill: #fff; stroke: #000; stroke-width: 2px; cursor: pointer; pointer-events: all; }
-        .gizmo-handle:hover { fill: var(--c-accent); stroke: #000; }
-        
-        .node-anchor { fill: #000; stroke: #fff; stroke-width: 2px; cursor: move; pointer-events: all; }
-        .node-anchor.selected { fill: var(--c-accent); stroke: #fff; stroke-width: 3px; }
-
-        /* HOVER DELETE BUTTON */
-        #hover-delete-btn {
-            position: absolute;
-            width: 24px; height: 24px;
-            background: #ff4d4d;
-            color: #fff;
-            border: 2px solid #000;
-            display: none; /* Flex when shown */
-            align-items: center; justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 500;
-            box-shadow: 2px 2px 0 0 #000;
-            font-family: var(--font-head);
-            font-size: 14px;
-        }
-        #hover-delete-btn:hover {
-            background: #000;
-            color: #ff4d4d;
-            transform: scale(1.1);
-        }
-
-        /* PROPERTIES */
-        #properties {
-            width: var(--sidebar-w);
-            border-left: var(--border-width) solid var(--c-border);
-            display: flex; flex-direction: column;
-            background: var(--c-panel);
-        }
-        .prop-group { padding: 15px; border-bottom: 3px solid #000; }
-        .prop-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
-        .prop-label { font-size: 10px; font-weight: bold; min-width: 40px; }
-        .section-title { 
-            font-family: var(--font-head); 
-            font-size: 12px; 
-            text-transform: uppercase; 
-            margin-bottom: 10px; 
-            display: block; 
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
-        }
-
-        /* LAYERS */
-        #layers-list { flex: 1; overflow-y: auto; padding: 0; background: #fff; }
+        #layers-list { flex: 1; overflow-y: auto; background: #111; }
         .layer-item {
-            padding: 10px 15px;
-            border-bottom: 2px solid #000;
-            cursor: pointer;
-            display: flex; align-items: center; gap: 10px;
-            font-size: 11px;
-            font-weight: bold;
-            background: #fff;
+            padding: 10px; border-bottom: 1px solid #222; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-size: 11px;
         }
-        .layer-item:hover { background: #f0f0f0; }
-        .layer-item.active { background: var(--c-accent); color: #fff; }
-        .layer-controls { margin-left: auto; display: flex; gap: 8px; }
-        .layer-btn { cursor: pointer; color: inherit; }
+        .layer-item:hover { background: #1a1a1a; }
+        .layer-item.active { background: #000; color: var(--c-accent); border-left: 3px solid var(--c-accent); }
 
-        /* TOAST */
-        .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: #000; color: #fff;
-            padding: 10px 20px; 
-            font-family: var(--font-head); font-size: 14px;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0 0 var(--c-accent);
-            opacity: 0; transition: all 0.2s; pointer-events: none; z-index: 2000;
-            border: 2px solid #fff;
+        /* TEXT EDIT OVERLAY */
+        #text-edit-overlay {
+            position: absolute;
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--c-accent);
+            color: #000;
+            font-family: sans-serif;
+            padding: 4px;
+            resize: none;
+            overflow: hidden;
+            z-index: 2000;
+            min-width: 50px;
+            outline: none;
+            box-shadow: var(--shadow-brutal);
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        #status-bar {
+            height: 24px; background: #000; border-top: 1px solid #333;
+            display: flex; align-items: center; padding: 0 15px; font-size: 10px;
+            color: var(--c-muted); justify-content: space-between;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #000; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--c-accent); }
 
     </style>
 </head>
-<body data-theme="brutalist">
+<body>
 
     <header>
-        <div class="logo">INKLING<strong style="color:var(--c-accent)">.WEB</strong></div>
+        <div class="logo">INKLING<span>.</span>.WEB V2</div>
         <div style="display:flex; gap:10px;">
-            <button class="btn" id="btn-undo"><i class="fas fa-undo"></i> Undo</button>
-            <button class="btn" id="btn-redo"><i class="fas fa-redo"></i> Redo</button>
-            <button class="btn" id="btn-export" style="background:var(--c-accent); color:#fff;"><i class="fas fa-file-export"></i> SVG</button>
+            <button class="btn btn-sm" id="btn-undo"><i class="fas fa-undo"></i></button>
+            <button class="btn btn-sm" id="btn-redo"><i class="fas fa-redo"></i></button>
+            <button class="btn btn-sm" id="btn-import" style="border-color:var(--c-accent);"><i class="fas fa-file-import"></i> Import</button>
+            <button class="btn btn-sm" id="btn-export" style="background:var(--c-accent); color:#000;"><i class="fas fa-file-export"></i> SVG</button>
         </div>
     </header>
 
     <div id="workspace">
         <nav class="panel" id="toolbar">
             <button class="btn btn-icon active" id="tool-select" title="Select (V)"><i class="fas fa-mouse-pointer"></i></button>
-            <button class="btn btn-icon" id="tool-node" title="Node Tool (N) - Edit Paths"><i class="fas fa-bezier-curve"></i></button>
-            <div style="width:60%; height:3px; background:#000; margin:4px 0;"></div>
+            <button class="btn btn-icon" id="tool-node" title="Node Edit (N)"><i class="fas fa-bezier-curve"></i></button>
+            <div class="tool-separator"></div>
+            
+            <button class="btn btn-icon" id="tool-text" title="Text (T)"><i class="fas fa-font"></i></button>
+            <button class="btn btn-icon" id="tool-freehand" title="Brush (B)"><i class="fas fa-paintbrush"></i></button>
+            <div class="tool-separator"></div>
+
             <button class="btn btn-icon" id="tool-rect" title="Rect (R)"><i class="far fa-square"></i></button>
             <button class="btn btn-icon" id="tool-circle" title="Circle (C)"><i class="far fa-circle"></i></button>
-            <button class="btn btn-icon" id="tool-pen" title="Pen Tool (P) - Click to add point, Drag to curve, Enter to finish"><i class="fas fa-pen-nib"></i></button>
+            <button class="btn btn-icon" id="tool-polygon" title="Polygon (Y)"><i class="fas fa-draw-polygon"></i></button>
+            <button class="btn btn-icon" id="tool-star" title="Star (S)"><i class="fas fa-star"></i></button>
+            <button class="btn btn-icon" id="tool-line" title="Line (L)"><i class="fas fa-minus"></i></button>
+            
+            <div style="margin-top:auto;">
+                 <button class="btn btn-icon" id="tool-hand" title="Pan (H)"><i class="fas fa-hand-paper"></i></button>
+            </div>
         </nav>
 
         <main id="viewport">
@@ -331,9 +214,8 @@
                         <defs></defs>
                         <g id="drawing-layer"></g>
                     </svg>
-                    <svg id="node-gizmo-svg" viewBox="0 0 800 600" style="position: absolute; top:0; left:0; width:100%; height:100%;"></svg>
-                    <!-- Floating Delete Button -->
-                    <div id="hover-delete-btn">X</div>
+                    <!-- Text Area Overlay positioned via JS coordinates -->
+                    <textarea id="text-edit-overlay" rows="1"></textarea>
                 </div>
             </div>
         </main>
@@ -342,17 +224,23 @@
             <div class="panel-header">PROPERTIES</div>
             
             <div id="selection-props" style="display:none;">
-                <!-- Radius Control (Only for Rects) -->
-                <div id="radius-group" class="prop-group" style="display:none;">
-                    <span class="section-title" style="color:var(--c-accent);">CORNER RADIUS</span>
+                
+                <!-- TYPOGRAPHY -->
+                <div id="text-props" class="prop-section" style="display:none;">
+                    <div class="section-title">TYPOGRAPHY</div>
                     <div class="prop-row">
-                        <input type="range" id="inp-radius-range" min="0" max="100" step="1">
-                        <input type="number" id="inp-radius-num" min="0" style="width:60px;">
+                        <select id="inp-font-family" style="width: 100%;"></select>
+                        <button class="btn btn-sm" id="btn-add-font" title="Import Custom Font" style="width:30px; padding:0;"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Size</span> <input type="number" id="inp-font-size" min="1">
+                        <span class="prop-label">Wt</span> <select id="inp-font-weight"><option value="400">Reg</option><option value="700">Bold</option><option value="900">Black</option></select>
                     </div>
                 </div>
 
-                <div class="prop-group">
-                    <span class="section-title">GEOMETRY</span>
+                <!-- GEOMETRY -->
+                <div class="prop-section">
+                    <div class="section-title">TRANSFORM</div>
                     <div class="prop-row">
                         <span class="prop-label">X</span> <input type="number" id="inp-x">
                         <span class="prop-label">Y</span> <input type="number" id="inp-y">
@@ -361,35 +249,48 @@
                         <span class="prop-label">W</span> <input type="number" id="inp-w">
                         <span class="prop-label">H</span> <input type="number" id="inp-h">
                     </div>
-                </div>
-
-                <div class="prop-group">
-                    <span class="section-title">STYLE</span>
                     <div class="prop-row">
-                        <span class="prop-label">Fill</span> <input type="color" id="inp-fill">
+                        <span class="prop-label">Rot</span> <input type="number" id="inp-rotation" value="0">
                     </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Stroke</span> 
-                        <div style="display:flex; gap:5px; flex:1;">
-                            <input type="color" id="inp-stroke">
-                            <!-- Fixed ID for JS access -->
-                            <input type="number" id="inp-stroke-width" placeholder="px" style="width:50px;">
-                        </div>
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Opacity</span> <input type="range" id="inp-opacity" min="0" max="1" step="0.1">
+                    <div class="prop-row" id="row-radius" style="display:none;">
+                        <span class="prop-label">Rad</span> <input type="range" id="inp-radius" min="0" max="100" value="0">
                     </div>
                 </div>
 
-                <div class="prop-group">
-                    <span class="section-title">ACTIONS</span>
-                    <button class="btn btn-sm" id="btn-topath" style="width:100%; margin-bottom:10px; border-style:dashed;">
-                        <i class="fas fa-vector-square"></i> Convert to Path
-                    </button>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn btn-sm" id="btn-dup" style="flex:1;"><i class="fas fa-copy"></i></button>
-                        <button class="btn btn-sm" id="btn-del" style="flex:1; background:#000; color:#fff;"><i class="fas fa-trash"></i></button>
+                <!-- APPEARANCE -->
+                <div class="prop-section">
+                    <div class="section-title">BORDERS & FILL</div>
+                    <div class="prop-row">
+                        <span class="prop-label">Fill</span> <input type="color" id="inp-fill" value="#000000">
                     </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Strk</span> <input type="color" id="inp-stroke" value="#ffffff">
+                        <input type="number" id="inp-stroke-width" value="0" style="width:40px;">
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Type</span> 
+                        <select id="inp-stroke-style">
+                            <option value="solid">Solid</option>
+                            <option value="dashed">Dashed</option>
+                            <option value="dotted">Dotted</option>
+                        </select>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Opac</span> <input type="range" id="inp-opacity" min="0" max="1" step="0.1" value="1">
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="prop-section">
+                    <div class="section-title">ACTIONS</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:10px;">
+                        <button class="btn btn-sm" id="btn-topath"><i class="fas fa-vector-square"></i> Path</button>
+                        <button class="btn btn-sm" id="btn-group"><i class="fas fa-object-group"></i> Group</button>
+                        <button class="btn btn-sm" id="btn-front"><i class="fas fa-layer-group"></i> Front</button>
+                        <button class="btn btn-sm" id="btn-back"><i class="fas fa-layer-group"></i> Back</button>
+                    </div>
+                    <button class="btn btn-sm" id="btn-dup" style="width:100%; margin-bottom:5px;"><i class="fas fa-copy"></i> Duplicate</button>
+                    <button class="btn btn-sm" id="btn-del" style="width:100%; background:var(--c-danger); color:#fff;"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
             
@@ -397,381 +298,276 @@
             <div id="layers-list"></div>
         </aside>
     </div>
-
-    <div class="toast" id="toast">Action</div>
+    
+    <footer id="status-bar">
+        <span id="status-msg">Ready</span>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <span id="zoom-level">100%</span>
+            <input type="file" id="file-input" accept="image/*,.svg,.ttf,.otf,.woff,.woff2" style="display:none;">
+        </div>
+    </footer>
 
     <script>
+        // --- UTILS ---
         const Utils = {
             uid: () => 'el_' + Math.random().toString(36).substr(2, 6),
             toast: (msg) => {
-                const t = document.getElementById('toast');
-                t.innerText = msg; t.classList.add('show');
-                clearTimeout(t.timer);
-                t.timer = setTimeout(() => t.classList.remove('show'), 2000);
+                const t = document.createElement('div');
+                t.className = 'toast'; t.innerText = msg; t.style.cssText = `
+                    position:fixed; bottom:50px; left:50%; transform:translateX(-50%);
+                    background:var(--c-accent); color:#000; padding:8px 16px; font-family:var(--font-head);
+                    border:2px solid #000; box-shadow:4px 4px 0 #000; z-index:9000;
+                `;
+                document.body.appendChild(t);
+                setTimeout(() => t.remove(), 2000);
             },
-            getMousePos: (e) => {
-                const artboard = document.getElementById('artboard');
-                const rect = artboard.getBoundingClientRect();
-                const scaleX = 800 / rect.width;
-                const scaleY = 600 / rect.height;
-
+            getMousePos: (e, container) => {
+                const rect = container.getBoundingClientRect();
+                // Base dimensions of the artboard coordinate system
+                const baseW = 800;
+                const baseH = 600;
+                
+                const scaleX = baseW / rect.width;
+                const scaleY = baseH / rect.height;
+                
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                return {
-                    x: (clientX - rect.left) * scaleX,
-                    y: (clientY - rect.top) * scaleY
+                
+                return { 
+                    x: (clientX - rect.left) * scaleX, 
+                    y: (clientY - rect.top) * scaleY 
                 };
             },
             createSVG: (tag, attrs) => {
                 const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
                 for (let k in attrs) el.setAttribute(k, attrs[k]);
                 return el;
+            },
+            rgbToHex: (c) => {
+                if(!c || c==='none' || c==='transparent') return '#000000';
+                if(c.startsWith('#')) return c;
+                const ctx = document.createElement('canvas').getContext('2d');
+                ctx.fillStyle = c;
+                return ctx.fillStyle;
             }
         };
 
-        const PathUtils = {
-            shapeToPath: (el) => {
-                const tag = el.tagName;
-                let d = "";
-                if (tag === 'rect') {
-                    const x = parseFloat(el.getAttribute('x'));
-                    const y = parseFloat(el.getAttribute('y'));
-                    const w = parseFloat(el.getAttribute('width'));
-                    const h = parseFloat(el.getAttribute('height'));
-                    d = `M ${x} ${y} L ${x+w} ${y} L ${x+w} ${y+h} L ${x} ${y+h} Z`;
-                } else if (tag === 'circle') {
-                    const cx = parseFloat(el.getAttribute('cx'));
-                    const cy = parseFloat(el.getAttribute('cy'));
-                    const r = parseFloat(el.getAttribute('r'));
-                    const k = 0.5522847498;
-                    d = `M ${cx-r} ${cy} 
-                        C ${cx-r} ${cy-r*k} ${cx-r*k} ${cy-r} ${cx} ${cy-r} 
-                        C ${cx+r*k} ${cy-r} ${cx+r} ${cy-r*k} ${cx+r} ${cy} 
-                        C ${cx+r} ${cy+r*k} ${cx+r*k} ${cy+r} ${cx} ${cy+r} 
-                        C ${cx-r*k} ${cy+r} ${cx-r} ${cy+r*k} ${cx-r} ${cy} Z`;
-                } else if (tag === 'path') return el.getAttribute('d');
-                return d;
-            },
-            parsePath: (d) => {
-                const points = [];
-                const pathCmds = d.match(/[a-zA-Z][^a-zA-Z]*/g) || [];
-                let lastX = 0, lastY = 0;
-                
-                pathCmds.forEach(cmdStr => {
-                    const type = cmdStr[0];
-                    const args = cmdStr.slice(1).trim().split(/[\s,]+/).map(Number);
-                    
-                    if(type === 'M') {
-                        points.push({ x: args[0], y: args[1], type: 'anchor', hIn: null, hOut: null });
-                        lastX = args[0]; lastY = args[1];
-                    } else if(type === 'L') {
-                        points.push({ x: args[0], y: args[1], type: 'anchor', hIn: null, hOut: null });
-                        lastX = args[0]; lastY = args[1];
-                    } else if(type === 'C') {
-                        const prev = points[points.length-1];
-                        if(prev) { prev.hOut = { x: args[0], y: args[1] }; }
-                        points.push({ 
-                            x: args[4], y: args[5], type: 'anchor', 
-                            hIn: { x: args[2], y: args[3] }, 
-                            hOut: null 
-                        });
-                        lastX = args[4]; lastY = args[5];
-                    }
-                });
-                return points;
-            },
-            generatePathFromPoints: (points) => {
-                if(points.length === 0) return "";
-                let d = `M ${points[0].x} ${points[0].y} `;
-                for(let i=1; i<points.length; i++) {
-                    const p = points[i];
-                    const prev = points[i-1];
-                    if (prev.hOut || p.hIn) {
-                        const c1 = prev.hOut ? `${prev.hOut.x} ${prev.hOut.y}` : `${prev.x} ${prev.y}`;
-                        const c2 = p.hIn ? `${p.hIn.x} ${p.hIn.y}` : `${p.x} ${p.y}`;
-                        d += `C ${c1}, ${c2}, ${p.x} ${p.y} `;
-                    } else {
-                        d += `L ${p.x} ${p.y} `;
-                    }
-                }
-                return d;
-            }
-        };
-
-        class NodeEditor {
-            constructor(editor) {
-                this.editor = editor;
-                this.svgGizmo = document.getElementById('node-gizmo-svg');
-                this.active = false;
-                this.targetId = null;
-                this.points = []; 
-                this.selectedPointIndex = -1;
-                this.dragMode = null; 
-                this.dragIndex = -1;
-                this.dragStart = {x:0, y:0};
-            }
-
-            activate(pathId) {
-                if(this.targetId === pathId && this.active) return;
-                this.targetId = pathId;
-                this.active = true;
-                this.selectedPointIndex = -1;
-                this.parse();
-                this.render();
-            }
-
-            deactivate() {
-                this.active = false;
-                this.targetId = null;
-                this.svgGizmo.innerHTML = '';
-                this.points = [];
-            }
-
-            parse() {
-                const el = document.getElementById(this.targetId);
-                if(!el) return;
-                const d = el.getAttribute('d');
-                this.points = PathUtils.parsePath(d);
-            }
-
-            updatePath() {
-                const el = document.getElementById(this.targetId);
-                if(!el) return;
-                const newD = PathUtils.generatePathFromPoints(this.points);
-                el.setAttribute('d', newD);
-            }
-
-            render() {
-                this.svgGizmo.innerHTML = '';
-                const g = Utils.createSVG('g', { id: 'node-gizmo-group' });
-                
-                this.points.forEach((p, i) => {
-                    const isSelected = i === this.selectedPointIndex;
-                    if (p.hIn) {
-                        const line = Utils.createSVG('line', { x1: p.x, y1: p.y, x2: p.hIn.x, y2: p.hIn.y, class: 'gizmo-line' });
-                        g.appendChild(line);
-                        const c = Utils.createSVG('circle', { cx: p.hIn.x, cy: p.hIn.y, r: 4, class: 'gizmo-handle', 'data-type': 'hIn', 'data-idx': i });
-                        g.appendChild(c);
-                    }
-                    if (p.hOut) {
-                        const line = Utils.createSVG('line', { x1: p.x, y1: p.y, x2: p.hOut.x, y2: p.hOut.y, class: 'gizmo-line' });
-                        g.appendChild(line);
-                        const c = Utils.createSVG('circle', { cx: p.hOut.x, cy: p.hOut.y, r: 4, class: 'gizmo-handle', 'data-type': 'hOut', 'data-idx': i });
-                        g.appendChild(c);
-                    }
-                    const anchor = Utils.createSVG('rect', { x: p.x - 5, y: p.y - 5, width: 10, height: 10, class: `node-anchor ${isSelected ? 'selected' : ''}`, 'data-type': 'anchor', 'data-idx': i });
-                    g.appendChild(anchor);
-                });
-                this.svgGizmo.appendChild(g);
-            }
-
-            handleMouseDown(e) {
-                if (!this.active) return;
-                const target = e.target;
-                if (!target.classList.contains('node-anchor') && !target.classList.contains('gizmo-handle')) {
-                    this.selectedPointIndex = -1;
-                    this.render();
-                    return;
-                }
-                e.stopPropagation();
-                const idx = parseInt(target.dataset.idx);
-                const type = target.dataset.type;
-                this.selectedPointIndex = idx;
-                this.dragMode = type;
-                this.dragIndex = idx;
-                this.dragStart = Utils.getMousePos(e);
-                
-                const p = this.points[idx];
-                this.initialPointState = { x: p.x, y: p.y, hIn: p.hIn ? {...p.hIn} : null, hOut: p.hOut ? {...p.hOut} : null };
-
-                const move = (ev) => this.doDrag(ev);
-                const end = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', end); this.editor.saveState(); };
-                window.addEventListener('mousemove', move);
-                window.addEventListener('mouseup', end);
-            }
-
-            doDrag(e) {
-                const pos = Utils.getMousePos(e);
-                const dx = pos.x - this.dragStart.x;
-                const dy = pos.y - this.dragStart.y;
-                const p = this.points[this.dragIndex];
-                const init = this.initialPointState;
-
-                if (this.dragMode === 'anchor') {
-                    p.x = init.x + dx; p.y = init.y + dy;
-                    if(p.hIn) { p.hIn.x = init.hIn.x + dx; p.hIn.y = init.hIn.y + dy; }
-                    if(p.hOut) { p.hOut.x = init.hOut.x + dx; p.hOut.y = init.hOut.y + dy; }
-                } else if (this.dragMode === 'hOut') {
-                    p.hOut.x = init.hOut.x + dx; p.hOut.y = init.hOut.y + dy;
-                } else if (this.dragMode === 'hIn') {
-                    p.hIn.x = init.hIn.x + dx; p.hIn.y = init.hIn.y + dy;
-                }
-                this.render(); this.updatePath();
-            }
-
-            deleteSelected() {
-                if(this.selectedPointIndex !== -1 && this.points.length > 2) {
-                    this.points.splice(this.selectedPointIndex, 1);
-                    this.selectedPointIndex = -1;
-                    this.render(); this.updatePath();
-                    this.editor.saveState();
-                }
-            }
-        }
-
+        // --- APP ---
         class App {
             constructor() {
                 this.svg = document.getElementById('main-svg');
                 this.layer = document.getElementById('drawing-layer');
+                this.artboard = document.getElementById('artboard');
+                this.viewport = document.getElementById('viewport');
+                
                 this.selectedId = null;
                 this.tool = 'select'; 
                 this.isDrawing = false;
                 this.startPos = {x:0, y:0};
                 this.currentShape = null;
-                this.penPoints = [];
-                this.nodeEditor = new NodeEditor(this);
+                this.freehandPath = [];
+                
+                this.zoom = 1;
+                this.pan = {x:0, y:0};
+                this.isPanning = false;
+
                 this.history = [];
                 this.redoStack = [];
-                this.hoverDelBtn = document.getElementById('hover-delete-btn');
+                this.fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia', 'Impact'];
+                
+                this.textOverlay = document.getElementById('text-edit-overlay');
+                this.textEditingTarget = null;
+                
+                const gFonts = ['Roboto', 'Montserrat', 'Oswald', 'Bebas Neue', 'Lobster', 'Caveat', 'Playfair Display', 'Abril Fatface', 'JetBrains Mono'];
+                this.fonts = this.fonts.concat(gFonts);
+
                 this.init();
             }
 
             init() {
+                this.populateFonts();
                 this.bindEvents();
                 this.bindUI();
-                this.renderLayers();
+                this.saveState();
+            }
+
+            populateFonts() {
+                const sel = document.getElementById('inp-font-family');
+                sel.innerHTML = '';
+                this.fonts.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f; opt.innerText = f;
+                    sel.appendChild(opt);
+                });
             }
 
             setTool(t) {
+                this.finishTextEdit(); // Finish editing if switching tools
                 this.tool = t;
                 document.querySelectorAll('#toolbar .btn').forEach(b => b.classList.remove('active'));
-                document.getElementById(`tool-${t}`).classList.add('active');
-                if (t !== 'node') this.nodeEditor.deactivate();
-                if (t === 'select' || t === 'node') this.svg.style.cursor = 'default';
-                else { this.deselect(); this.svg.style.cursor = 'crosshair'; }
+                const btn = document.getElementById(`tool-${t}`);
+                if(btn) btn.classList.add('active');
+                
+                if(t === 'hand') this.artboard.style.cursor = 'grab';
+                else if(t === 'select' || t === 'node') this.artboard.style.cursor = 'default';
+                else this.artboard.style.cursor = 'crosshair';
+            }
+
+            // --- BINDINGS ---
+            bindEvents() {
+                // Viewport Zoom
+                this.viewport.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    this.zoom = Math.max(0.2, Math.min(4, this.zoom * delta));
+                    
+                    const container = document.getElementById('artboard-container');
+                    container.style.transform = `scale(${this.zoom})`;
+                    
+                    document.getElementById('zoom-level').innerText = Math.round(this.zoom*100) + '%';
+                    
+                    // Reposition text overlay if active
+                    if(this.textEditingTarget) {
+                        this.updateTextOverlayPosition();
+                    }
+                });
+
+                // Drawing
+                this.artboard.addEventListener('mousedown', (e) => this.onStart(e));
+                window.addEventListener('mousemove', (e) => this.onMove(e));
+                window.addEventListener('mouseup', (e) => this.onEnd(e));
+
+                // Double Click for Text Edit
+                this.artboard.addEventListener('dblclick', (e) => {
+                    if(e.target.tagName === 'text' && e.target.classList.contains('vector-element')) {
+                        this.select(e.target.id);
+                        this.initTextEdit(e.target);
+                    }
+                });
+                
+                // Text Edit Overlay
+                this.textOverlay.addEventListener('blur', () => this.finishTextEdit());
+                this.textOverlay.addEventListener('input', () => {
+                    // Auto-resize height
+                    this.textOverlay.style.height = 'auto';
+                    this.textOverlay.style.height = this.textOverlay.scrollHeight + 'px';
+                });
+                this.textOverlay.addEventListener('keydown', (e) => {
+                    if(e.key === 'Escape') this.finishTextEdit();
+                });
+
+                // Keys
+                window.addEventListener('keydown', (e) => {
+                    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+                    
+                    // Shortcuts
+                    if(e.key === 'Delete' || e.key === 'Backspace') this.deleteSelection();
+                    if(e.key === 'v') this.setTool('select');
+                    if(e.key === 'n') this.setTool('node');
+                    if(e.key === 't') this.setTool('text');
+                    if(e.key === 'r') this.setTool('rect');
+                    if(e.key === 'c') this.setTool('circle');
+                    if(e.key === 'y') this.setTool('polygon');
+                    if(e.key === 's' && !e.ctrlKey) this.setTool('star');
+                    if(e.key === 'b') this.setTool('freehand');
+                    if(e.key === 'h') this.setTool('hand');
+                    if(e.key === 'l') this.setTool('line');
+                    
+                    if(e.key === 'z' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if(e.shiftKey) this.redo(); else this.undo(); }
+                    if(e.key === 'g' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.group(); }
+                });
             }
 
             bindUI() {
-                ['select', 'node', 'rect', 'circle', 'pen'].forEach(t => {
-                    document.getElementById(`tool-${t}`).onclick = () => this.setTool(t);
+                // Tools
+                document.querySelectorAll('#toolbar .btn').forEach(b => {
+                    const id = b.id.replace('tool-', '');
+                    b.onclick = () => this.setTool(id);
                 });
 
+                // Props
                 const updateAttr = (attr, val) => {
                     const el = document.getElementById(this.selectedId);
-                    if(el) { el.setAttribute(attr, val); this.saveState(); }
+                    if(el) { el.setAttribute(attr, val); this.saveState(); this.renderLayers(); }
                 };
-                ['fill', 'stroke', 'opacity'].forEach(k => {
-                    const el = document.getElementById(`inp-${k}`);
-                    if(el) el.oninput = (e) => updateAttr(k, e.target.value);
-                });
 
-                // --- FIX: STROKE WIDTH ---
-                // Manually bind the stroke width input because the generic loop logic had ID mismatch issues
-                const swEl = document.getElementById('inp-stroke-width');
-                swEl.oninput = (e) => updateAttr('stroke-width', e.target.value);
-
-                // --- FIX: LIVE PREVIEW COLOR ---
-                // Remove selection highlight when editing color
-                const colorInputs = ['inp-fill', 'inp-stroke'];
-                colorInputs.forEach(id => {
-                    const input = document.getElementById(id);
-                    input.addEventListener('focus', () => {
-                        const el = document.getElementById(this.selectedId);
-                        if(el) el.classList.add('editing-color');
-                    });
-                    input.addEventListener('blur', () => {
-                        const el = document.getElementById(this.selectedId);
-                        if(el) el.classList.remove('editing-color');
-                    });
-                });
-
-                // RADIUS LOGIC
-                const updateRadius = (val) => {
+                document.getElementById('inp-fill').oninput = (e) => updateAttr('fill', e.target.value);
+                document.getElementById('inp-stroke').oninput = (e) => updateAttr('stroke', e.target.value);
+                document.getElementById('inp-stroke-width').oninput = (e) => updateAttr('stroke-width', e.target.value);
+                document.getElementById('inp-opacity').oninput = (e) => updateAttr('opacity', e.target.value);
+                
+                // Stroke Style
+                document.getElementById('inp-stroke-style').onchange = (e) => {
                     const el = document.getElementById(this.selectedId);
-                    if(el && el.tagName === 'rect') {
-                        el.setAttribute('rx', val);
-                        el.setAttribute('ry', val);
-                        document.getElementById('inp-radius-range').value = val;
-                        document.getElementById('inp-radius-num').value = val;
-                    }
+                    if(!el) return;
+                    const val = e.target.value;
+                    if(val === 'solid') el.removeAttribute('stroke-dasharray');
+                    else if(val === 'dashed') el.setAttribute('stroke-dasharray', '10,5');
+                    else if(val === 'dotted') el.setAttribute('stroke-dasharray', '2,5');
+                    this.saveState();
                 };
-                document.getElementById('inp-radius-range').oninput = (e) => updateRadius(e.target.value);
-                document.getElementById('inp-radius-num').oninput = (e) => updateRadius(e.target.value);
 
+                // Radius
+                document.getElementById('inp-radius').oninput = (e) => {
+                     const el = document.getElementById(this.selectedId);
+                     if(el && el.tagName === 'rect') {
+                         el.setAttribute('rx', e.target.value);
+                         el.setAttribute('ry', e.target.value);
+                         this.saveState();
+                     }
+                };
 
+                // Text
+                document.getElementById('inp-font-family').onchange = (e) => updateAttr('font-family', e.target.value);
+                document.getElementById('inp-font-size').oninput = (e) => updateAttr('font-size', e.target.value + 'px');
+                document.getElementById('inp-font-weight').onchange = (e) => updateAttr('font-weight', e.target.value);
+
+                // Actions
                 document.getElementById('btn-topath').onclick = () => this.convertToPath();
                 document.getElementById('btn-del').onclick = () => this.deleteSelection();
                 document.getElementById('btn-dup').onclick = () => this.duplicateSelection();
+                document.getElementById('btn-group').onclick = () => this.group();
+                document.getElementById('btn-front').onclick = () => this.moveLayer(1);
+                document.getElementById('btn-back').onclick = () => this.moveLayer(-1);
+                
+                // History
                 document.getElementById('btn-undo').onclick = () => this.undo();
                 document.getElementById('btn-redo').onclick = () => this.redo();
                 document.getElementById('btn-export').onclick = () => this.exportSVG();
                 
-                // Floating Delete Button Logic
-                this.hoverDelBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent selecting the shape under it
-                    if(this.hoverDelTargetId) {
-                        this.select(this.hoverDelTargetId);
-                        this.deleteSelection();
-                        this.hoverDelBtn.style.display = 'none';
+                // Import
+                const fileInput = document.getElementById('file-input');
+                document.getElementById('btn-import').onclick = () => fileInput.click();
+                document.getElementById('btn-add-font').onclick = () => fileInput.click();
+                fileInput.onchange = (e) => this.handleFile(e.target.files[0]);
+
+                // Rotation
+                document.getElementById('inp-rotation').oninput = (e) => {
+                    const el = document.getElementById(this.selectedId);
+                    if(el) {
+                        const bbox = el.getBBox();
+                        const cx = bbox.x + bbox.width/2;
+                        const cy = bbox.y + bbox.height/2;
+                        el.setAttribute('transform', `rotate(${e.target.value} ${cx} ${cy})`);
+                        this.saveState();
                     }
                 };
             }
 
-            bindEvents() {
-                this.svg.addEventListener('mousedown', (e) => this.onStart(e));
-                window.addEventListener('mousemove', (e) => this.onMove(e));
-                window.addEventListener('mouseup', (e) => this.onEnd(e));
-                this.svg.addEventListener('click', (e) => this.onClick(e));
-                document.getElementById('node-gizmo-svg').addEventListener('mousedown', (e) => this.nodeEditor.handleMouseDown(e));
-
-                // HOVER DELETE LOGIC
-                this.svg.addEventListener('mouseover', (e) => {
-                    if(e.target.classList.contains('vector-element') && e.target.id !== this.hoverDelTargetId) {
-                        this.hoverDelTargetId = e.target.id;
-                        this.showHoverDelete(e.target);
-                    } else if (!e.target.classList.contains('vector-element') && !e.target.closest('#hover-delete-btn')) {
-                        this.hoverDelBtn.style.display = 'none';
-                        this.hoverDelTargetId = null;
-                    }
-                });
-
-                window.addEventListener('keydown', (e) => {
-                    if(e.key === 'Delete' || e.key === 'Backspace') {
-                        if(this.tool === 'node' && this.nodeEditor.active) this.nodeEditor.deleteSelected();
-                        else this.deleteSelection();
-                    }
-                    if(e.key === 'v') this.setTool('select');
-                    if(e.key === 'n') this.setTool('node');
-                    if(e.key === 'r') this.setTool('rect');
-                    if(e.key === 'c') this.setTool('circle');
-                    if(e.key === 'p') this.setTool('pen');
-                    if(e.key === 'z' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if(e.shiftKey) this.redo(); else this.undo(); }
-                    if(e.key === 'Enter') { if(this.tool === 'pen') this.finishPen(); }
-                });
-            }
-
-            showHoverDelete(el) {
-                const bbox = el.getBBox();
-                const btn = this.hoverDelBtn;
-                btn.style.display = 'flex';
-                
-                // Position button at top-right of bounding box
-                // Need to account for SVG viewBox scale
-                const artboard = document.getElementById('artboard');
-                const rect = artboard.getBoundingClientRect();
-                const scaleX = rect.width / 800;
-                const scaleY = rect.height / 600;
-
-                btn.style.left = (bbox.x + bbox.width) * scaleX + 'px';
-                btn.style.top = bbox.y * scaleY + 'px';
-            }
-
-            getMouse(e) { return Utils.getMousePos(e); }
-
+            // --- DRAWING ---
             onStart(e) {
-                if (e.target.closest('#node-gizmo-svg') || e.target.closest('#hover-delete-btn')) return;
-                const pos = this.getMouse(e);
+                if(this.tool === 'hand') {
+                    this.isPanning = true;
+                    this.artboard.style.cursor = 'grabbing';
+                    return;
+                }
+
+                // If clicking away from text overlay, finish editing
+                if(this.textEditingTarget && e.target !== this.textOverlay) {
+                    this.finishTextEdit();
+                }
+
+                const pos = Utils.getMousePos(e, this.artboard);
                 this.startPos = pos;
 
                 if (this.tool === 'select') {
@@ -780,80 +576,77 @@
                         this.isDrawing = true;
                         this.dragStart = pos;
                         const el = document.getElementById(this.selectedId);
-                        const transforms = el.transform.baseVal;
-                        if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                            const translate = this.svg.createSVGTransform();
-                            translate.setTranslate(0, 0);
-                            el.transform.baseVal.insertItemBefore(translate, 0);
+                        // Reset transform for simpler drag logic or accumulate
+                        // For now, we use a simple 'translate' overwrite for simplicity
+                        if(!el.getAttribute('transform') || !el.getAttribute('transform').includes('translate')) {
+                           // We keep existing transform if it's rotate, but simple logic here:
+                           // We will calculate delta and apply translate in onMove
                         }
-                        this.initialTx = transforms.getItem(0).matrix.e;
-                        this.initialTy = transforms.getItem(0).matrix.f;
                     } else this.deselect();
                 }
-                else if (this.tool === 'rect') {
-                    this.isDrawing = true;
-                    this.currentShape = Utils.createSVG('rect', {
-                        x: pos.x, y: pos.y, width: 0, height: 0, rx: 0, ry: 0,
-                        fill: '#000', stroke: 'none', class: 'vector-element'
-                    });
-                    this.layer.appendChild(this.currentShape);
-                }
-                else if (this.tool === 'circle') {
-                    this.isDrawing = true;
-                    this.currentShape = Utils.createSVG('circle', {
-                        cx: pos.x, cy: pos.y, r: 0,
-                        fill: '#000', stroke: 'none', class: 'vector-element'
-                    });
-                    this.layer.appendChild(this.currentShape);
-                }
-            }
-
-            onClick(e) {
-                if (e.target.closest('#node-gizmo-svg') || e.target.closest('#hover-delete-btn')) return;
-
-                if (this.tool === 'pen') {
-                    e.stopPropagation();
-                    const pos = this.getMouse(e);
-                    
-                    // Check if clicking first point to close path
-                    if (this.penPoints.length > 2) {
-                        const first = this.penPoints[0];
-                        const dist = Math.sqrt(Math.pow(pos.x - first.x, 2) + Math.pow(pos.y - first.y, 2));
-                        if(dist < 10) {
-                            this.finishPen();
-                            return;
-                        }
+                else if (this.tool === 'node') {
+                    if (e.target.classList.contains('vector-element')) {
+                        this.select(e.target.id);
+                        Utils.toast("Node Editing Active");
                     }
-
-                    if (!this.currentShape) {
-                        this.currentShape = Utils.createSVG('path', {
-                            d: `M ${pos.x} ${pos.y}`, fill: 'none', stroke: '#000', 'stroke-width': 2, class: 'vector-element'
-                        });
-                        this.currentShape.id = Utils.uid();
-                        this.layer.appendChild(this.currentShape);
-                        this.penPoints = [{x: pos.x, y: pos.y, hIn:null, hOut:null}];
-                    } else {
-                        this.penPoints.push({x: pos.x, y: pos.y, hIn:null, hOut:null});
-                        this.updatePenPath();
+                }
+                else if (this.tool === 'text') {
+                    const text = Utils.createSVG('text', {
+                        x: pos.x, y: pos.y, fill: '#000', stroke: 'none',
+                        'font-size': '24px', 'font-family': 'Arial', class: 'vector-element'
+                    });
+                    text.textContent = "Text";
+                    text.id = Utils.uid();
+                    this.layer.appendChild(text);
+                    this.select(text.id);
+                    this.initTextEdit(text);
+                    this.saveState();
+                }
+                else {
+                    this.isDrawing = true;
+                    let el;
+                    const baseAttrs = { fill: '#000', stroke: 'none', class: 'vector-element' };
+                    
+                    if(this.tool === 'rect') el = Utils.createSVG('rect', {...baseAttrs, x: pos.x, y: pos.y, width: 0, height: 0, rx: 0});
+                    else if(this.tool === 'circle') el = Utils.createSVG('circle', {...baseAttrs, cx: pos.x, cy: pos.y, r: 0});
+                    else if(this.tool === 'line') el = Utils.createSVG('line', {stroke: '#000', 'stroke-width': 2, x1: pos.x, y1: pos.y, x2: pos.x, y2: pos.y, class: 'vector-element'});
+                    else if(this.tool === 'polygon' || this.tool === 'star') el = Utils.createSVG('path', {...baseAttrs, d: ''});
+                    else if(this.tool === 'freehand') {
+                        el = Utils.createSVG('path', {stroke: '#000', fill: 'none', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: `M ${pos.x} ${pos.y}`, class: 'vector-element'});
+                        this.freehandPath = [pos];
+                    }
+                    
+                    if(el) {
+                        el.id = Utils.uid();
+                        this.layer.appendChild(el);
+                        this.currentShape = el;
                     }
                 }
             }
 
             onMove(e) {
-                if (!this.isDrawing) return;
-                const pos = this.getMouse(e);
+                if(this.isPanning) return; 
+                if(!this.isDrawing && !this.currentShape) return;
 
-                if (this.tool === 'select' && this.selectedId) {
+                const pos = Utils.getMousePos(e, this.artboard);
+
+                // Select Drag
+                if(this.tool === 'select' && this.isDrawing && this.selectedId) {
                     const el = document.getElementById(this.selectedId);
                     const dx = pos.x - this.dragStart.x;
                     const dy = pos.y - this.dragStart.y;
-                    const t = el.transform.baseVal.getItem(0);
-                    t.setTranslate(this.initialTx + dx, this.initialTy + dy);
-                    if(this.nodeEditor.active) this.nodeEditor.render();
-                    // Also move delete button if visible
-                    if(this.hoverDelTargetId === this.selectedId) this.showHoverDelete(el);
+                    
+                    // Simple drag: apply translate transform
+                    // Note: this overwrites rotation if not handled carefully.
+                    // Ideally, we append to transform matrix. 
+                    // For this snippet, we just set translate.
+                    el.setAttribute('transform', `translate(${dx} ${dy})`);
+                    return;
                 }
-                else if (this.tool === 'rect') {
+
+                if(!this.currentShape) return;
+
+                if(this.tool === 'rect') {
                     const w = pos.x - this.startPos.x;
                     const h = pos.y - this.startPos.y;
                     this.currentShape.setAttribute('x', w < 0 ? pos.x : this.startPos.x);
@@ -861,89 +654,299 @@
                     this.currentShape.setAttribute('width', Math.abs(w));
                     this.currentShape.setAttribute('height', Math.abs(h));
                 }
-                else if (this.tool === 'circle') {
-                    const r = Math.sqrt(Math.pow(pos.x - this.startPos.x, 2) + Math.pow(pos.y - this.startPos.y, 2));
+                else if(this.tool === 'circle') {
+                    const r = Math.hypot(pos.x - this.startPos.x, pos.y - this.startPos.y);
                     this.currentShape.setAttribute('r', r);
                 }
-                else if (this.tool === 'pen') {
-                    if (e.buttons === 1 && this.penPoints.length > 0) {
-                        const last = this.penPoints[this.penPoints.length-1];
-                        last.hOut = { x: pos.x, y: pos.y };
-                        this.updatePenPath();
-                    }
+                else if(this.tool === 'line') {
+                    this.currentShape.setAttribute('x2', pos.x);
+                    this.currentShape.setAttribute('y2', pos.y);
+                }
+                else if(this.tool === 'polygon') {
+                    const r = Math.hypot(pos.x - this.startPos.x, pos.y - this.startPos.y);
+                    const sides = 6;
+                    this.currentShape.setAttribute('d', this.polygonPath(this.startPos.x, this.startPos.y, sides, r));
+                }
+                else if(this.tool === 'star') {
+                    const r = Math.hypot(pos.x - this.startPos.x, pos.y - this.startPos.y);
+                    this.currentShape.setAttribute('d', this.starPath(this.startPos.x, this.startPos.y, 5, r, r/2));
+                }
+                else if(this.tool === 'freehand') {
+                    this.freehandPath.push(pos);
+                    this.currentShape.setAttribute('d', this.polylinePath(this.freehandPath));
                 }
             }
 
             onEnd(e) {
-                if (this.isDrawing) {
-                    if (this.tool !== 'select') {
-                        if(this.currentShape) {
-                            // --- FIX: ZERO SIZE PROTECTION ---
-                            let isTooSmall = false;
-                            if(this.tool === 'rect') {
-                                const w = parseFloat(this.currentShape.getAttribute('width'));
-                                const h = parseFloat(this.currentShape.getAttribute('height'));
-                                if(w < 5 || h < 5) isTooSmall = true;
-                            } else if (this.tool === 'circle') {
-                                const r = parseFloat(this.currentShape.getAttribute('r'));
-                                if(r < 5) isTooSmall = true;
-                            }
-
-                            if(isTooSmall) {
-                                this.currentShape.remove();
-                                Utils.toast("Shape too small");
-                            } else {
-                                this.currentShape.id = Utils.uid();
-                                this.select(this.currentShape.id);
-                                this.saveState();
-                            }
-                        }
+                if(this.isPanning) {
+                    this.isPanning = false;
+                    this.artboard.style.cursor = 'grab';
+                    return;
+                }
+                
+                if (this.isDrawing && this.tool !== 'select') {
+                    const bbox = this.currentShape.getBBox();
+                    if(bbox.width < 5 && bbox.height < 5 && this.tool !== 'text') {
+                        this.currentShape.remove();
                     } else {
+                        this.select(this.currentShape.id);
                         this.saveState();
                     }
+                } 
+                else if (this.isDrawing && this.tool === 'select') {
+                    this.saveState();
                 }
-                if(this.tool !== 'pen') { this.isDrawing = false; this.currentShape = null; }
+
+                this.isDrawing = false;
+                this.currentShape = null;
+                this.freehandPath = [];
             }
 
-            finishPen() {
-                if(this.tool === 'pen' && this.currentShape) {
-                    this.select(this.currentShape.id);
-                    this.currentShape = null;
-                    this.penPoints = [];
-                    this.setTool('select');
+            // --- TEXT EDITING ---
+            initTextEdit(el) {
+                this.textEditingTarget = el;
+                
+                // Get SVG coordinates
+                const x = parseFloat(el.getAttribute('x'));
+                const y = parseFloat(el.getAttribute('y'));
+                const fontSize = parseFloat(el.getAttribute('font-size') || 16);
+                const fontFamily = el.getAttribute('font-family') || 'Arial';
+                const fontWeight = el.getAttribute('font-weight') || '400';
+                const fill = el.getAttribute('fill') || '#000000';
+                
+                this.textOverlay.value = el.textContent;
+                
+                // Apply styles to textarea
+                this.textOverlay.style.fontFamily = fontFamily;
+                this.textOverlay.style.fontSize = fontSize + 'px';
+                this.textOverlay.style.fontWeight = fontWeight;
+                this.textOverlay.style.color = fill;
+                
+                this.updateTextOverlayPosition();
+                
+                this.textOverlay.style.display = 'block';
+                this.textOverlay.focus();
+                this.textOverlay.select();
+            }
+
+            updateTextOverlayPosition() {
+                if(!this.textEditingTarget) return;
+
+                const el = this.textEditingTarget;
+                const x = parseFloat(el.getAttribute('x'));
+                const y = parseFloat(el.getAttribute('y'));
+                const fontSize = parseFloat(el.getAttribute('font-size') || 16);
+                
+                // Get container offset relative to viewport
+                const container = document.getElementById('artboard-container');
+                const containerRect = container.getBoundingClientRect(); // Screen coordinates of the scaled container
+                
+                // Calculate position in screen pixels
+                // x, y are in SVG units (0-800, 0-600).
+                // containerRect.width is the rendered width.
+                // Scale factor: containerRect.width / 800
+                
+                const scale = containerRect.width / 800; 
+                
+                // Position in screen pixels relative to the container's top-left corner
+                const screenX = x * scale;
+                const screenY = y * scale;
+                
+                // Baseline correction: 'y' in SVG is usually the baseline.
+                // CSS 'top' is the top of the box. We need to move it up by roughly the font height.
+                const scaledFontSize = fontSize * scale;
+                
+                // Calculate absolute position for the overlay (which is absolute inside #artboard)
+                // Wait, the overlay is positioned absolute inside #artboard, which is relative.
+                // And #artboard-container has the transform scale.
+                // So the overlay should be positioned at (screenX, screenY) relative to the visual top-left.
+                
+                // Actually, since #artboard is 800x600 and the overlay is inside it,
+                // but the parent (#artboard-container) is scaled, we should set the overlay's
+                // left/top in *unscaled* coordinates (SVG coords) so it scales with the container.
+                // BUT the text inside the textarea needs to look the same size visually.
+                
+                // Correct approach for scaled container:
+                // 1. Set overlay left/top in SVG coordinates (x, y).
+                // 2. Scale the overlay's font size by the zoom level, OR let it inherit scale.
+                //    If we put the overlay inside the scaled div, it will grow.
+                //    If we want it to match the SVG text, it SHOULD grow.
+                
+                // Let's position it using SVG coordinates directly.
+                // SVG Y is baseline. CSS Y is top. Approx adjustment: -fontSize * 0.8 (approx height).
+                
+                this.textOverlay.style.left = x + 'px';
+                this.textOverlay.style.top = (y - fontSize * 0.8) + 'px'; 
+                
+                // The font size in the overlay should match the SVG font size units.
+                // Since the overlay is inside the scaled container, it will visually match.
+                this.textOverlay.style.fontSize = fontSize + 'px';
+                
+                // Width: auto expand?
+                this.textOverlay.style.width = 'auto';
+                this.textOverlay.style.minWidth = '50px';
+            }
+
+            finishTextEdit() {
+                if(this.textEditingTarget) {
+                    this.textEditingTarget.textContent = this.textOverlay.value;
+                    this.textOverlay.style.display = 'none';
+                    this.textEditingTarget = null;
                     this.saveState();
                 }
             }
 
-            updatePenPath() {
-                if(!this.currentShape) return;
-                const d = PathUtils.generatePathFromPoints(this.penPoints);
-                this.currentShape.setAttribute('d', d);
+            // --- FEATURES ---
+            handleFile(file) {
+                if(!file) return;
+                
+                // Font Import
+                if(file.name.match(/\.(ttf|otf|woff|woff2)$/i)) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const fontName = file.name.split('.')[0];
+                        const fontFace = new FontFace(fontName, e.target.result);
+                        fontFace.load().then((loadedFace) => {
+                            document.fonts.add(loadedFace);
+                            this.fonts.push(fontName);
+                            this.populateFonts();
+                            Utils.toast("Font Imported: " + fontName);
+                            document.getElementById('inp-font-family').value = fontName;
+                        });
+                    };
+                    reader.readAsArrayBuffer(file);
+                    return;
+                }
+
+                // Image/SVG Import
+                const reader = new FileReader();
+                if(file.type.includes('svg')) {
+                    reader.onload = (e) => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(e.target.result, "image/svg+xml");
+                        const content = doc.querySelector('svg');
+                        if(content) {
+                            const g = Utils.createSVG('g', {class: 'vector-element'});
+                            g.id = Utils.uid();
+                            content.childNodes.forEach(n => {
+                                if(n.nodeType === 1) {
+                                    const clone = n.cloneNode(true);
+                                    if(clone.id) clone.id = Utils.uid();
+                                    g.appendChild(clone);
+                                }
+                            });
+                            this.layer.appendChild(g);
+                            this.select(g.id);
+                            this.saveState();
+                            Utils.toast("SVG Imported");
+                        }
+                    };
+                    reader.readAsText(file);
+                } else if(file.type.includes('image')) {
+                    reader.onload = (e) => {
+                        const img = Utils.createSVG('image', {
+                            href: e.target.result, width: 200, height: 200, x: 300, y: 200, class: 'vector-element'
+                        });
+                        img.id = Utils.uid();
+                        this.layer.appendChild(img);
+                        this.select(img.id);
+                        this.saveState();
+                        Utils.toast("Image Imported");
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
 
+            group() { Utils.toast("Grouping (Single selection in demo)"); }
+
+            moveLayer(dir) {
+                if(!this.selectedId) return;
+                const el = document.getElementById(this.selectedId);
+                if(dir > 0 && el.nextSibling) this.layer.appendChild(el);
+                else if(dir < 0 && el.previousSibling) this.layer.insertBefore(el, this.layer.firstChild);
+                this.saveState();
+                this.renderLayers();
+            }
+
+            convertToPath() {
+                if(!this.selectedId) return;
+                const el = document.getElementById(this.selectedId);
+                if(el.tagName === 'path') return;
+                
+                const d = this.shapeToPath(el);
+                if(!d) return;
+
+                const path = Utils.createSVG('path', {
+                    d: d, fill: el.getAttribute('fill'), stroke: el.getAttribute('stroke'),
+                    'stroke-width': el.getAttribute('stroke-width'), class: 'vector-element',
+                    transform: el.getAttribute('transform')
+                });
+                path.id = el.id;
+                el.replaceWith(path);
+                this.select(path.id);
+                this.saveState();
+                Utils.toast("Converted to Path");
+            }
+
+            shapeToPath(el) {
+                const tag = el.tagName;
+                if(tag === 'rect') {
+                    const x = parseFloat(el.getAttribute('x'));
+                    const y = parseFloat(el.getAttribute('y'));
+                    const w = parseFloat(el.getAttribute('width'));
+                    const h = parseFloat(el.getAttribute('height'));
+                    return `M ${x} ${y} L ${x+w} ${y} L ${x+w} ${y+h} L ${x} ${y+h} Z`;
+                } else if(tag === 'circle') {
+                    const cx = parseFloat(el.getAttribute('cx'));
+                    const cy = parseFloat(el.getAttribute('cy'));
+                    const r = parseFloat(el.getAttribute('r'));
+                    const k = 0.5522847498;
+                    return `M ${cx-r} ${cy} C ${cx-r} ${cy-r*k} ${cx-r*k} ${cy-r} ${cx} ${cy-r} C ${cx+r*k} ${cy-r} ${cx+r} ${cy-r*k} ${cx+r} ${cy} C ${cx+r} ${cy+r*k} ${cx+r*k} ${cy+r} ${cx} ${cy+r} C ${cx-r*k} ${cy+r} ${cx-r} ${cy+r*k} ${cx-r} ${cy} Z`;
+                }
+                return "";
+            }
+
+            // --- SYSTEM ---
             select(id) {
+                this.finishTextEdit(); // Finish any active editing before selecting new
                 this.deselect();
                 this.selectedId = id;
                 const el = document.getElementById(id);
+                if(!el) return;
+                
                 el.classList.add('selected');
                 document.getElementById('selection-props').style.display = 'block';
-                
-                // Populate Common Inputs
+
+                const bbox = el.getBBox();
+                document.getElementById('inp-x').value = Math.round(bbox.x);
+                document.getElementById('inp-y').value = Math.round(bbox.y);
+                document.getElementById('inp-w').value = Math.round(bbox.width);
+                document.getElementById('inp-h').value = Math.round(bbox.height);
+
                 document.getElementById('inp-fill').value = Utils.rgbToHex(el.getAttribute('fill'));
                 document.getElementById('inp-stroke').value = Utils.rgbToHex(el.getAttribute('stroke'));
-                document.getElementById('inp-stroke-width').value = el.getAttribute('stroke-width') || 1;
+                document.getElementById('inp-stroke-width').value = el.getAttribute('stroke-width') || 0;
                 document.getElementById('inp-opacity').value = el.getAttribute('opacity') || 1;
 
-                // Radius Logic
-                const radiusGroup = document.getElementById('radius-group');
-                if (el.tagName === 'rect') {
-                    radiusGroup.style.display = 'block';
-                    const rx = el.getAttribute('rx') || 0;
-                    document.getElementById('inp-radius-range').value = rx;
-                    document.getElementById('inp-radius-num').value = rx;
-                } else {
-                    radiusGroup.style.display = 'none';
-                }
+                const rowRad = document.getElementById('row-radius');
+                if(el.tagName === 'rect') {
+                    rowRad.style.display = 'flex';
+                    document.getElementById('inp-radius').value = el.getAttribute('rx') || 0;
+                } else rowRad.style.display = 'none';
+
+                const textProps = document.getElementById('text-props');
+                if(el.tagName === 'text') {
+                    textProps.style.display = 'block';
+                    document.getElementById('inp-font-family').value = el.getAttribute('font-family');
+                    document.getElementById('inp-font-size').value = parseInt(el.getAttribute('font-size'));
+                    document.getElementById('inp-font-weight').value = el.getAttribute('font-weight');
+                } else textProps.style.display = 'none';
+
+                const dash = el.getAttribute('stroke-dasharray');
+                const sel = document.getElementById('inp-stroke-style');
+                if(!dash) sel.value = 'solid';
+                else if(dash.includes('10')) sel.value = 'dashed';
+                else sel.value = 'dotted';
 
                 this.renderLayers();
             }
@@ -955,9 +958,6 @@
                 }
                 this.selectedId = null;
                 document.getElementById('selection-props').style.display = 'none';
-                this.nodeEditor.deactivate();
-                this.hoverDelBtn.style.display = 'none';
-                this.renderLayers();
             }
 
             deleteSelection() {
@@ -970,38 +970,14 @@
                 const clone = el.cloneNode(true);
                 clone.id = Utils.uid();
                 clone.classList.remove('selected');
-                const t = clone.transform.baseVal;
-                if(t.length === 0 || t.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                    const tr = this.svg.createSVGTransform(); tr.setTranslate(10, 10);
-                    t.insertItemBefore(tr, 0);
-                } else {
-                    const m = t.getItem(0).matrix; t.getItem(0).setTranslate(m.e + 10, m.f + 10);
-                }
+                
+                if(clone.hasAttribute('x')) clone.setAttribute('x', parseFloat(clone.getAttribute('x')) + 10);
+                else if(clone.hasAttribute('cx')) clone.setAttribute('cx', parseFloat(clone.getAttribute('cx')) + 10);
+                else clone.setAttribute('transform', `translate(10 10)`);
+                
                 this.layer.appendChild(clone);
                 this.select(clone.id);
                 this.saveState();
-            }
-
-            convertToPath() {
-                if(!this.selectedId) return;
-                const el = document.getElementById(this.selectedId);
-                if(el.tagName === 'path') return;
-
-                const d = PathUtils.shapeToPath(el);
-                const path = Utils.createSVG('path', {
-                    d: d,
-                    fill: el.getAttribute('fill') || '#000',
-                    stroke: el.getAttribute('stroke'),
-                    'stroke-width': el.getAttribute('stroke-width'),
-                    transform: el.getAttribute('transform'),
-                    class: 'vector-element'
-                });
-                this.layer.replaceChild(path, el);
-                this.select(path.id);
-                this.saveState();
-                this.setTool('node');
-                this.nodeEditor.activate(this.selectedId);
-                Utils.toast("Converted to Path");
             }
 
             renderLayers() {
@@ -1010,18 +986,26 @@
                 Array.from(this.layer.children).reverse().forEach(el => {
                     const row = document.createElement('div');
                     row.className = `layer-item ${el.id === this.selectedId ? 'active' : ''}`;
-                    let icon = 'fa-vector-square';
+                    let icon = 'fa-shapes';
                     if(el.tagName === 'rect') icon = 'fa-square';
                     if(el.tagName === 'circle') icon = 'fa-circle';
-                    row.innerHTML = `<i class="fas ${icon}"></i> ${el.tagName} <span style="margin-left:auto; opacity:0.5;">${el.id.substr(-4)}</span>`;
+                    if(el.tagName === 'text') icon = 'fa-font';
+                    if(el.tagName === 'path') icon = 'fa-bezier-curve';
+                    if(el.tagName === 'image') icon = 'fa-image';
+                    if(el.tagName === 'g') icon = 'fa-object-group';
+                    
+                    let name = el.tagName;
+                    if(el.tagName === 'text') name = el.textContent.substring(0, 15);
+                    
+                    row.innerHTML = `<i class="fas ${icon}" style="width:20px; text-align:center;"></i> ${name}`;
                     row.onclick = () => this.select(el.id);
                     list.appendChild(row);
                 });
             }
 
             saveState() {
-                if(this.history.length > 20) this.history.shift();
                 this.history.push(this.layer.innerHTML);
+                if(this.history.length > 50) this.history.shift();
                 this.redoStack = [];
             }
 
@@ -1041,21 +1025,41 @@
             }
             
             exportSVG() {
+                this.finishTextEdit(); // Ensure text is saved
+                document.querySelectorAll('.selected').forEach(e => e.classList.remove('selected'));
                 const s = new XMLSerializer().serializeToString(this.svg);
                 const b = new Blob([s], {type:'image/svg+xml'});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(b);
-                a.download = 'brutalist-design.svg';
+                a.download = 'inkling-artwork.svg';
                 a.click();
             }
-        }
 
-        Utils.rgbToHex = (col) => {
-            if(!col || col === 'none') return '#000000';
-            if(col.startsWith('#')) return col;
-            const ctx = document.createElement('canvas').getContext('2d');
-            ctx.fillStyle = col;
-            return ctx.fillStyle;
+            // Helpers
+            polygonPath(cx, cy, sides, r) {
+                let d = "";
+                const step = (2 * Math.PI) / sides;
+                let angle = -Math.PI / 2;
+                d += `M ${cx + r * Math.cos(angle)} ${cy + r * Math.sin(angle)} `;
+                for (let i = 1; i <= sides; i++) { angle += step; d += `L ${cx + r * Math.cos(angle)} ${cy + r * Math.sin(angle)} `; }
+                return d + "Z";
+            }
+            starPath(cx, cy, points, outer, inner) {
+                let d = "";
+                const step = Math.PI / points;
+                let angle = -Math.PI / 2;
+                d += `M ${cx + outer * Math.cos(angle)} ${cy + outer * Math.sin(angle)} `;
+                for (let i = 0; i < points * 2; i++) {
+                    const r = i % 2 === 0 ? outer : inner; angle += step;
+                    d += `L ${cx + r * Math.cos(angle)} ${cy + r * Math.sin(angle)} `;
+                }
+                return d + "Z";
+            }
+            polylinePath(pts) {
+                let d = "";
+                pts.forEach((p, i) => { if(i===0) d += `M ${p.x} ${p.y} `; else d += `L ${p.x} ${p.y} `; });
+                return d;
+            }
         }
 
         const app = new App();
