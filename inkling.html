@@ -3,42 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inkling.Web - Complete Vector Editor</title>
+    <title>Inkling.Web - Professional Vector Editor</title>
     
-    <meta name="theme-color" content="#0f0f0f">
+    <meta name="theme-color" content="#121214">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Abril+Fatface&family=Bebas+Neue&family=Caveat:wght@700&family=JetBrains+Mono:wght@400;700&family=Lobster&family=Montserrat:wght@400;700;900&family=Oswald:wght@700&family=Playfair+Display:wght@700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Archivo+Black&family=Bebas+Neue&family=Caveat:wght@700&family=Lobster&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --c-bg: #0f0f0f;
-            --c-panel: #1a1a1a;
-            --c-border: #333;
-            --c-text: #e0e0e0;
-            --c-muted: #666;
-            --c-primary: #fff;
-            --c-accent: #00ffaa;
-            --c-danger: #ff3333;
+            /* Palette */
+            --bg-deep: #0a0a0c;
+            --bg-panel: #141416;
+            --bg-input: #1e1e22;
+            --border: #2a2a2e;
+            --border-light: #3a3a3e;
+            --text-main: #e0e0e0;
+            --text-muted: #888;
+            --accent: #4d7cff; /* Professional Blue */
+            --accent-glow: rgba(77, 124, 255, 0.3);
+            --accent-hover: #6b93ff;
+            --danger: #ff4d6a;
+            --success: #00c48c;
             
-            --border-width: 2px;
-            --shadow-brutal: 4px 4px 0px 0px rgba(0,0,0,0.8);
+            /* Spacing & Sizing */
+            --radius: 6px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             
-            --font-ui: 'Space Mono', monospace;
-            --font-head: 'Archivo Black', sans-serif;
-            
-            --sidebar-w: 300px;
-            --header-h: 50px;
-            --toolbar-w: 50px;
+            /* Layout */
+            --sidebar-w: 280px;
+            --header-h: 48px;
+            --toolbar-w: 48px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: var(--c-bg);
-            color: var(--c-text);
-            font-family: var(--font-ui);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             height: 100vh;
             width: 100vw;
@@ -46,158 +50,268 @@
             display: flex;
             flex-direction: column;
             user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- UI Components --- */
         .btn {
-            background: var(--c-panel); border: var(--border-width) solid var(--c-border);
-            color: var(--c-text); padding: 8px 12px; font-family: var(--font-ui);
-            font-weight: 700; cursor: pointer; display: inline-flex;
-            align-items: center; justify-content: center; gap: 8px;
-            font-size: 11px; transition: all 0.1s; box-shadow: var(--shadow-brutal);
+            background: var(--bg-input); 
+            border: 1px solid var(--border);
+            color: var(--text-main); 
+            padding: 6px 12px; 
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-weight: 500; 
+            cursor: pointer; 
+            display: inline-flex;
+            align-items: center; justify-content: center; gap: 6px;
+            font-size: 11px; 
+            transition: all var(--transition);
+            white-space: nowrap;
         }
-        .btn:hover { background: #222; border-color: var(--c-accent); color: var(--c-accent); transform: translate(-2px, -2px); }
-        .btn:active { transform: translate(2px, 2px); box-shadow: none; }
-        .btn.active { background: var(--c-accent); color: #000; border-color: #fff; }
-        .btn-icon { width: 40px; height: 40px; padding: 0; }
-        .btn-sm { padding: 4px 8px; font-size: 10px; box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.8); }
-
-        .panel { background: var(--c-panel); display: flex; flex-direction: column; z-index: 10; }
-        .panel-header {
-            background: #000; color: var(--c-accent);
-            border-bottom: var(--border-width) solid var(--c-border);
-            padding: 10px; font-family: var(--font-head); font-size: 12px;
-            letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
+        .btn:hover { 
+            background: #252529; 
+            border-color: var(--border-light); 
+            color: #fff; 
         }
-
-        input, select {
-            width: 100%; border: 2px solid #333; padding: 6px;
-            background: #222; color: #fff; font-family: var(--font-ui); font-weight: bold; border-radius: 0;
+        .btn.active { 
+            background: var(--accent); 
+            color: #fff; 
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
-        input:focus { border-color: var(--c-accent); }
-        input[type="color"] { height: 32px; padding: 0; cursor: pointer; border: 2px solid #444; }
-        input[type="range"] { accent-color: var(--c-accent); }
+        .btn-icon { 
+            width: 36px; height: 36px; padding: 0; 
+            border-radius: var(--radius); 
+        }
+        .btn-sm { padding: 4px 8px; font-size: 10px; }
+        .btn-danger { background: rgba(255, 77, 106, 0.1); color: var(--danger); border-color: rgba(255, 77, 106, 0.2); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
 
+        /* --- Header --- */
         header {
-            height: var(--header-h); border-bottom: var(--border-width) solid #000;
-            background: #111; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            z-index: 100; box-shadow: 0 4px 0 0 #000;
+            height: var(--header-h); 
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-panel); 
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+            z-index: 100; 
         }
-        .logo { font-family: var(--font-head); font-size: 22px; color: #fff; letter-spacing: -1px; }
-        .logo span { color: var(--c-accent); }
+        .logo { 
+            font-family: 'Archivo Black', sans-serif; font-size: 18px; 
+            color: #fff; letter-spacing: -0.5px; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .logo span { color: var(--accent); }
+        .logo-sub { font-family: 'Inter'; font-size: 10px; color: var(--text-muted); font-weight: 400; margin-left: 5px; }
 
+        .header-actions { display: flex; gap: 8px; }
+
+        /* --- Layout --- */
         #workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
 
+        /* --- Toolbar --- */
         #toolbar {
-            width: var(--toolbar-w); border-right: var(--border-width) solid #000;
-            padding: 10px 0; gap: 2px;
-            display: flex; flex-direction: column; align-items: center; background: #111;
+            width: var(--toolbar-w); 
+            border-right: 1px solid var(--border);
+            padding: 8px; 
+            gap: 4px;
+            display: flex; flex-direction: column; align-items: center; 
+            background: var(--bg-panel);
         }
-        .tool-separator { width: 30px; height: 2px; background: #333; margin: 8px 0; }
+        .tool-separator { width: 24px; height: 1px; background: var(--border); margin: 8px 0; }
 
+        /* --- Viewport --- */
         #viewport {
-            flex: 1; background-color: #1a1a1a;
+            flex: 1; background-color: #0e0e11;
             position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            background-image: linear-gradient(45deg, #111 25%, transparent 25%), linear-gradient(-45deg, #111 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111 75%), linear-gradient(-45deg, transparent 75%, #111 75%);
-            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            /* Checkerboard pattern */
+            background-image: 
+                radial-gradient(circle, #1a1a1d 1px, transparent 1px);
+            background-size: 20px 20px;
         }
         
-        /* Container for Zoom */
         #artboard-container {
             position: relative;
-            width: 800px; height: 600px; /* Base size for coordinate system */
+            width: 800px; height: 600px; 
             transform-origin: center center;
+            transition: transform 0.05s ease-out; /* Slight smoothness to zoom */
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            overflow: hidden; /* Contains SVG */
         }
 
         #artboard {
             width: 100%; height: 100%;
-            background: #fff;
-            box-shadow: 0 0 0 2px #fff, 0 0 30px rgba(0,0,0,0.5), 0 0 0 4px #000;
+            background: #ffffff;
             position: relative;
-            overflow: visible; flex-shrink: 0;
         }
         
-        svg { width: 100%; height: 100%; display: block; overflow: visible; }
+        svg { 
+            width: 100%; height: 100%; 
+            display: block; overflow: visible; 
+        }
 
-        .vector-element { cursor: move; vector-effect: non-scaling-stroke; }
-        .vector-element:hover { filter: drop-shadow(0 0 5px var(--c-accent)); }
+        /* SVG Styles */
+        .vector-element { cursor: move; vector-effect: non-scaling-stroke; transition: filter 0.1s; }
+        .vector-element:hover { filter: drop-shadow(0 0 4px var(--accent)); }
         .vector-element.selected { 
-            stroke: var(--c-accent) !important; stroke-width: 2px !important; stroke-dasharray: 5,5; animation: dash 0.5s linear infinite;
-            paint-order: stroke fill;
+            stroke: var(--accent) !important; stroke-width: 2px !important; stroke-dasharray: none;
+            animation: pulse-stroke 1s infinite alternate;
+        }
+        @keyframes pulse-stroke { from { stroke-opacity: 0.5; } to { stroke-opacity: 1; } }
+
+        /* Node Editing Handles */
+        .node-handle { fill: var(--accent); stroke: #fff; stroke-width: 1; cursor: move; }
+        .node-handle:hover { fill: #fff; }
+
+        /* --- Sidebar --- */
+        #properties { 
+            width: var(--sidebar-w); 
+            border-left: 1px solid var(--border); 
+            background: var(--bg-panel);
+            display: flex; flex-direction: column;
+        }
+        .panel-header {
+            background: var(--bg-deep); color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px; font-weight: 600; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        @keyframes dash { to { stroke-dashoffset: 16; } }
+        .prop-section { padding: 16px; border-bottom: 1px solid var(--border); }
+        .prop-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .prop-row:last-child { margin-bottom: 0; }
+        .prop-label { 
+            min-width: 24px; font-size: 10px; color: var(--text-muted); 
+            text-transform: uppercase; font-weight: 600;
+        }
+        .section-title { 
+            font-size: 11px; color: var(--text-muted); margin-bottom: 12px; 
+            display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        /* SIDEBAR */
-        #properties { width: var(--sidebar-w); border-left: var(--border-width) solid #000; }
-        .prop-section { padding: 15px; border-bottom: var(--border-width) solid #000; }
-        .prop-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .prop-label { min-width: 30px; font-size: 10px; color: var(--c-muted); }
-        .section-title { font-family: var(--font-head); font-size: 11px; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .section-title::after { content: ''; flex: 1; height: 2px; background: #333; }
+        /* Form Elements */
+        input, select {
+            width: 100%; 
+            border: 1px solid var(--border); padding: 6px 8px;
+            background: var(--bg-input); color: #fff; 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 11px; 
+            border-radius: var(--radius);
+            transition: border-color var(--transition);
+        }
+        input:focus { border-color: var(--accent); outline: none; }
+        
+        input[type="color"] { 
+            height: 32px; padding: 2px; cursor: pointer; position: relative;
+        }
+        /* Custom color input aesthetic */
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+        input[type="color"]::-webkit-color-swatch { border-radius: 4px; border: none; }
 
-        #layers-list { flex: 1; overflow-y: auto; background: #111; }
+        input[type="range"] { 
+            -webkit-appearance: none; background: transparent; padding: 0;
+        }
+        input[type="range"]::-webkit-slider-runnable-track { 
+            height: 4px; background: var(--border); border-radius: 2px; 
+        }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; height: 14px; width: 14px; 
+            border-radius: 50%; background: var(--accent); margin-top: -5px;
+            border: 2px solid var(--bg-panel); cursor: pointer;
+            box-shadow: 0 0 5px var(--accent-glow);
+        }
+
+        /* Layers List */
+        #layers-list { flex: 1; overflow-y: auto; background: var(--bg-deep); }
         .layer-item {
-            padding: 10px; border-bottom: 1px solid #222; cursor: pointer;
-            display: flex; align-items: center; gap: 10px; font-size: 11px;
+            padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted);
+            transition: background var(--transition);
         }
-        .layer-item:hover { background: #1a1a1a; }
-        .layer-item.active { background: #000; color: var(--c-accent); border-left: 3px solid var(--c-accent); }
+        .layer-item:hover { background: #1a1a1d; color: #fff; }
+        .layer-item.active { 
+            background: rgba(77, 124, 255, 0.1); color: #fff; 
+            border-left: 2px solid var(--accent); padding-left: 14px;
+        }
+        .layer-item i { width: 14px; text-align: center; font-size: 10px; }
 
-        /* TEXT EDIT OVERLAY */
+        /* Text Edit Overlay */
         #text-edit-overlay {
             position: absolute;
             display: none;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid var(--c-accent);
-            color: #000;
+            background: transparent; /* Overlay sits on top */
+            border: 1px dashed var(--accent);
+            color: #000; /* Text color is handled by SVG element below, this is for input */
             font-family: sans-serif;
-            padding: 4px;
-            resize: none;
-            overflow: hidden;
+            padding: 0;
+            resize: none; overflow: hidden;
             z-index: 2000;
             min-width: 50px;
             outline: none;
-            box-shadow: var(--shadow-brutal);
+            /* Mix-blend-mode to see through if needed, usually opaque bg is fine for input */
+            background: rgba(255,255,255,0.9);
+            border-radius: 2px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: inherit; 
+            line-height: normal;
         }
 
+        /* Status Bar */
         #status-bar {
-            height: 24px; background: #000; border-top: 1px solid #333;
+            height: 24px; background: var(--bg-deep); border-top: 1px solid var(--border);
             display: flex; align-items: center; padding: 0 15px; font-size: 10px;
-            color: var(--c-muted); justify-content: space-between;
+            color: var(--text-muted); justify-content: space-between;
         }
         
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #000; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--c-accent); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #fff; color: #000; padding: 8px 16px; border-radius: 4px;
+            font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0; transition: all 0.3s ease-out;
+            z-index: 9000; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">INKLING<span>.</span>WEB V2</div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-sm" id="btn-undo"><i class="fas fa-undo"></i></button>
-            <button class="btn btn-sm" id="btn-redo"><i class="fas fa-redo"></i></button>
-            <button class="btn btn-sm" id="btn-import" style="border-color:var(--c-accent);"><i class="fas fa-file-import"></i> Import</button>
-            <button class="btn btn-sm" id="btn-export" style="background:var(--c-accent); color:#000;"><i class="fas fa-file-export"></i> SVG</button>
+        <div class="logo">
+            INKLING<span>.</span>WEB <span class="logo-sub">Professional Suite</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-sm" id="btn-undo" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i></button>
+            <button class="btn btn-sm" id="btn-redo" title="Redo (Ctrl+Shift+Z)"><i class="fas fa-redo"></i></button>
+            <button class="btn btn-sm" id="btn-import"><i class="fas fa-file-import"></i> Import</button>
+            <button class="btn btn-sm" id="btn-export" style="background: var(--accent); border-color: var(--accent);"><i class="fas fa-download"></i> Export SVG</button>
         </div>
     </header>
 
     <div id="workspace">
-        <nav class="panel" id="toolbar">
+        <!-- Left Toolbar -->
+        <nav id="toolbar">
             <button class="btn btn-icon active" id="tool-select" title="Select (V)"><i class="fas fa-mouse-pointer"></i></button>
             <button class="btn btn-icon" id="tool-node" title="Node Edit (N)"><i class="fas fa-bezier-curve"></i></button>
             <div class="tool-separator"></div>
             
             <button class="btn btn-icon" id="tool-text" title="Text (T)"><i class="fas fa-font"></i></button>
-            <button class="btn btn-icon" id="tool-freehand" title="Brush (B)"><i class="fas fa-paintbrush"></i></button>
+            <button class="btn btn-icon" id="tool-freehand" title="Brush (B)"><i class="fas fa-pen"></i></button>
             <div class="tool-separator"></div>
 
-            <button class="btn btn-icon" id="tool-rect" title="Rect (R)"><i class="far fa-square"></i></button>
-            <button class="btn btn-icon" id="tool-circle" title="Circle (C)"><i class="far fa-circle"></i></button>
+            <button class="btn btn-icon" id="tool-rect" title="Rectangle (R)"><i class="far fa-square"></i></button>
+            <button class="btn btn-icon" id="tool-circle" title="Ellipse (C)"><i class="far fa-circle"></i></button>
             <button class="btn btn-icon" id="tool-polygon" title="Polygon (Y)"><i class="fas fa-draw-polygon"></i></button>
             <button class="btn btn-icon" id="tool-star" title="Star (S)"><i class="fas fa-star"></i></button>
             <button class="btn btn-icon" id="tool-line" title="Line (L)"><i class="fas fa-minus"></i></button>
@@ -207,65 +321,75 @@
             </div>
         </nav>
 
+        <!-- Main Viewport -->
         <main id="viewport">
             <div id="artboard-container">
                 <div id="artboard">
                     <svg id="main-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
                         <defs></defs>
                         <g id="drawing-layer"></g>
+                        <g id="node-handles-layer" style="pointer-events: none;"></g>
                     </svg>
-                    <!-- Text Area Overlay positioned via JS coordinates -->
                     <textarea id="text-edit-overlay" rows="1"></textarea>
                 </div>
             </div>
         </main>
 
-        <aside class="panel" id="properties">
-            <div class="panel-header">PROPERTIES</div>
+        <!-- Right Sidebar -->
+        <aside id="properties">
+            <div class="panel-header">Properties</div>
             
             <div id="selection-props" style="display:none;">
                 
-                <!-- TYPOGRAPHY -->
+                <!-- Typography -->
                 <div id="text-props" class="prop-section" style="display:none;">
-                    <div class="section-title">TYPOGRAPHY</div>
+                    <div class="section-title">Typography</div>
                     <div class="prop-row">
                         <select id="inp-font-family" style="width: 100%;"></select>
-                        <button class="btn btn-sm" id="btn-add-font" title="Import Custom Font" style="width:30px; padding:0;"><i class="fas fa-plus"></i></button>
+                        <button class="btn btn-sm" id="btn-add-font" title="Import Font" style="width:32px; padding:0; flex-shrink:0;"><i class="fas fa-plus"></i></button>
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">Size</span> <input type="number" id="inp-font-size" min="1">
-                        <span class="prop-label">Wt</span> <select id="inp-font-weight"><option value="400">Reg</option><option value="700">Bold</option><option value="900">Black</option></select>
+                        <span class="prop-label">Size</span> 
+                        <input type="number" id="inp-font-size" min="1" step="1">
+                        <span class="prop-label">Wt</span> 
+                        <select id="inp-font-weight">
+                            <option value="300">Light</option>
+                            <option value="400">Reg</option>
+                            <option value="500">Med</option>
+                            <option value="700">Bold</option>
+                            <option value="900">Blk</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- GEOMETRY -->
+                <!-- Transform -->
                 <div class="prop-section">
-                    <div class="section-title">TRANSFORM</div>
+                    <div class="section-title">Transform</div>
                     <div class="prop-row">
-                        <span class="prop-label">X</span> <input type="number" id="inp-x">
-                        <span class="prop-label">Y</span> <input type="number" id="inp-y">
+                        <span class="prop-label">X</span> <input type="number" id="inp-x" step="1">
+                        <span class="prop-label">Y</span> <input type="number" id="inp-y" step="1">
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">W</span> <input type="number" id="inp-w">
-                        <span class="prop-label">H</span> <input type="number" id="inp-h">
+                        <span class="prop-label">W</span> <input type="number" id="inp-w" step="1">
+                        <span class="prop-label">H</span> <input type="number" id="inp-h" step="1">
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">Rot</span> <input type="number" id="inp-rotation" value="0">
+                        <span class="prop-label">Rot</span> <input type="number" id="inp-rotation" value="0" step="1">
                     </div>
                     <div class="prop-row" id="row-radius" style="display:none;">
-                        <span class="prop-label">Rad</span> <input type="range" id="inp-radius" min="0" max="100" value="0">
+                        <span class="prop-label">Rad</span> <input type="range" id="inp-radius" min="0" max="200" value="0">
                     </div>
                 </div>
 
-                <!-- APPEARANCE -->
+                <!-- Appearance -->
                 <div class="prop-section">
-                    <div class="section-title">BORDERS & FILL</div>
+                    <div class="section-title">Appearance</div>
                     <div class="prop-row">
                         <span class="prop-label">Fill</span> <input type="color" id="inp-fill" value="#000000">
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">Strk</span> <input type="color" id="inp-stroke" value="#ffffff">
-                        <input type="number" id="inp-stroke-width" value="0" style="width:40px;">
+                        <span class="prop-label">Strk</span> <input type="color" id="inp-stroke" value="#000000">
+                        <input type="number" id="inp-stroke-width" value="0" min="0" step="0.5">
                     </div>
                     <div class="prop-row">
                         <span class="prop-label">Type</span> 
@@ -276,33 +400,33 @@
                         </select>
                     </div>
                     <div class="prop-row">
-                        <span class="prop-label">Opac</span> <input type="range" id="inp-opacity" min="0" max="1" step="0.1" value="1">
+                        <span class="prop-label">Opac</span> <input type="range" id="inp-opacity" min="0" max="1" step="0.05" value="1">
                     </div>
                 </div>
 
-                <!-- ACTIONS -->
+                <!-- Actions -->
                 <div class="prop-section">
-                    <div class="section-title">ACTIONS</div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:10px;">
-                        <button class="btn btn-sm" id="btn-topath"><i class="fas fa-vector-square"></i> Path</button>
+                    <div class="section-title">Actions</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:12px;">
+                        <button class="btn btn-sm" id="btn-topath"><i class="fas fa-vector-square"></i> To Path</button>
                         <button class="btn btn-sm" id="btn-group"><i class="fas fa-object-group"></i> Group</button>
                         <button class="btn btn-sm" id="btn-front"><i class="fas fa-layer-group"></i> Front</button>
                         <button class="btn btn-sm" id="btn-back"><i class="fas fa-layer-group"></i> Back</button>
                     </div>
-                    <button class="btn btn-sm" id="btn-dup" style="width:100%; margin-bottom:5px;"><i class="fas fa-copy"></i> Duplicate</button>
-                    <button class="btn btn-sm" id="btn-del" style="width:100%; background:var(--c-danger); color:#fff;"><i class="fas fa-trash"></i> Delete</button>
+                    <button class="btn btn-sm" id="btn-dup" style="width:100%; margin-bottom:8px;"><i class="fas fa-copy"></i> Duplicate</button>
+                    <button class="btn btn-sm btn-danger" id="btn-del" style="width:100%;"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
             
-            <div class="panel-header">LAYERS</div>
+            <div class="panel-header">Layers</div>
             <div id="layers-list"></div>
         </aside>
     </div>
     
     <footer id="status-bar">
         <span id="status-msg">Ready</span>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <span id="zoom-level">100%</span>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <span>Zoom: <span id="zoom-level">100%</span></span>
             <input type="file" id="file-input" accept="image/*,.svg,.ttf,.otf,.woff,.woff2" style="display:none;">
         </div>
     </footer>
@@ -312,31 +436,31 @@
         const Utils = {
             uid: () => 'el_' + Math.random().toString(36).substr(2, 6),
             toast: (msg) => {
+                const existing = document.querySelector('.toast');
+                if(existing) existing.remove();
                 const t = document.createElement('div');
-                t.className = 'toast'; t.innerText = msg; t.style.cssText = `
-                    position:fixed; bottom:50px; left:50%; transform:translateX(-50%);
-                    background:var(--c-accent); color:#000; padding:8px 16px; font-family:var(--font-head);
-                    border:2px solid #000; box-shadow:4px 4px 0 #000; z-index:9000;
-                `;
+                t.className = 'toast'; t.innerText = msg;
                 document.body.appendChild(t);
-                setTimeout(() => t.remove(), 2000);
+                // Trigger reflow
+                void t.offsetWidth;
+                t.classList.add('show');
+                setTimeout(() => {
+                    t.classList.remove('show');
+                    setTimeout(() => t.remove(), 300);
+                }, 2000);
             },
-            getMousePos: (e, container) => {
-                const rect = container.getBoundingClientRect();
-                // Base dimensions of the artboard coordinate system
-                const baseW = 800;
-                const baseH = 600;
-                
-                const scaleX = baseW / rect.width;
-                const scaleY = baseH / rect.height;
-                
+            /**
+             * Accurate mouse position within SVG coordinates regardless of zoom/pan.
+             */
+            getMousePos: (e, svgElement) => {
+                const pt = svgElement.createSVGPoint();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                return { 
-                    x: (clientX - rect.left) * scaleX, 
-                    y: (clientY - rect.top) * scaleY 
-                };
+                pt.x = clientX;
+                pt.y = clientY;
+                // Apply inverse of the current transformation matrix of the artboard container?
+                // No, SVG has its own viewBox. We need the screen-to-SVG coordinate transform.
+                return pt.matrixTransform(svgElement.getScreenCTM().inverse());
             },
             createSVG: (tag, attrs) => {
                 const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -357,8 +481,10 @@
             constructor() {
                 this.svg = document.getElementById('main-svg');
                 this.layer = document.getElementById('drawing-layer');
+                this.nodeLayer = document.getElementById('node-handles-layer');
                 this.artboard = document.getElementById('artboard');
                 this.viewport = document.getElementById('viewport');
+                this.container = document.getElementById('artboard-container');
                 
                 this.selectedId = null;
                 this.tool = 'select'; 
@@ -370,16 +496,15 @@
                 this.zoom = 1;
                 this.pan = {x:0, y:0};
                 this.isPanning = false;
+                this.lastPanPos = {x:0, y:0};
 
                 this.history = [];
                 this.redoStack = [];
-                this.fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia', 'Impact'];
+                
+                this.fonts = ['Arial', 'Verdana', 'Times New Roman', 'Georgia', 'Inter', 'JetBrains Mono', 'Bebas Neue', 'Lobster', 'Caveat', 'Playfair Display'];
                 
                 this.textOverlay = document.getElementById('text-edit-overlay');
                 this.textEditingTarget = null;
-                
-                const gFonts = ['Roboto', 'Montserrat', 'Oswald', 'Bebas Neue', 'Lobster', 'Caveat', 'Playfair Display', 'Abril Fatface', 'JetBrains Mono'];
-                this.fonts = this.fonts.concat(gFonts);
 
                 this.init();
             }
@@ -402,34 +527,32 @@
             }
 
             setTool(t) {
-                this.finishTextEdit(); // Finish editing if switching tools
+                this.finishTextEdit(); 
                 this.tool = t;
                 document.querySelectorAll('#toolbar .btn').forEach(b => b.classList.remove('active'));
                 const btn = document.getElementById(`tool-${t}`);
                 if(btn) btn.classList.add('active');
                 
-                if(t === 'hand') this.artboard.style.cursor = 'grab';
-                else if(t === 'select' || t === 'node') this.artboard.style.cursor = 'default';
-                else this.artboard.style.cursor = 'crosshair';
+                // Cursor handling
+                if(t === 'hand') this.viewport.style.cursor = 'grab';
+                else if(t === 'select' || t === 'node') this.viewport.style.cursor = 'default';
+                else this.viewport.style.cursor = 'crosshair';
+
+                // Clear node handles if switching away from node tool
+                if(t !== 'node') this.clearNodeHandles();
+                
+                // Update status
+                document.getElementById('status-msg').innerText = `Tool: ${t.charAt(0).toUpperCase() + t.slice(1)}`;
             }
 
             // --- BINDINGS ---
             bindEvents() {
-                // Viewport Zoom
+                // Viewport Zoom & Pan
                 this.viewport.addEventListener('wheel', (e) => {
                     e.preventDefault();
                     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-                    this.zoom = Math.max(0.2, Math.min(4, this.zoom * delta));
-                    
-                    const container = document.getElementById('artboard-container');
-                    container.style.transform = `scale(${this.zoom})`;
-                    
-                    document.getElementById('zoom-level').innerText = Math.round(this.zoom*100) + '%';
-                    
-                    // Reposition text overlay if active
-                    if(this.textEditingTarget) {
-                        this.updateTextOverlayPosition();
-                    }
+                    this.zoom = Math.max(0.1, Math.min(10, this.zoom * delta));
+                    this.updateViewportTransform();
                 });
 
                 // Drawing
@@ -448,7 +571,6 @@
                 // Text Edit Overlay
                 this.textOverlay.addEventListener('blur', () => this.finishTextEdit());
                 this.textOverlay.addEventListener('input', () => {
-                    // Auto-resize height
                     this.textOverlay.style.height = 'auto';
                     this.textOverlay.style.height = this.textOverlay.scrollHeight + 'px';
                 });
@@ -473,8 +595,10 @@
                     if(e.key === 'h') this.setTool('hand');
                     if(e.key === 'l') this.setTool('line');
                     
-                    if(e.key === 'z' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if(e.shiftKey) this.redo(); else this.undo(); }
-                    if(e.key === 'g' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.group(); }
+                    if(e.key === 'z' && (e.ctrlKey || e.metaKey)) { 
+                        e.preventDefault(); 
+                        if(e.shiftKey) this.redo(); else this.undo(); 
+                    }
                 });
             }
 
@@ -485,7 +609,7 @@
                     b.onclick = () => this.setTool(id);
                 });
 
-                // Props
+                // Props Binding
                 const updateAttr = (attr, val) => {
                     const el = document.getElementById(this.selectedId);
                     if(el) { el.setAttribute(attr, val); this.saveState(); this.renderLayers(); }
@@ -522,11 +646,52 @@
                 document.getElementById('inp-font-size').oninput = (e) => updateAttr('font-size', e.target.value + 'px');
                 document.getElementById('inp-font-weight').onchange = (e) => updateAttr('font-weight', e.target.value);
 
+                // Transform
+                // X/Y update is tricky with simple attributes because of transforms. 
+                // For this simple editor, we will just update the attribute directly for simple shapes, 
+                // but for translated items, it's better to use the transform.
+                document.getElementById('inp-x').onchange = (e) => {
+                     const el = document.getElementById(this.selectedId);
+                     if(el) { el.setAttribute('x', e.target.value); this.saveState(); }
+                };
+                document.getElementById('inp-y').onchange = (e) => {
+                     const el = document.getElementById(this.selectedId);
+                     if(el) { el.setAttribute('y', e.target.value); this.saveState(); }
+                };
+                document.getElementById('inp-w').onchange = (e) => {
+                    const el = document.getElementById(this.selectedId);
+                    if(el) {
+                        if(el.tagName === 'rect') el.setAttribute('width', e.target.value);
+                        else if(el.tagName === 'circle' || el.tagName === 'ellipse') el.setAttribute('r', e.target.value/2); // Simplify
+                        else if(el.tagName === 'image') el.setAttribute('width', e.target.value);
+                        this.saveState();
+                    }
+                };
+                document.getElementById('inp-h').onchange = (e) => {
+                    const el = document.getElementById(this.selectedId);
+                    if(el) {
+                        if(el.tagName === 'rect' || el.tagName === 'image') el.setAttribute('height', e.target.value);
+                        // Circle height is ignored (symmetric)
+                        this.saveState();
+                    }
+                };
+
+                // Rotation
+                document.getElementById('inp-rotation').oninput = (e) => {
+                    const el = document.getElementById(this.selectedId);
+                    if(el) {
+                        const bbox = el.getBBox();
+                        const cx = bbox.x + bbox.width/2;
+                        const cy = bbox.y + bbox.height/2;
+                        el.setAttribute('transform', `rotate(${e.target.value} ${cx} ${cy})`);
+                        this.saveState();
+                    }
+                };
+
                 // Actions
                 document.getElementById('btn-topath').onclick = () => this.convertToPath();
                 document.getElementById('btn-del').onclick = () => this.deleteSelection();
                 document.getElementById('btn-dup').onclick = () => this.duplicateSelection();
-                document.getElementById('btn-group').onclick = () => this.group();
                 document.getElementById('btn-front').onclick = () => this.moveLayer(1);
                 document.getElementById('btn-back').onclick = () => this.moveLayer(-1);
                 
@@ -540,57 +705,66 @@
                 document.getElementById('btn-import').onclick = () => fileInput.click();
                 document.getElementById('btn-add-font').onclick = () => fileInput.click();
                 fileInput.onchange = (e) => this.handleFile(e.target.files[0]);
-
-                // Rotation
-                document.getElementById('inp-rotation').oninput = (e) => {
-                    const el = document.getElementById(this.selectedId);
-                    if(el) {
-                        const bbox = el.getBBox();
-                        const cx = bbox.x + bbox.width/2;
-                        const cy = bbox.y + bbox.height/2;
-                        el.setAttribute('transform', `rotate(${e.target.value} ${cx} ${cy})`);
-                        this.saveState();
-                    }
-                };
             }
 
-            // --- DRAWING ---
+            // --- VIEWPORT LOGIC ---
+            updateViewportTransform() {
+                this.container.style.transform = `scale(${this.zoom})`;
+                document.getElementById('zoom-level').innerText = Math.round(this.zoom*100) + '%';
+                if(this.textEditingTarget) this.updateTextOverlayPosition();
+            }
+
+            // --- DRAWING LOGIC ---
             onStart(e) {
-                if(this.tool === 'hand') {
+                const pos = Utils.getMousePos(e, this.svg);
+                this.startPos = pos;
+
+                if (this.tool === 'hand') {
                     this.isPanning = true;
-                    this.artboard.style.cursor = 'grabbing';
+                    this.viewport.style.cursor = 'grabbing';
+                    this.lastPanPos = { x: e.clientX, y: e.clientY };
                     return;
                 }
-
-                // If clicking away from text overlay, finish editing
-                if(this.textEditingTarget && e.target !== this.textOverlay) {
-                    this.finishTextEdit();
-                }
-
-                const pos = Utils.getMousePos(e, this.artboard);
-                this.startPos = pos;
 
                 if (this.tool === 'select') {
                     if (e.target.classList.contains('vector-element')) {
                         this.select(e.target.id);
-                        this.isDrawing = true;
+                        this.isDrawing = true; // Using isDrawing for dragging
                         this.dragStart = pos;
+                        
+                        // Capture initial transform to accumulate
                         const el = document.getElementById(this.selectedId);
-                        // Reset transform for simpler drag logic or accumulate
-                        // For now, we use a simple 'translate' overwrite for simplicity
-                        if(!el.getAttribute('transform') || !el.getAttribute('transform').includes('translate')) {
-                           // We keep existing transform if it's rotate, but simple logic here:
-                           // We will calculate delta and apply translate in onMove
-                        }
-                    } else this.deselect();
-                }
-                else if (this.tool === 'node') {
-                    if (e.target.classList.contains('vector-element')) {
-                        this.select(e.target.id);
-                        Utils.toast("Node Editing Active");
+                        this.initTransform = this.parseTransform(el.getAttribute('transform'));
+                        
+                    } else {
+                        this.deselect();
                     }
+                    return;
                 }
-                else if (this.tool === 'text') {
+
+                if (this.tool === 'node') {
+                    // If clicking on a node handle
+                    if(e.target.classList.contains('node-handle')) {
+                        this.isDrawing = true;
+                        this.nodeEditTarget = {
+                            handleId: e.target.id,
+                            pathId: e.target.dataset.pathId,
+                            index: parseInt(e.target.dataset.index)
+                        };
+                        return;
+                    }
+                    // If clicking on a path to select it
+                    if (e.target.classList.contains('vector-element') && e.target.tagName === 'path') {
+                        this.select(e.target.id);
+                        this.showNodeHandles(e.target);
+                    } else {
+                        this.deselect();
+                        this.clearNodeHandles();
+                    }
+                    return;
+                }
+
+                if (this.tool === 'text') {
                     const text = Utils.createSVG('text', {
                         x: pos.x, y: pos.y, fill: '#000', stroke: 'none',
                         'font-size': '24px', 'font-family': 'Arial', class: 'vector-element'
@@ -601,34 +775,68 @@
                     this.select(text.id);
                     this.initTextEdit(text);
                     this.saveState();
+                    return;
                 }
-                else {
-                    this.isDrawing = true;
-                    let el;
-                    const baseAttrs = { fill: '#000', stroke: 'none', class: 'vector-element' };
-                    
-                    if(this.tool === 'rect') el = Utils.createSVG('rect', {...baseAttrs, x: pos.x, y: pos.y, width: 0, height: 0, rx: 0});
-                    else if(this.tool === 'circle') el = Utils.createSVG('circle', {...baseAttrs, cx: pos.x, cy: pos.y, r: 0});
-                    else if(this.tool === 'line') el = Utils.createSVG('line', {stroke: '#000', 'stroke-width': 2, x1: pos.x, y1: pos.y, x2: pos.x, y2: pos.y, class: 'vector-element'});
-                    else if(this.tool === 'polygon' || this.tool === 'star') el = Utils.createSVG('path', {...baseAttrs, d: ''});
-                    else if(this.tool === 'freehand') {
-                        el = Utils.createSVG('path', {stroke: '#000', fill: 'none', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: `M ${pos.x} ${pos.y}`, class: 'vector-element'});
-                        this.freehandPath = [pos];
-                    }
-                    
-                    if(el) {
-                        el.id = Utils.uid();
-                        this.layer.appendChild(el);
-                        this.currentShape = el;
-                    }
+
+                // Shape creation
+                this.isDrawing = true;
+                let el;
+                const baseAttrs = { fill: '#e0e0e0', stroke: '#000', 'stroke-width': 0, class: 'vector-element' };
+                
+                if(this.tool === 'rect') el = Utils.createSVG('rect', {...baseAttrs, x: pos.x, y: pos.y, width: 0, height: 0, rx: 0});
+                else if(this.tool === 'circle') el = Utils.createSVG('circle', {...baseAttrs, cx: pos.x, cy: pos.y, r: 0});
+                else if(this.tool === 'line') el = Utils.createSVG('line', {stroke: '#000', 'stroke-width': 2, x1: pos.x, y1: pos.y, x2: pos.x, y2: pos.y, class: 'vector-element'});
+                else if(this.tool === 'polygon' || this.tool === 'star') el = Utils.createSVG('path', {...baseAttrs, d: ''});
+                else if(this.tool === 'freehand') {
+                    el = Utils.createSVG('path', {stroke: '#000', fill: 'none', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: `M ${pos.x} ${pos.y}`, class: 'vector-element'});
+                    this.freehandPath = [pos];
+                }
+                
+                if(el) {
+                    el.id = Utils.uid();
+                    this.layer.appendChild(el);
+                    this.currentShape = el;
                 }
             }
 
             onMove(e) {
-                if(this.isPanning) return; 
+                if(this.isPanning) {
+                    const dx = e.clientX - this.lastPanPos.x;
+                    const dy = e.clientY - this.lastPanPos.y;
+                    
+                    // Pan is applied to the viewport scroll or a container translation.
+                    // Here we just scroll the viewport container directly.
+                    this.viewport.scrollLeft -= dx;
+                    this.viewport.scrollTop -= dy;
+                    this.lastPanPos = { x: e.clientX, y: e.clientY };
+                    return;
+                }
+
+                if(this.tool === 'node' && this.isDrawing && this.nodeEditTarget) {
+                    const pos = Utils.getMousePos(e, this.svg);
+                    const pathEl = document.getElementById(this.nodeEditTarget.pathId);
+                    const handleEl = document.getElementById(this.nodeEditTarget.handleId);
+                    
+                    if(pathEl && handleEl) {
+                        // Update Handle Position
+                        handleEl.setAttribute('cx', pos.x);
+                        handleEl.setAttribute('cy', pos.y);
+                        
+                        // Update Path Data
+                        const segments = pathEl.pathSegList || this.parsePathD(pathEl.getAttribute('d')); // Fallback parsing
+                        // Note: pathSegList is deprecated. Modern browsers use generic D string.
+                        // We need to update the string directly.
+                        
+                        const d = pathEl.getAttribute('d');
+                        const newD = this.updatePathDPoint(d, this.nodeEditTarget.index, pos.x, pos.y);
+                        pathEl.setAttribute('d', newD);
+                    }
+                    return;
+                }
+
                 if(!this.isDrawing && !this.currentShape) return;
 
-                const pos = Utils.getMousePos(e, this.artboard);
+                const pos = Utils.getMousePos(e, this.svg);
 
                 // Select Drag
                 if(this.tool === 'select' && this.isDrawing && this.selectedId) {
@@ -636,11 +844,17 @@
                     const dx = pos.x - this.dragStart.x;
                     const dy = pos.y - this.dragStart.y;
                     
-                    // Simple drag: apply translate transform
-                    // Note: this overwrites rotation if not handled carefully.
-                    // Ideally, we append to transform matrix. 
-                    // For this snippet, we just set translate.
-                    el.setAttribute('transform', `translate(${dx} ${dy})`);
+                    // Apply new transform based on initial state + delta
+                    const tx = this.initTransform.translateX + dx;
+                    const ty = this.initTransform.translateY + dy;
+                    
+                    // Keep rotation if it existed
+                    let newTrans = `translate(${tx} ${ty})`;
+                    if(this.initTransform.rotation !== 0) {
+                         // Simple re-application might be buggy with pivot points, but works for basic cases
+                         newTrans += ` rotate(${this.initTransform.rotation} ${this.initTransform.cx} ${this.initTransform.cy})`;
+                    }
+                    el.setAttribute('transform', newTrans);
                     return;
                 }
 
@@ -664,8 +878,7 @@
                 }
                 else if(this.tool === 'polygon') {
                     const r = Math.hypot(pos.x - this.startPos.x, pos.y - this.startPos.y);
-                    const sides = 6;
-                    this.currentShape.setAttribute('d', this.polygonPath(this.startPos.x, this.startPos.y, sides, r));
+                    this.currentShape.setAttribute('d', this.polygonPath(this.startPos.x, this.startPos.y, 6, r));
                 }
                 else if(this.tool === 'star') {
                     const r = Math.hypot(pos.x - this.startPos.x, pos.y - this.startPos.y);
@@ -680,13 +893,23 @@
             onEnd(e) {
                 if(this.isPanning) {
                     this.isPanning = false;
-                    this.artboard.style.cursor = 'grab';
+                    this.viewport.style.cursor = 'grab';
                     return;
                 }
                 
+                if(this.tool === 'node' && this.isDrawing) {
+                    this.isDrawing = false;
+                    this.nodeEditTarget = null;
+                    this.saveState();
+                    // Re-render handles to match new positions? 
+                    // We updated path, but handles might be slightly off due to attribute update vs DOM.
+                    this.showNodeHandles(document.getElementById(this.selectedId)); 
+                    return;
+                }
+
                 if (this.isDrawing && this.tool !== 'select') {
                     const bbox = this.currentShape.getBBox();
-                    if(bbox.width < 5 && bbox.height < 5 && this.tool !== 'text') {
+                    if(bbox.width < 2 && bbox.height < 2 && this.tool !== 'text') {
                         this.currentShape.remove();
                     } else {
                         this.select(this.currentShape.id);
@@ -694,7 +917,9 @@
                     }
                 } 
                 else if (this.isDrawing && this.tool === 'select') {
+                    // Save state after drag
                     this.saveState();
+                    // Update property panel values based on new transform (optional, complex)
                 }
 
                 this.isDrawing = false;
@@ -702,25 +927,108 @@
                 this.freehandPath = [];
             }
 
+            // --- NODE EDITING LOGIC ---
+            parsePathD(d) {
+                // Simple regex parser to get points
+                // Matches commands and numbers
+                if(!d) return [];
+                const commands = d.match(/[MLHVCSQTAZ][^MLHVCSQTAZ]*/gi) || [];
+                const points = [];
+                commands.forEach(cmd => {
+                    const type = cmd[0];
+                    const coords = cmd.slice(1).trim().split(/[\s,]+/).map(Number);
+                    if(type === 'M' || type === 'L') {
+                        points.push({x: coords[0], y: coords[1]});
+                    }
+                    // Add more commands support if needed
+                });
+                return points;
+            }
+
+            updatePathDPoint(d, index, nx, ny) {
+                // This is a naive replacement for simple paths. 
+                // A real implementation needs a path object model.
+                const parts = d.split(' ');
+                let currentIdx = 0;
+                let buffer = '';
+                let count = 0;
+                let newParts = [];
+
+                parts.forEach(p => {
+                    if(isNaN(parseFloat(p))) {
+                        // Command
+                        newParts.push(p);
+                    } else {
+                        // Coordinate
+                        if(count === index*2) newParts.push(nx.toFixed(1)); // X
+                        else if(count === index*2 + 1) newParts.push(ny.toFixed(1)); // Y
+                        else newParts.push(p);
+                        count++;
+                    }
+                });
+                
+                return newParts.join(' ');
+            }
+
+            showNodeHandles(el) {
+                this.clearNodeHandles();
+                if(!el || el.tagName !== 'path') return;
+                
+                const d = el.getAttribute('d');
+                // Very naive regex to extract x y numbers for M and L commands
+                const coords = d.match(/[\d\.]+/g).map(Number); 
+                
+                for(let i=0; i<coords.length; i+=2) {
+                    const handle = Utils.createSVG('circle', {
+                        cx: coords[i], cy: coords[i+1], r: 5,
+                        class: 'node-handle', id: `nh_${i}`,
+                        'data-path-id': el.id, 'data-index': i/2,
+                        style: 'pointer-events: all;' // Make sure handles are clickable
+                    });
+                    this.nodeLayer.appendChild(handle);
+                }
+            }
+
+            clearNodeHandles() {
+                this.nodeLayer.innerHTML = '';
+            }
+
+            parseTransform(transString) {
+                const data = { translateX: 0, translateY: 0, rotation: 0, cx: 0, cy: 0 };
+                if(!transString) return data;
+
+                // Translate
+                const tMatch = transString.match(/translate\(([^)]+)\)/);
+                if(tMatch) {
+                    const [x, y] = tMatch[1].split(/[\s,]+/).map(Number);
+                    data.translateX = x || 0;
+                    data.translateY = y || 0;
+                }
+                
+                // Rotate
+                const rMatch = transString.match(/rotate\(([^)]+)\)/);
+                if(rMatch) {
+                    const parts = rMatch[1].split(/[\s,]+/).map(Number);
+                    data.rotation = parts[0] || 0;
+                    data.cx = parts[1] || 0;
+                    data.cy = parts[2] || 0;
+                }
+                return data;
+            }
+
             // --- TEXT EDITING ---
             initTextEdit(el) {
                 this.textEditingTarget = el;
                 
-                // Get SVG coordinates
                 const x = parseFloat(el.getAttribute('x'));
                 const y = parseFloat(el.getAttribute('y'));
                 const fontSize = parseFloat(el.getAttribute('font-size') || 16);
                 const fontFamily = el.getAttribute('font-family') || 'Arial';
-                const fontWeight = el.getAttribute('font-weight') || '400';
-                const fill = el.getAttribute('fill') || '#000000';
                 
                 this.textOverlay.value = el.textContent;
-                
-                // Apply styles to textarea
                 this.textOverlay.style.fontFamily = fontFamily;
                 this.textOverlay.style.fontSize = fontSize + 'px';
-                this.textOverlay.style.fontWeight = fontWeight;
-                this.textOverlay.style.color = fill;
+                this.textOverlay.style.color = el.getAttribute('fill');
                 
                 this.updateTextOverlayPosition();
                 
@@ -731,68 +1039,36 @@
 
             updateTextOverlayPosition() {
                 if(!this.textEditingTarget) return;
-
                 const el = this.textEditingTarget;
+                
                 const x = parseFloat(el.getAttribute('x'));
                 const y = parseFloat(el.getAttribute('y'));
                 const fontSize = parseFloat(el.getAttribute('font-size') || 16);
                 
-                // Get container offset relative to viewport
-                const container = document.getElementById('artboard-container');
-                const containerRect = container.getBoundingClientRect(); // Screen coordinates of the scaled container
-                
-                // Calculate position in screen pixels
-                // x, y are in SVG units (0-800, 0-600).
-                // containerRect.width is the rendered width.
-                // Scale factor: containerRect.width / 800
-                
-                const scale = containerRect.width / 800; 
-                
-                // Position in screen pixels relative to the container's top-left corner
-                const screenX = x * scale;
-                const screenY = y * scale;
-                
-                // Baseline correction: 'y' in SVG is usually the baseline.
-                // CSS 'top' is the top of the box. We need to move it up by roughly the font height.
-                const scaledFontSize = fontSize * scale;
-                
-                // Calculate absolute position for the overlay (which is absolute inside #artboard)
-                // Wait, the overlay is positioned absolute inside #artboard, which is relative.
-                // And #artboard-container has the transform scale.
-                // So the overlay should be positioned at (screenX, screenY) relative to the visual top-left.
-                
-                // Actually, since #artboard is 800x600 and the overlay is inside it,
-                // but the parent (#artboard-container) is scaled, we should set the overlay's
-                // left/top in *unscaled* coordinates (SVG coords) so it scales with the container.
-                // BUT the text inside the textarea needs to look the same size visually.
-                
-                // Correct approach for scaled container:
-                // 1. Set overlay left/top in SVG coordinates (x, y).
-                // 2. Scale the overlay's font size by the zoom level, OR let it inherit scale.
-                //    If we put the overlay inside the scaled div, it will grow.
-                //    If we want it to match the SVG text, it SHOULD grow.
-                
-                // Let's position it using SVG coordinates directly.
-                // SVG Y is baseline. CSS Y is top. Approx adjustment: -fontSize * 0.8 (approx height).
+                // Convert SVG coords to Screen coords relative to the #artboard div
+                // Since #artboard-container scales, the overlay inside #artboard scales with it.
+                // So we use SVG units directly!
                 
                 this.textOverlay.style.left = x + 'px';
-                this.textOverlay.style.top = (y - fontSize * 0.8) + 'px'; 
+                this.textOverlay.style.top = (y - fontSize * 0.9) + 'px'; // Adjust for baseline
                 
-                // The font size in the overlay should match the SVG font size units.
-                // Since the overlay is inside the scaled container, it will visually match.
+                // Scale font size to match visual size if SVG is scaled?
+                // No, the container scales, so dimensions are consistent inside.
                 this.textOverlay.style.fontSize = fontSize + 'px';
-                
-                // Width: auto expand?
-                this.textOverlay.style.width = 'auto';
-                this.textOverlay.style.minWidth = '50px';
             }
 
             finishTextEdit() {
                 if(this.textEditingTarget) {
-                    this.textEditingTarget.textContent = this.textOverlay.value;
+                    if(this.textOverlay.value.trim() === "") {
+                        // If text is empty, delete element
+                        this.textEditingTarget.remove();
+                        this.deselect();
+                    } else {
+                        this.textEditingTarget.textContent = this.textOverlay.value;
+                        this.saveState();
+                    }
                     this.textOverlay.style.display = 'none';
                     this.textEditingTarget = null;
-                    this.saveState();
                 }
             }
 
@@ -808,8 +1084,10 @@
                         const fontFace = new FontFace(fontName, e.target.result);
                         fontFace.load().then((loadedFace) => {
                             document.fonts.add(loadedFace);
-                            this.fonts.push(fontName);
-                            this.populateFonts();
+                            if(!this.fonts.includes(fontName)) {
+                                this.fonts.push(fontName);
+                                this.populateFonts();
+                            }
                             Utils.toast("Font Imported: " + fontName);
                             document.getElementById('inp-font-family').value = fontName;
                         });
@@ -831,7 +1109,7 @@
                             content.childNodes.forEach(n => {
                                 if(n.nodeType === 1) {
                                     const clone = n.cloneNode(true);
-                                    if(clone.id) clone.id = Utils.uid();
+                                    if(clone.id) clone.id = Utils.uid(); // prevent ID collisions
                                     g.appendChild(clone);
                                 }
                             });
@@ -856,8 +1134,6 @@
                     reader.readAsDataURL(file);
                 }
             }
-
-            group() { Utils.toast("Grouping (Single selection in demo)"); }
 
             moveLayer(dir) {
                 if(!this.selectedId) return;
@@ -900,6 +1176,7 @@
                     const cx = parseFloat(el.getAttribute('cx'));
                     const cy = parseFloat(el.getAttribute('cy'));
                     const r = parseFloat(el.getAttribute('r'));
+                    // Approximate circle with bezier curves
                     const k = 0.5522847498;
                     return `M ${cx-r} ${cy} C ${cx-r} ${cy-r*k} ${cx-r*k} ${cy-r} ${cx} ${cy-r} C ${cx+r*k} ${cy-r} ${cx+r} ${cy-r*k} ${cx+r} ${cy} C ${cx+r} ${cy+r*k} ${cx+r*k} ${cy+r} ${cx} ${cy+r} C ${cx-r*k} ${cy+r} ${cx-r} ${cy+r*k} ${cx-r} ${cy} Z`;
                 }
@@ -908,7 +1185,7 @@
 
             // --- SYSTEM ---
             select(id) {
-                this.finishTextEdit(); // Finish any active editing before selecting new
+                this.finishTextEdit(); 
                 this.deselect();
                 this.selectedId = id;
                 const el = document.getElementById(id);
@@ -948,6 +1225,13 @@
                 else if(dash.includes('10')) sel.value = 'dashed';
                 else sel.value = 'dotted';
 
+                // Node Tool: If switching to node tool, show handles
+                if(this.tool === 'node' && el.tagName === 'path') {
+                    this.showNodeHandles(el);
+                } else {
+                    this.clearNodeHandles();
+                }
+
                 this.renderLayers();
             }
 
@@ -958,10 +1242,15 @@
                 }
                 this.selectedId = null;
                 document.getElementById('selection-props').style.display = 'none';
+                this.clearNodeHandles();
             }
 
             deleteSelection() {
-                if(this.selectedId) { document.getElementById(this.selectedId).remove(); this.deselect(); this.saveState(); }
+                if(this.selectedId) { 
+                    document.getElementById(this.selectedId).remove(); 
+                    this.deselect(); 
+                    this.saveState(); 
+                }
             }
 
             duplicateSelection() {
@@ -971,9 +1260,11 @@
                 clone.id = Utils.uid();
                 clone.classList.remove('selected');
                 
-                if(clone.hasAttribute('x')) clone.setAttribute('x', parseFloat(clone.getAttribute('x')) + 10);
-                else if(clone.hasAttribute('cx')) clone.setAttribute('cx', parseFloat(clone.getAttribute('cx')) + 10);
-                else clone.setAttribute('transform', `translate(10 10)`);
+                // Shift clone
+                const transform = this.parseTransform(clone.getAttribute('transform'));
+                transform.translateX += 10;
+                transform.translateY += 10;
+                clone.setAttribute('transform', `translate(${transform.translateX} ${transform.translateY})`);
                 
                 this.layer.appendChild(clone);
                 this.select(clone.id);
@@ -984,6 +1275,8 @@
                 const list = document.getElementById('layers-list');
                 list.innerHTML = '';
                 Array.from(this.layer.children).reverse().forEach(el => {
+                    if(el.id === this.selectedId && this.tool === 'node' && el.tagName === 'path') return; // Don't list helper paths if any
+                    
                     const row = document.createElement('div');
                     row.className = `layer-item ${el.id === this.selectedId ? 'active' : ''}`;
                     let icon = 'fa-shapes';
@@ -993,20 +1286,28 @@
                     if(el.tagName === 'path') icon = 'fa-bezier-curve';
                     if(el.tagName === 'image') icon = 'fa-image';
                     if(el.tagName === 'g') icon = 'fa-object-group';
+                    if(el.tagName === 'line') icon = 'fa-minus';
                     
-                    let name = el.tagName;
-                    if(el.tagName === 'text') name = el.textContent.substring(0, 15);
+                    let name = el.tagName.toUpperCase();
+                    if(el.tagName === 'text') name = el.textContent.substring(0, 20);
                     
-                    row.innerHTML = `<i class="fas ${icon}" style="width:20px; text-align:center;"></i> ${name}`;
+                    row.innerHTML = `<i class="fas ${icon}"></i> <span>${name}</span>`;
                     row.onclick = () => this.select(el.id);
                     list.appendChild(row);
                 });
             }
 
             saveState() {
+                // Remove selected class for clean state
+                const sel = document.querySelector('.selected');
+                if(sel) sel.classList.remove('selected');
+                
                 this.history.push(this.layer.innerHTML);
                 if(this.history.length > 50) this.history.shift();
                 this.redoStack = [];
+                
+                // Re-add selected class
+                if(sel) sel.classList.add('selected');
             }
 
             undo() {
@@ -1014,6 +1315,7 @@
                 this.redoStack.push(this.history.pop());
                 this.layer.innerHTML = this.history[this.history.length-1];
                 this.deselect();
+                Utils.toast("Undo");
             }
 
             redo() {
@@ -1022,17 +1324,22 @@
                 this.history.push(next);
                 this.layer.innerHTML = next;
                 this.deselect();
+                Utils.toast("Redo");
             }
             
             exportSVG() {
-                this.finishTextEdit(); // Ensure text is saved
-                document.querySelectorAll('.selected').forEach(e => e.classList.remove('selected'));
+                this.finishTextEdit(); 
+                this.deselect();
+                this.clearNodeHandles();
+                
+                // Clean up unnecessary attributes if needed
                 const s = new XMLSerializer().serializeToString(this.svg);
                 const b = new Blob([s], {type:'image/svg+xml'});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(b);
                 a.download = 'inkling-artwork.svg';
                 a.click();
+                Utils.toast("SVG Exported");
             }
 
             // Helpers

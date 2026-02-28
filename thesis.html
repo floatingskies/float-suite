@@ -3,61 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Thesis.web - Academic Suite</title>
-    <meta name="theme-color" content="#FFDE59">
+    <title>Thesis - Academic Writing Suite</title>
+    <meta name="theme-color" content="#2563eb">
     <meta name="description" content="Editor Academico ABNT, APA, MLA">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         :root {
-            --c-bg: #f5f0e8;
-            --c-panel: #fffef9;
-            --c-panel-alt: #f8f5ed;
-            --c-border: #1a1a1a;
-            --c-text: #1a1a1a;
-            --c-text-muted: #666655;
-            --c-text-light: #999988;
+            --c-bg: #f8fafc;
+            --c-panel: #ffffff;
+            --c-panel-alt: #f1f5f9;
+            --c-border: #e2e8f0;
+            --c-border-strong: #cbd5e1;
+            --c-text: #1e293b;
+            --c-text-muted: #64748b;
+            --c-text-light: #94a3b8;
             
-            --c-primary: #FFDE59;
-            --c-primary-dark: #e6c84a;
-            --c-secondary: #FF7EB3;
-            --c-accent: #00D4AA;
-            --c-info: #4DA6FF;
-            --c-warning: #FFB347;
-            --c-danger: #FF6B6B;
-            --c-purple: #9B7EDE;
+            --c-primary: #2563eb;
+            --c-primary-hover: #1d4ed8;
+            --c-primary-light: #dbeafe;
+            --c-secondary: #7c3aed;
+            --c-accent: #059669;
+            --c-info: #0891b2;
+            --c-warning: #d97706;
+            --c-danger: #dc2626;
             
-            --border-width: 2px;
-            --radius: 0px;
-            --shadow-sm: 2px 2px 0px var(--c-border);
-            --shadow-md: 4px 4px 0px var(--c-border);
-            --shadow-lg: 6px 6px 0px var(--c-border);
-            --shadow-hover: 3px 3px 0px var(--c-border);
+            --radius-sm: 4px;
+            --radius: 6px;
+            --radius-lg: 8px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
             
-            --font-ui: 'Space Grotesk', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-serif: 'Source Serif 4', Georgia, serif;
             
             --page-width: 210mm;
             --page-height: 297mm;
             --page-gap: 24px;
             
-            --sidebar-width: 320px;
-            --header-height: 60px;
-            --footer-height: 32px;
+            --sidebar-width: 300px;
+            --header-height: 52px;
+            --toolbar-height: 44px;
+            --footer-height: 28px;
         }
 
         [data-theme="dark"] {
-            --c-bg: #0d0d0d;
-            --c-panel: #1a1a1a;
-            --c-panel-alt: #242424;
-            --c-text: #f0f0e8;
-            --c-text-muted: #999988;
-            --c-border: #3a3a3a;
-            --c-primary: #e6c84a;
-            --shadow-sm: 2px 2px 0px #000;
-            --shadow-md: 4px 4px 0px #000;
+            --c-bg: #0f172a;
+            --c-panel: #1e293b;
+            --c-panel-alt: #334155;
+            --c-border: #334155;
+            --c-border-strong: #475569;
+            --c-text: #f1f5f9;
+            --c-text-muted: #94a3b8;
+            --c-text-light: #64748b;
+            --c-primary-light: #1e3a5f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -70,148 +73,95 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.2s, color 0.2s;
         }
 
         /* Buttons */
         .btn {
             background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-            box-shadow: var(--shadow-sm);
-            padding: 10px 16px;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            padding: 8px 14px;
             font-family: var(--font-ui);
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 500;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--c-text);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            user-select: none;
             white-space: nowrap;
         }
         .btn:hover:not(:disabled) {
-            transform: translate(-1px, -1px);
-            box-shadow: var(--shadow-hover);
+            background: var(--c-panel-alt);
+            border-color: var(--c-border-strong);
         }
         .btn:active:not(:disabled) {
-            transform: translate(1px, 1px);
-            box-shadow: none;
+            transform: translateY(1px);
         }
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        .btn-primary { background: var(--c-primary); }
-        .btn-secondary { background: var(--c-secondary); color: #fff; }
-        .btn-accent { background: var(--c-accent); color: #fff; }
-        .btn-info { background: var(--c-info); color: #fff; }
-        .btn-danger { background: var(--c-danger); color: #fff; }
-        .btn-purple { background: var(--c-purple); color: #fff; }
-        .btn-warning { background: var(--c-warning); }
-        .btn-ghost { background: transparent; box-shadow: none; border-color: transparent; }
-        .btn-ghost:hover { background: var(--c-panel-alt); box-shadow: none; transform: none; }
+        .btn-primary { 
+            background: var(--c-primary); 
+            border-color: var(--c-primary);
+            color: #fff;
+        }
+        .btn-primary:hover:not(:disabled) { 
+            background: var(--c-primary-hover);
+            border-color: var(--c-primary-hover);
+        }
+        .btn-accent { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
+        .btn-danger { background: var(--c-danger); border-color: var(--c-danger); color: #fff; }
+        .btn-ghost { 
+            background: transparent; 
+            border-color: transparent; 
+        }
+        .btn-ghost:hover { 
+            background: var(--c-panel-alt); 
+        }
         
-        .btn-sm { padding: 6px 10px; font-size: 10px; }
-        .btn-xs { padding: 4px 8px; font-size: 9px; }
-        .btn-icon { width: 38px; height: 38px; padding: 0; }
+        .btn-sm { padding: 6px 10px; font-size: 12px; }
+        .btn-xs { padding: 4px 8px; font-size: 11px; }
+        .btn-icon { width: 34px; height: 34px; padding: 0; }
+        .btn-icon-sm { width: 28px; height: 28px; padding: 0; }
         .btn-full { width: 100%; }
-        .btn-group { display: flex; gap: 0; }
-        .btn-group .btn { border-radius: 0; }
-        .btn-group .btn:first-child { border-radius: 0; }
-        .btn-group .btn:not(:last-child) { border-right: none; }
-
-        /* Panel */
-        .panel {
-            background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-        }
-
-        /* Form Elements */
-        .form-group { margin-bottom: 16px; }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 11px;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--c-text-muted);
-        }
-        .form-input {
-            width: 100%;
-            padding: 10px 12px;
-            border: var(--border-width) solid var(--c-border);
-            font-family: var(--font-ui);
-            font-size: 13px;
-            background: var(--c-panel);
-            color: var(--c-text);
-            transition: all 0.15s;
-        }
-        .form-input:focus {
-            outline: none;
-            box-shadow: var(--shadow-sm);
-        }
-        .form-input::placeholder { color: var(--c-text-light); }
-        
-        select.form-input {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 32px;
-        }
-
-        textarea.form-input {
-            resize: vertical;
-            min-height: 80px;
-        }
 
         /* Header */
         header {
             height: var(--header-height);
-            border-bottom: var(--border-width) solid var(--c-border);
+            border-bottom: 1px solid var(--c-border);
             background: var(--c-panel);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 16px;
             z-index: 100;
             flex-shrink: 0;
-            gap: 16px;
+            gap: 12px;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: -1px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            color: var(--c-primary);
         }
         .logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             background: var(--c-primary);
-            border: var(--border-width) solid var(--c-border);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            box-shadow: var(--shadow-sm);
-        }
-        .logo-badge {
-            font-size: 9px;
-            font-weight: 600;
-            background: var(--c-border);
-            color: var(--c-panel);
-            padding: 3px 6px;
-            letter-spacing: 1px;
+            color: #fff;
+            font-size: 14px;
         }
 
         .header-center {
@@ -219,7 +169,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
         }
 
         .header-actions {
@@ -228,14 +177,70 @@
             gap: 8px;
         }
 
-        /* Quick Toolbar */
-        .quick-toolbar {
+        /* Toolbar */
+        .toolbar {
+            height: var(--toolbar-height);
+            background: var(--c-panel);
+            border-bottom: 1px solid var(--c-border);
             display: flex;
             align-items: center;
+            padding: 0 12px;
             gap: 4px;
-            padding: 6px 10px;
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+        .toolbar::-webkit-scrollbar { display: none; }
+        
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 0 6px;
+            border-right: 1px solid var(--c-border);
+        }
+        .toolbar-group:last-child { border-right: none; }
+
+        .toolbar-btn {
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--c-text-muted);
+            transition: all 0.15s;
+        }
+        .toolbar-btn:hover {
             background: var(--c-panel-alt);
-            border: var(--border-width) solid var(--c-border);
+            color: var(--c-text);
+        }
+        .toolbar-btn.active {
+            background: var(--c-primary-light);
+            color: var(--c-primary);
+            border-color: var(--c-primary);
+        }
+        
+        .toolbar-select {
+            height: 30px;
+            padding: 0 28px 0 10px;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-sm);
+            background: var(--c-panel);
+            font-family: var(--font-ui);
+            font-size: 12px;
+            color: var(--c-text);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2364748b' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+        .toolbar-select:hover {
+            border-color: var(--c-border-strong);
         }
 
         /* Main Container */
@@ -249,7 +254,7 @@
         /* Sidebar */
         #sidebar {
             width: var(--sidebar-width);
-            border-right: var(--border-width) solid var(--c-border);
+            border-right: 1px solid var(--c-border);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
@@ -259,39 +264,37 @@
         }
 
         .sidebar-section {
-            padding: 16px;
-            border-bottom: var(--border-width) solid var(--c-border);
+            padding: 14px;
+            border-bottom: 1px solid var(--c-border);
         }
         .sidebar-section:last-child { border-bottom: none; }
         
         .sidebar-title {
-            font-weight: 700;
+            font-weight: 600;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
             color: var(--c-text-muted);
         }
-        .sidebar-title i { color: var(--c-primary); }
 
         /* Document List */
         #doc-list {
             list-style: none;
-            max-height: 180px;
+            max-height: 200px;
             overflow-y: auto;
-            border: var(--border-width) solid var(--c-border);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
             background: var(--c-panel-alt);
         }
-        #doc-list:empty {
-            padding: 20px;
+        #doc-list:empty::after {
+            content: 'No saved documents';
+            display: block;
+            padding: 16px;
             text-align: center;
             color: var(--c-text-light);
             font-size: 12px;
         }
-        #doc-list:empty::after { content: 'No saved documents'; }
         
         .doc-item {
             padding: 10px 12px;
@@ -307,10 +310,10 @@
         .doc-item:last-child { border-bottom: none; }
         .doc-item:hover { background: var(--c-panel-alt); }
         .doc-item.active {
-            background: var(--c-primary);
-            font-weight: 600;
+            background: var(--c-primary-light);
+            border-left: 3px solid var(--c-primary);
         }
-        .doc-item-icon { color: var(--c-text-muted); }
+        .doc-item-icon { color: var(--c-text-muted); font-size: 14px; }
         .doc-item-info { flex: 1; min-width: 0; }
         .doc-item-name {
             white-space: nowrap;
@@ -321,6 +324,7 @@
         .doc-item-date {
             font-size: 10px;
             color: var(--c-text-light);
+            margin-top: 2px;
         }
         .doc-item-actions {
             display: flex;
@@ -330,12 +334,16 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            color: var(--c-text-muted);
+            color: var(--c-text-light);
             padding: 4px;
             font-size: 12px;
-            transition: color 0.15s;
+            border-radius: var(--radius-sm);
+            transition: all 0.15s;
         }
-        .doc-item-btn:hover { color: var(--c-danger); }
+        .doc-item-btn:hover { 
+            color: var(--c-danger); 
+            background: rgba(220, 38, 38, 0.1);
+        }
 
         /* Format Options */
         .format-option {
@@ -343,33 +351,39 @@
             align-items: center;
             width: 100%;
             text-align: left;
-            margin-bottom: 8px;
-            padding: 12px;
-            border: var(--border-width) solid var(--c-border);
+            margin-bottom: 6px;
+            padding: 10px 12px;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
             cursor: pointer;
             background: var(--c-panel);
-            font-weight: 600;
+            font-weight: 500;
             font-size: 12px;
             transition: all 0.15s;
-            gap: 12px;
+            gap: 10px;
         }
         .format-option:hover {
+            border-color: var(--c-border-strong);
             background: var(--c-panel-alt);
-            transform: translateX(2px);
         }
         .format-option.active {
-            background: var(--c-primary);
-            box-shadow: var(--shadow-sm);
+            background: var(--c-primary-light);
+            border-color: var(--c-primary);
         }
         .format-option-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--c-panel-alt);
-            border: 1px solid var(--c-border);
-            font-size: 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .format-option.active .format-option-icon {
+            background: var(--c-primary);
+            color: #fff;
         }
         .format-option-info { flex: 1; }
         .format-option-name { font-weight: 600; }
@@ -380,79 +394,35 @@
             margin-top: 2px;
         }
 
-        /* Toolbar Grid */
-        .toolbar-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 8px;
-        }
-        .toolbar-grid-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .toolbar-divider {
-            height: 1px;
-            background: var(--c-border);
-            margin: 12px 0;
-        }
-
         /* Workspace */
         #workspace {
             flex: 1;
-            background: var(--c-bg);
-            background-image: 
-                radial-gradient(circle at 1px 1px, var(--c-border) 1px, transparent 0);
-            background-size: 24px 24px;
-            opacity: 0.4;
+            background: var(--c-panel-alt);
             overflow: auto;
-            padding: 40px 20px;
+            padding: 32px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
         }
 
-        /* Zoom Controls */
-        .zoom-controls {
-            position: fixed;
-            bottom: 50px;
-            right: 20px;
+        /* Pages Container */
+        .pages-container {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            z-index: 50;
-        }
-        .zoom-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            display: flex;
+            gap: var(--page-gap);
             align-items: center;
-            justify-content: center;
-            font-family: var(--font-ui);
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.15s;
-        }
-        .zoom-btn:hover {
-            background: var(--c-primary);
         }
 
         /* Paper */
-        #paper {
+        .paper {
             width: var(--page-width);
             min-height: var(--page-height);
             background: #fff;
-            border: var(--border-width) solid var(--c-border);
             box-shadow: var(--shadow-lg);
             position: relative;
-            margin-bottom: 40px;
-            transform-origin: top center;
-            transition: transform 0.2s;
+            border-radius: 2px;
+            overflow: hidden;
         }
 
         /* Cover Page */
@@ -465,7 +435,6 @@
             text-align: center;
             padding: 3cm;
             background: #fff;
-            border-bottom: var(--border-width) solid var(--c-border);
         }
 
         /* Editor Area */
@@ -488,7 +457,6 @@
             height: auto;
             display: block;
             margin: 12px 0;
-            border: 1px solid #ccc;
         }
         
         #editor-area figure {
@@ -500,7 +468,6 @@
             font-size: 10pt;
             color: #666;
             margin-top: 8px;
-            font-style: italic;
         }
 
         #editor-area table {
@@ -517,51 +484,72 @@
         }
         
         #editor-area table th {
-            background: #f0f0f0;
+            background: #f5f5f5;
             font-weight: bold;
         }
 
         #editor-area blockquote {
-            border-left: 4px solid var(--c-primary);
+            border-left: 3px solid var(--c-primary);
             margin: 16px 0;
-            padding: 8px 16px;
-            background: #f9f9f9;
-            font-style: italic;
+            padding: 12px 16px;
+            background: #f8fafc;
+            position: relative;
+        }
+        #editor-area blockquote::after {
+            content: 'Press Enter twice to exit';
+            position: absolute;
+            bottom: 2px;
+            right: 8px;
+            font-size: 9px;
+            color: #94a3b8;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #editor-area blockquote:focus-within::after {
+            opacity: 1;
         }
 
         #editor-area code {
-            font-family: var(--font-mono);
-            background: #f0f0f0;
+            font-family: 'Consolas', monospace;
+            background: #f1f5f9;
             padding: 2px 6px;
+            border-radius: 3px;
             font-size: 11pt;
         }
 
         #editor-area pre {
-            background: #f5f5f5;
-            padding: 12px;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
             overflow-x: auto;
-            font-family: var(--font-mono);
+            font-family: 'Consolas', monospace;
             font-size: 10pt;
-            border: 1px solid #ddd;
+            border-radius: var(--radius);
             margin: 12px 0;
         }
 
         #editor-area hr {
             border: none;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid #e2e8f0;
             margin: 24px 0;
         }
 
         #editor-area a {
-            color: var(--c-info);
+            color: var(--c-primary);
             text-decoration: underline;
         }
 
         #editor-area .page-break {
             page-break-after: always;
-            border-top: 2px dashed #ccc;
+            border-top: 1px dashed #cbd5e1;
             margin-top: 20px;
             padding-top: 20px;
+            text-align: center;
+        }
+        #editor-area .page-break::before {
+            content: '--- Page Break ---';
+            font-size: 9pt;
+            color: #94a3b8;
         }
 
         /* Academic Styles */
@@ -569,18 +557,12 @@
         .style-abnt #cover-page {
             padding: 3cm 2cm 2cm 3cm;
         }
-        .style-abnt #editor-area,
         .style-abnt p,
         .style-abnt li {
-            font-family: Arial, sans-serif;
-            font-size: 12pt;
-            line-height: 1.5;
-            text-align: justify;
             text-indent: 1.25cm;
             margin-bottom: 0;
         }
         .style-abnt h1 {
-            font-family: Arial, sans-serif;
             font-size: 14pt;
             font-weight: bold;
             text-align: center;
@@ -588,14 +570,6 @@
             text-indent: 0;
         }
         .style-abnt h2 {
-            font-family: Arial, sans-serif;
-            font-size: 12pt;
-            font-weight: bold;
-            margin: 12px 0;
-            text-indent: 0;
-        }
-        .style-abnt h3 {
-            font-family: Arial, sans-serif;
             font-size: 12pt;
             font-weight: bold;
             margin: 12px 0;
@@ -605,29 +579,18 @@
         .style-apa #editor-area,
         .style-apa #cover-page {
             padding: 1in;
+            font-family: 'Times New Roman', serif;
         }
-        .style-apa #editor-area,
         .style-apa p,
         .style-apa li {
-            font-family: 'Times New Roman', serif;
-            font-size: 12pt;
-            line-height: 2;
-            text-align: left;
             text-indent: 0.5in;
+            line-height: 2;
             margin-bottom: 0;
         }
         .style-apa h1 {
-            font-family: 'Times New Roman', serif;
             font-size: 12pt;
             font-weight: bold;
             text-align: center;
-            margin: 12px 0;
-            text-indent: 0;
-        }
-        .style-apa h2 {
-            font-family: 'Times New Roman', serif;
-            font-size: 12pt;
-            font-weight: bold;
             margin: 12px 0;
             text-indent: 0;
         }
@@ -635,45 +598,25 @@
         .style-mla #editor-area,
         .style-mla #cover-page {
             padding: 1in;
-        }
-        .style-mla #editor-area,
-        .style-mla p {
             font-family: 'Times New Roman', serif;
-            font-size: 12pt;
-            line-height: 2;
-            text-align: left;
-            margin-bottom: 0;
+        }
+        .style-mla p {
             text-indent: 0.5in;
-        }
-        .style-mla h1 {
-            font-size: 14pt;
-            font-weight: bold;
-            text-align: center;
-            margin: 12px 0;
-            text-indent: 0;
-        }
-        .style-mla h2 {
-            font-size: 12pt;
-            font-weight: bold;
-            margin: 12px 0;
-            text-indent: 0;
+            line-height: 2;
         }
 
         /* Footer */
         footer {
             height: var(--footer-height);
             background: var(--c-panel);
-            border-top: var(--border-width) solid var(--c-border);
+            border-top: 1px solid var(--c-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 16px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-size: 11px;
+            color: var(--c-text-muted);
             flex-shrink: 0;
-            gap: 16px;
         }
         .footer-section {
             display: flex;
@@ -683,10 +626,8 @@
         .footer-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: var(--c-text-muted);
+            gap: 4px;
         }
-        .footer-item i { font-size: 10px; }
 
         /* Modals */
         .modal-overlay {
@@ -695,7 +636,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(15, 23, 42, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -707,87 +648,121 @@
         
         .modal {
             background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 480px;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
             animation: modalIn 0.2s ease;
         }
         @keyframes modalIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
         .modal-header {
             padding: 16px 20px;
-            border-bottom: var(--border-width) solid var(--c-border);
-            font-weight: 700;
-            font-size: 16px;
+            border-bottom: 1px solid var(--c-border);
+            font-weight: 600;
+            font-size: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
         }
         .modal-close {
             background: transparent;
             border: none;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             color: var(--c-text-muted);
             padding: 4px;
+            border-radius: var(--radius-sm);
+            transition: all 0.15s;
         }
-        .modal-close:hover { color: var(--c-danger); }
+        .modal-close:hover { 
+            color: var(--c-danger); 
+            background: rgba(220, 38, 38, 0.1);
+        }
         
         .modal-body {
             padding: 20px;
+            overflow-y: auto;
+            max-height: 60vh;
         }
         
         .modal-footer {
             padding: 16px 20px;
-            border-top: var(--border-width) solid var(--c-border);
+            border-top: 1px solid var(--c-border);
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--c-text-muted);
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            font-family: var(--font-ui);
+            font-size: 13px;
+            background: var(--c-panel);
+            color: var(--c-text);
+            transition: all 0.15s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--c-primary);
+            box-shadow: 0 0 0 3px var(--c-primary-light);
+        }
+        .form-input::placeholder { color: var(--c-text-light); }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
         }
 
         /* Tabs */
         .tabs {
             display: flex;
-            border-bottom: var(--border-width) solid var(--c-border);
+            border-bottom: 1px solid var(--c-border);
+            margin: -20px -20px 20px;
         }
         .tab {
             flex: 1;
             padding: 12px 16px;
-            background: var(--c-panel-alt);
+            background: transparent;
             border: none;
-            border-right: var(--border-width) solid var(--c-border);
+            border-bottom: 2px solid transparent;
             font-family: var(--font-ui);
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
+            font-weight: 500;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.15s;
             color: var(--c-text-muted);
+            margin-bottom: -1px;
         }
-        .tab:last-child { border-right: none; }
-        .tab:hover { background: var(--c-panel); }
+        .tab:hover { color: var(--c-text); }
         .tab.active {
-            background: var(--c-panel);
-            color: var(--c-text);
-            border-bottom: 2px solid var(--c-primary);
-            margin-bottom: -2px;
+            color: var(--c-primary);
+            border-bottom-color: var(--c-primary);
         }
-        .tab-content {
-            padding: 20px;
-        }
+        .tab-content { padding: 0; }
         .tab-content.hidden { display: none; }
 
         /* Toast */
         .toast-container {
             position: fixed;
-            bottom: 60px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 2000;
@@ -800,18 +775,19 @@
             background: var(--c-panel);
             color: var(--c-text);
             padding: 12px 20px;
-            border: var(--border-width) solid var(--c-border);
+            border-radius: var(--radius);
             box-shadow: var(--shadow-md);
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 500;
+            font-size: 13px;
             animation: toastIn 0.3s ease;
             display: flex;
             align-items: center;
             gap: 10px;
+            border-left: 3px solid var(--c-primary);
         }
-        .toast.success { border-left: 4px solid var(--c-accent); }
-        .toast.error { border-left: 4px solid var(--c-danger); }
-        .toast.info { border-left: 4px solid var(--c-info); }
+        .toast.success { border-left-color: var(--c-accent); }
+        .toast.error { border-left-color: var(--c-danger); }
+        .toast.info { border-left-color: var(--c-info); }
         @keyframes toastIn {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
@@ -821,15 +797,16 @@
         .context-menu {
             position: fixed;
             background: var(--c-panel);
-            border: var(--border-width) solid var(--c-border);
-            box-shadow: var(--shadow-md);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
             z-index: 1500;
             min-width: 160px;
             padding: 4px 0;
         }
         .context-menu.hidden { display: none; }
         .context-menu-item {
-            padding: 10px 16px;
+            padding: 8px 14px;
             font-size: 12px;
             cursor: pointer;
             display: flex;
@@ -838,71 +815,134 @@
             transition: background 0.1s;
         }
         .context-menu-item:hover { background: var(--c-panel-alt); }
-        .context-menu-item i { width: 16px; text-align: center; }
+        .context-menu-item i { width: 14px; text-align: center; color: var(--c-text-muted); }
         .context-menu-divider {
             height: 1px;
             background: var(--c-border);
             margin: 4px 0;
         }
 
-        /* Focus/Zen Mode */
+        /* Zen Mode */
         body.zen-mode #sidebar,
         body.zen-mode header,
         body.zen-mode footer,
-        body.zen-mode .zoom-controls {
+        body.zen-mode .toolbar {
             display: none !important;
         }
         body.zen-mode #workspace {
-            padding: 20px;
-            background: #888;
+            padding: 40px 20px;
         }
-        body.zen-mode #paper {
+        body.zen-mode .paper {
             box-shadow: var(--shadow-lg);
         }
         
         .zen-exit {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 16px;
+            right: 16px;
             z-index: 9999;
             display: none;
         }
         body.zen-mode .zen-exit { display: flex; }
 
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .stat-card {
+            padding: 12px;
+            background: var(--c-panel-alt);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--c-text);
+        }
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--c-text-muted);
+            margin-top: 2px;
+        }
+
         /* Progress Bar */
         .progress-bar {
             height: 4px;
             background: var(--c-panel-alt);
-            border: 1px solid var(--c-border);
+            border-radius: 2px;
             margin-top: 8px;
             overflow: hidden;
         }
         .progress-bar-fill {
             height: 100%;
             background: var(--c-primary);
+            border-radius: 2px;
             transition: width 0.3s;
         }
 
-        /* Badge */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            font-size: 10px;
-            font-weight: 600;
-            border: 1px solid var(--c-border);
-            text-transform: uppercase;
+        /* Zoom Controls */
+        .zoom-controls {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 50;
         }
-        .badge-primary { background: var(--c-primary); }
-        .badge-accent { background: var(--c-accent); color: #fff; }
-        .badge-info { background: var(--c-info); color: #fff; }
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--c-panel);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-ui);
+            font-weight: 500;
+            font-size: 12px;
+            color: var(--c-text);
+            transition: all 0.15s;
+        }
+        .zoom-btn:hover {
+            background: var(--c-panel-alt);
+            border-color: var(--c-border-strong);
+        }
+
+        /* File Drop */
+        .file-drop-zone {
+            border: 2px dashed var(--c-border);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .file-drop-zone:hover,
+        .file-drop-zone.dragover {
+            border-color: var(--c-primary);
+            background: var(--c-primary-light);
+        }
+        .file-drop-zone i {
+            font-size: 28px;
+            color: var(--c-text-muted);
+            margin-bottom: 10px;
+        }
 
         /* Print */
         @media print {
             body { background: #fff; height: auto; overflow: visible; display: block; }
-            header, #sidebar, footer, .modal-overlay, .toast-container, .zoom-controls, .zen-exit, #mobile-menu-btn { display: none !important; }
+            header, #sidebar, footer, .modal-overlay, .toast-container, .zoom-controls, .zen-exit, .toolbar { display: none !important; }
             #workspace { padding: 0; background: #fff; display: block; overflow: visible; }
-            #paper { box-shadow: none; margin: 0; width: 100%; border: none; }
+            .paper { box-shadow: none; margin: 0; width: 100%; border: none; page-break-after: always; }
+            .paper:last-child { page-break-after: auto; }
             #editor-area { min-height: auto; }
             @page { size: A4; margin: 0; }
             #cover-page { page-break-after: always; border: none; }
@@ -917,117 +957,66 @@
                 height: 100%;
                 z-index: 200;
                 transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
             }
             #sidebar.mobile-open { transform: translateX(0); }
             
             #mobile-menu-btn { display: flex !important; }
-            
             .header-center { display: none; }
-            
             .modal { max-width: 95%; }
-            
-            .zoom-controls { bottom: 70px; }
-            
-            body.zen-mode .zen-exit {
-                top: auto;
-                bottom: 20px;
-            }
         }
         
         #mobile-menu-btn { display: none; }
-        
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--c-panel-alt); }
-        ::-webkit-scrollbar-thumb { background: var(--c-border); }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--c-border-strong); 
+            border-radius: 4px;
+        }
         ::-webkit-scrollbar-thumb:hover { background: var(--c-text-muted); }
 
-        /* Color Picker */
+        /* Color Swatches */
         .color-picker-container {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
             margin-top: 8px;
         }
         .color-swatch {
-            width: 24px;
-            height: 24px;
-            border: var(--border-width) solid var(--c-border);
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--c-border);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             transition: transform 0.1s;
         }
-        .color-swatch:hover { transform: scale(1.1); }
-
-        /* File Drop */
-        .file-drop-zone {
-            border: 2px dashed var(--c-border);
-            padding: 30px;
-            text-align: center;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .file-drop-zone:hover,
-        .file-drop-zone.dragover {
-            background: var(--c-panel-alt);
-            border-color: var(--c-primary);
-        }
-        .file-drop-zone i {
-            font-size: 32px;
-            color: var(--c-text-muted);
-            margin-bottom: 12px;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-        .stat-card {
-            padding: 12px;
-            background: var(--c-panel-alt);
-            border: var(--border-width) solid var(--c-border);
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .stat-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            color: var(--c-text-muted);
-            margin-top: 4px;
-        }
-
-        /* Keyboard shortcuts hint */
-        .kbd {
-            display: inline-block;
-            padding: 2px 6px;
-            font-family: var(--font-mono);
-            font-size: 10px;
-            background: var(--c-panel-alt);
-            border: 1px solid var(--c-border);
-            border-radius: 2px;
-        }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.active { border-color: var(--c-primary); }
 
         /* Find & Replace */
         .find-replace-bar {
             background: var(--c-panel);
-            border-bottom: var(--border-width) solid var(--c-border);
-            padding: 10px 16px;
+            border-bottom: 1px solid var(--c-border);
+            padding: 8px 12px;
             display: none;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .find-replace-bar.open { display: flex; }
         .find-replace-bar input {
-            flex: 1;
-            padding: 8px 12px;
-            border: var(--border-width) solid var(--c-border);
+            padding: 6px 10px;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-sm);
             font-family: var(--font-ui);
             font-size: 12px;
-            max-width: 200px;
+            width: 160px;
+        }
+        .find-replace-bar input:focus {
+            outline: none;
+            border-color: var(--c-primary);
         }
     </style>
 </head>
@@ -1039,51 +1028,107 @@
         </button>
         
         <div class="logo">
-            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-            <span>THESIS<span style="color: var(--c-primary-dark)">.WEB</span></span>
-            <span class="logo-badge">V1</span>
+            <div class="logo-icon"><i class="fas fa-pen-nib"></i></div>
+            <span>Thesis</span>
         </div>
         
         <div class="header-center">
-            <div class="quick-toolbar">
-                <button class="btn btn-xs" onclick="App.exec('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
-                <button class="btn btn-xs" onclick="App.exec('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
-                <button class="btn btn-xs" onclick="App.exec('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
-                <button class="btn btn-xs" onclick="App.exec('strikeThrough')" title="Strikethrough"><s>S</s></button>
-            </div>
-            <div class="quick-toolbar">
-                <button class="btn btn-xs" onclick="App.formatBlock('H1')">H1</button>
-                <button class="btn btn-xs" onclick="App.formatBlock('H2')">H2</button>
-                <button class="btn btn-xs" onclick="App.formatBlock('H3')">H3</button>
-                <button class="btn btn-xs" onclick="App.formatBlock('P')">P</button>
-            </div>
-            <div class="quick-toolbar">
-                <button class="btn btn-xs" onclick="App.exec('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                <button class="btn btn-xs" onclick="App.exec('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
-                <button class="btn btn-xs" onclick="App.exec('justifyLeft')"><i class="fas fa-align-left"></i></button>
-                <button class="btn btn-xs" onclick="App.exec('justifyCenter')"><i class="fas fa-align-center"></i></button>
-                <button class="btn btn-xs" onclick="App.exec('justifyRight')"><i class="fas fa-align-right"></i></button>
-            </div>
+            <span style="font-size: 12px; color: var(--c-text-muted);" id="header-doc-name">Untitled Document</span>
         </div>
         
         <div class="header-actions">
-            <button class="btn btn-xs" onclick="App.toggleFindReplace()" title="Find & Replace (Ctrl+H)">
-                <i class="fas fa-search"></i>
-            </button>
-            <button class="btn btn-xs" onclick="App.toggleZen()" title="Zen Mode (F11)">
+            <button class="btn btn-icon btn-ghost" onclick="App.toggleZen()" title="Focus Mode (F11)">
                 <i class="fas fa-expand"></i>
             </button>
-            <button class="btn btn-xs btn-primary" onclick="App.openModal('export-modal')">
+            <button class="btn btn-primary btn-sm" onclick="App.openModal('export-modal')">
                 <i class="fas fa-download"></i> Export
             </button>
         </div>
     </header>
 
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <button class="btn btn-xs btn-primary" onclick="App.saveCurrent()">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div>
+        
+        <div class="toolbar-group">
+            <select class="toolbar-select" id="format-block" onchange="App.formatBlock(this.value)">
+                <option value="p">Paragraph</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+            </select>
+            <select class="toolbar-select" id="format-font" onchange="App.setFontFamily(this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Georgia">Georgia</option>
+            </select>
+            <select class="toolbar-select" id="format-size" onchange="App.setFontSize(this.value)">
+                <option value="10pt">10pt</option>
+                <option value="11pt">11pt</option>
+                <option value="12pt" selected>12pt</option>
+                <option value="14pt">14pt</option>
+                <option value="16pt">16pt</option>
+            </select>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.exec('bold')" title="Bold (Ctrl+B)"><i class="fas fa-bold"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('italic')" title="Italic (Ctrl+I)"><i class="fas fa-italic"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('underline')" title="Underline (Ctrl+U)"><i class="fas fa-underline"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('strikeThrough')" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.exec('subscript')" title="Subscript (x subscript)">
+                <span style="font-size: 11px;">x<sub style="font-size: 8px;">sub</sub></span>
+            </button>
+            <button class="toolbar-btn" onclick="App.exec('superscript')" title="Superscript (x superscript)">
+                <span style="font-size: 11px;">x<sup style="font-size: 8px;">sup</sup></span>
+            </button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.exec('justifyLeft')" title="Align Left"><i class="fas fa-align-left"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('justifyCenter')" title="Align Center"><i class="fas fa-align-center"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('justifyRight')" title="Align Right"><i class="fas fa-align-right"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('justifyFull')" title="Justify"><i class="fas fa-align-justify"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.exec('insertUnorderedList')" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+            <button class="toolbar-btn" onclick="App.exec('insertOrderedList')" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.decreaseIndent()" title="Decrease Indent"><i class="fas fa-outdent"></i></button>
+            <button class="toolbar-btn" onclick="App.increaseIndent()" title="Increase Indent"><i class="fas fa-indent"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.insertImage()" title="Insert Image"><i class="fas fa-image"></i></button>
+            <button class="toolbar-btn" onclick="App.insertTable()" title="Insert Table"><i class="fas fa-table"></i></button>
+            <button class="toolbar-btn" onclick="App.insertLink()" title="Insert Link"><i class="fas fa-link"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.openModal('ref-modal')" title="Insert Reference"><i class="fas fa-book"></i></button>
+            <button class="toolbar-btn" onclick="App.insertPageBreak()" title="Insert Page Break"><i class="fas fa-file-alt"></i></button>
+        </div>
+        
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="App.toggleFindReplace()" title="Find & Replace (Ctrl+H)"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
     <!-- Find & Replace Bar -->
     <div class="find-replace-bar" id="find-replace-bar">
         <input type="text" id="find-input" placeholder="Find...">
-        <input type="text" id="replace-input" placeholder="Replace...">
-        <button class="btn btn-xs" onclick="App.findNext()">Find Next</button>
+        <input type="text" id="replace-input" placeholder="Replace with...">
+        <button class="btn btn-xs" onclick="App.findNext()">Find</button>
         <button class="btn btn-xs" onclick="App.replaceNext()">Replace</button>
         <button class="btn btn-xs" onclick="App.replaceAll()">Replace All</button>
         <button class="btn btn-xs btn-ghost" onclick="App.toggleFindReplace()"><i class="fas fa-times"></i></button>
@@ -1092,85 +1137,56 @@
     <div id="app-container">
         <!-- Sidebar -->
         <aside id="sidebar">
-            <!-- Documents -->
             <div class="sidebar-section">
-                <div class="sidebar-title"><i class="fas fa-folder"></i> Documents</div>
+                <div class="sidebar-title">Documents</div>
                 <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-                    <button class="btn btn-xs btn-primary btn-full" onclick="App.openModal('save-modal')">
+                    <button class="btn btn-xs btn-primary btn-full" onclick="App.newDocument()">
                         <i class="fas fa-plus"></i> New
                     </button>
-                    <button class="btn btn-xs btn-full" onclick="App.updateCurrentDoc()" id="btn-save" disabled>
+                    <button class="btn btn-xs btn-full" onclick="App.saveCurrent()">
                         <i class="fas fa-save"></i> Save
                     </button>
                 </div>
                 <ul id="doc-list"></ul>
             </div>
 
-            <!-- Standard -->
             <div class="sidebar-section">
-                <div class="sidebar-title"><i class="fas fa-ruler"></i> Standard</div>
+                <div class="sidebar-title">Formatting Standard</div>
                 <button class="format-option active" data-style="abnt" onclick="App.setStandard('abnt')">
-                    <div class="format-option-icon"><i class="fas fa-flag"></i></div>
+                    <div class="format-option-icon">AB</div>
                     <div class="format-option-info">
                         <div class="format-option-name">ABNT</div>
-                        <div class="format-option-desc">NBR 14724 - Arial 12pt, 1.5</div>
+                        <div class="format-option-desc">NBR 14724 - Arial 12pt</div>
                     </div>
                 </button>
                 <button class="format-option" data-style="apa" onclick="App.setStandard('apa')">
-                    <div class="format-option-icon"><i class="fas fa-landmark"></i></div>
+                    <div class="format-option-icon">AP</div>
                     <div class="format-option-info">
                         <div class="format-option-name">APA</div>
-                        <div class="format-option-desc">7th Edition - Times, Double</div>
+                        <div class="format-option-desc">7th Edition - Times</div>
                     </div>
                 </button>
                 <button class="format-option" data-style="mla" onclick="App.setStandard('mla')">
-                    <div class="format-option-icon"><i class="fas fa-university"></i></div>
+                    <div class="format-option-icon">ML</div>
                     <div class="format-option-info">
                         <div class="format-option-name">MLA</div>
-                        <div class="format-option-desc">9th Edition - Times, Double</div>
+                        <div class="format-option-desc">9th Edition - Times</div>
                     </div>
                 </button>
             </div>
 
-            <!-- Insert -->
             <div class="sidebar-section">
-                <div class="sidebar-title"><i class="fas fa-plus-circle"></i> Insert</div>
-                <div class="toolbar-grid">
-                    <button class="btn btn-xs" onclick="App.insertImage()"><i class="fas fa-image"></i> Image</button>
-                    <button class="btn btn-xs" onclick="App.insertTable()"><i class="fas fa-table"></i> Table</button>
-                    <button class="btn btn-xs" onclick="App.insertLink()"><i class="fas fa-link"></i> Link</button>
-                    <button class="btn btn-xs" onclick="App.insertHR()"><i class="fas fa-minus"></i> Line</button>
-                </div>
-                <div class="toolbar-grid">
-                    <button class="btn btn-xs" onclick="App.openModal('ref-modal')"><i class="fas fa-book"></i> Ref</button>
-                    <button class="btn btn-xs" onclick="App.insertStructure('abstract')"><i class="fas fa-file-alt"></i> Abstract</button>
-                    <button class="btn btn-xs" onclick="App.insertStructure('toc')"><i class="fas fa-list"></i> TOC</button>
-                    <button class="btn btn-xs" onclick="App.insertPageBreak()"><i class="fas fa-file-powerpoint"></i> Break</button>
-                </div>
-                <div class="toolbar-grid toolbar-grid-3">
-                    <button class="btn btn-xs" onclick="App.exec('subscript')"><i class="fas fa-subscript"></i></button>
-                    <button class="btn btn-xs" onclick="App.exec('superscript')"><i class="fas fa-superscript"></i></button>
-                    <button class="btn btn-xs" onclick="App.insertBlockquote()"><i class="fas fa-quote-right"></i></button>
-                </div>
-            </div>
-
-            <!-- Page Tools -->
-            <div class="sidebar-section">
-                <div class="sidebar-title"><i class="fas fa-file"></i> Page</div>
+                <div class="sidebar-title">Page Options</div>
                 <button class="btn btn-sm btn-full" onclick="App.toggleCover()" id="btn-cover">
                     <i class="fas fa-file-alt"></i> <span id="cover-btn-text">Add Cover Page</span>
                 </button>
-                <button class="btn btn-sm btn-full" style="margin-top: 6px;" onclick="App.openModal('settings-modal')">
-                    <i class="fas fa-cog"></i> Page Settings
-                </button>
-                <button class="btn btn-sm btn-danger btn-full" style="margin-top: 6px;" onclick="App.openModal('clear-modal')">
-                    <i class="fas fa-trash"></i> Clear Document
+                <button class="btn btn-sm btn-full" style="margin-top: 6px;" onclick="App.clearDocument()">
+                    <i class="fas fa-trash-alt"></i> Clear Content
                 </button>
             </div>
 
-            <!-- Statistics -->
             <div class="sidebar-section">
-                <div class="sidebar-title"><i class="fas fa-chart-bar"></i> Statistics</div>
+                <div class="sidebar-title">Statistics</div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value" id="stat-words">0</div>
@@ -1190,34 +1206,47 @@
                     </div>
                 </div>
                 <div style="margin-top: 12px;">
-                    <label style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--c-text-muted);">
-                        Daily Goal: <span id="goal-current">0</span> / <span id="goal-target">1000</span> words
+                    <label style="font-size: 10px; font-weight: 500; color: var(--c-text-muted);">
+                        Goal: <span id="goal-current">0</span> / <span id="goal-target">1000</span> words
                     </label>
                     <div class="progress-bar">
                         <div class="progress-bar-fill" id="goal-progress" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Settings</div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Theme</label>
+                    <select class="form-input" id="setting-theme" onchange="App.setTheme(this.value)">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+            </div>
         </aside>
 
         <!-- Workspace -->
         <main id="workspace">
-            <div id="paper" class="style-abnt">
-                <div id="cover-page">
-                    <h2 contenteditable="true" id="cover-inst" style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">INSTITUTION NAME</h2>
-                    <h3 contenteditable="true" id="cover-author" style="font-size: 12pt; margin-bottom: 60px;">Author Name</h3>
-                    <h1 contenteditable="true" id="cover-title" style="font-size: 16pt; font-weight: bold; max-width: 80%;">Title of the Academic Work</h1>
-                    <div style="margin-top: 80px; text-align: center;">
-                        <p contenteditable="true" style="margin: 4px 0;">City</p>
-                        <p contenteditable="true" style="margin: 4px 0;">Year</p>
+            <div class="pages-container">
+                <div class="paper style-abnt" id="paper">
+                    <div id="cover-page">
+                        <h2 contenteditable="true" id="cover-inst" style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">INSTITUTION NAME</h2>
+                        <h3 contenteditable="true" id="cover-author" style="font-size: 12pt; margin-bottom: 60px;">Author Name</h3>
+                        <h1 contenteditable="true" id="cover-title" style="font-size: 16pt; font-weight: bold; max-width: 80%;">Title of the Academic Work</h1>
+                        <div style="margin-top: 80px; text-align: center;">
+                            <p contenteditable="true" style="margin: 4px 0;">City</p>
+                            <p contenteditable="true" style="margin: 4px 0;">Year</p>
+                        </div>
                     </div>
-                </div>
-                <div id="editor-area" contenteditable="true" spellcheck="true">
-                    <h1>Introduction</h1>
-                    <p>Welcome to Thesis.web Web - your complete academic writing suite. This editor supports ABNT, APA, and MLA formatting standards.</p>
-                    <p>Start writing your document here. Use the toolbar above or the sidebar on the left to format your text, insert images, tables, references, and more.</p>
-                    <h2>Features</h2>
-                    <p>This editor includes auto-save, export to PDF and Word, image support, table insertion, reference generator, and many other tools to help you create professional academic documents.</p>
+                    <div id="editor-area" contenteditable="true" spellcheck="true">
+                        <h1>Introduction</h1>
+                        <p>Welcome to Thesis - your professional academic writing suite. This editor supports ABNT, APA, and MLA formatting standards with proper export capabilities.</p>
+                        <p>Use the toolbar above for quick formatting, or explore the sidebar for document management and statistics.</p>
+                        <h2>Getting Started</h2>
+                        <p>This editor includes proper formatting preservation when copying and pasting, PDF and Word export with academic standards, and many other tools for professional academic writing.</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1237,9 +1266,6 @@
             <span class="footer-item" id="footer-status">
                 <i class="fas fa-check-circle" style="color: var(--c-accent);"></i> Ready
             </span>
-            <span class="footer-item">
-                <i class="fas fa-keyboard"></i> <span class="kbd">Ctrl</span>+<span class="kbd">S</span> Save
-            </span>
         </div>
     </footer>
 
@@ -1252,7 +1278,7 @@
 
     <!-- Zen Exit Button -->
     <button class="btn btn-danger zen-exit" onclick="App.toggleZen()">
-        <i class="fas fa-times"></i> Exit Zen Mode
+        <i class="fas fa-times"></i> Exit Focus Mode
     </button>
 
     <!-- Toast Container -->
@@ -1275,7 +1301,7 @@
     <div class="modal-overlay hidden" id="save-modal">
         <div class="modal">
             <div class="modal-header">
-                <span><i class="fas fa-save"></i> Save Document</span>
+                <span>Save Document</span>
                 <button class="modal-close" onclick="App.closeModal('save-modal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1295,46 +1321,40 @@
     <div class="modal-overlay hidden" id="export-modal">
         <div class="modal">
             <div class="modal-header">
-                <span><i class="fas fa-download"></i> Export Document</span>
+                <span>Export Document</span>
                 <button class="modal-close" onclick="App.closeModal('export-modal')">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0;">
                 <div class="tabs">
                     <button class="tab active" onclick="App.switchTab('export', 'pdf')">PDF</button>
                     <button class="tab" onclick="App.switchTab('export', 'word')">Word</button>
                     <button class="tab" onclick="App.switchTab('export', 'html')">HTML</button>
                 </div>
-                <div class="tab-content" id="export-tab-pdf">
-                    <div class="form-group">
-                        <label>PDF Options</label>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 400; text-transform: none;">
-                                <input type="checkbox" id="pdf-cover" checked> Include Cover
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 400; text-transform: none;">
-                                <input type="checkbox" id="pdf-toc"> Include TOC
-                            </label>
-                        </div>
+                <div style="padding: 20px;">
+                    <div class="tab-content" id="export-tab-pdf">
+                        <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
+                            Export as PDF with proper academic formatting preserved.
+                        </p>
+                        <button class="btn btn-primary btn-full" onclick="App.exportPDF()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
                     </div>
-                    <button class="btn btn-primary btn-full" onclick="App.exportPDF()">
-                        <i class="fas fa-file-pdf"></i> Download PDF
-                    </button>
-                </div>
-                <div class="tab-content hidden" id="export-tab-word">
-                    <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
-                        Export as a Word document (.docx) that can be opened in Microsoft Word, Google Docs, or LibreOffice.
-                    </p>
-                    <button class="btn btn-primary btn-full" onclick="App.exportWord()">
-                        <i class="fas fa-file-word"></i> Download Word
-                    </button>
-                </div>
-                <div class="tab-content hidden" id="export-tab-html">
-                    <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
-                        Export as a standalone HTML file with all formatting preserved.
-                    </p>
-                    <button class="btn btn-primary btn-full" onclick="App.exportHTML()">
-                        <i class="fas fa-file-code"></i> Download HTML
-                    </button>
+                    <div class="tab-content hidden" id="export-tab-word">
+                        <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
+                            Export as Word document (.doc) compatible with Microsoft Word, Google Docs, and LibreOffice.
+                        </p>
+                        <button class="btn btn-primary btn-full" onclick="App.exportWord()">
+                            <i class="fas fa-file-word"></i> Download Word
+                        </button>
+                    </div>
+                    <div class="tab-content hidden" id="export-tab-html">
+                        <p style="font-size: 12px; color: var(--c-text-muted); margin-bottom: 16px;">
+                            Export as standalone HTML with all formatting preserved.
+                        </p>
+                        <button class="btn btn-primary btn-full" onclick="App.exportHTML()">
+                            <i class="fas fa-file-code"></i> Download HTML
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1342,146 +1362,112 @@
 
     <!-- Reference Modal -->
     <div class="modal-overlay hidden" id="ref-modal">
-        <div class="modal" style="max-width: 560px;">
+        <div class="modal" style="max-width: 520px;">
             <div class="modal-header">
-                <span><i class="fas fa-book"></i> Reference Generator</span>
+                <span>Reference Generator</span>
                 <button class="modal-close" onclick="App.closeModal('ref-modal')">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0;">
                 <div class="tabs">
                     <button class="tab active" onclick="App.switchTab('ref', 'book')">Book</button>
                     <button class="tab" onclick="App.switchTab('ref', 'article')">Article</button>
                     <button class="tab" onclick="App.switchTab('ref', 'web')">Website</button>
                 </div>
-                
-                <div class="tab-content" id="ref-tab-book">
-                    <div class="form-group">
-                        <label>Authors (Surname, Name; separated by ;)</label>
-                        <input type="text" class="form-input" id="ref-authors" placeholder="Silva, João; Santos, Maria">
-                    </div>
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-input" id="ref-title" placeholder="Book Title">
-                    </div>
-                    <div class="row" style="display: flex; gap: 12px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Year</label>
-                            <input type="text" class="form-input" id="ref-year" placeholder="2024">
+                <div style="padding: 20px;">
+                    <div class="tab-content" id="ref-tab-book">
+                        <div class="form-group">
+                            <label>Authors (Surname, Name; separated by ;)</label>
+                            <input type="text" class="form-input" id="ref-authors" placeholder="Silva, João; Santos, Maria">
                         </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Edition</label>
-                            <input type="text" class="form-input" id="ref-edition" placeholder="1">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" class="form-input" id="ref-title" placeholder="Book Title">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>City</label>
-                        <input type="text" class="form-input" id="ref-city" placeholder="São Paulo">
-                    </div>
-                    <div class="form-group">
-                        <label>Publisher</label>
-                        <input type="text" class="form-input" id="ref-publisher" placeholder="Publisher Name">
-                    </div>
-                </div>
-                
-                <div class="tab-content hidden" id="ref-tab-article">
-                    <div class="form-group">
-                        <label>Authors</label>
-                        <input type="text" class="form-input" id="ref-art-authors" placeholder="Silva, João">
-                    </div>
-                    <div class="form-group">
-                        <label>Article Title</label>
-                        <input type="text" class="form-input" id="ref-art-title" placeholder="Article Title">
-                    </div>
-                    <div class="form-group">
-                        <label>Journal Name</label>
-                        <input type="text" class="form-input" id="ref-art-journal" placeholder="Journal Name">
-                    </div>
-                    <div class="row" style="display: flex; gap: 12px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Year</label>
-                            <input type="text" class="form-input" id="ref-art-year" placeholder="2024">
+                        <div style="display: flex; gap: 12px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Year</label>
+                                <input type="text" class="form-input" id="ref-year" placeholder="2024">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Edition</label>
+                                <input type="text" class="form-input" id="ref-edition" placeholder="1">
+                            </div>
                         </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Volume</label>
-                            <input type="text" class="form-input" id="ref-art-volume" placeholder="1">
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Pages</label>
-                            <input type="text" class="form-input" id="ref-art-pages" placeholder="1-10">
+                        <div style="display: flex; gap: 12px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>City</label>
+                                <input type="text" class="form-input" id="ref-city" placeholder="São Paulo">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Publisher</label>
+                                <input type="text" class="form-input" id="ref-publisher" placeholder="Publisher">
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="tab-content hidden" id="ref-tab-web">
-                    <div class="form-group">
-                        <label>Author</label>
-                        <input type="text" class="form-input" id="ref-web-author" placeholder="Author or Organization">
+                    
+                    <div class="tab-content hidden" id="ref-tab-article">
+                        <div class="form-group">
+                            <label>Authors</label>
+                            <input type="text" class="form-input" id="ref-art-authors" placeholder="Silva, João">
+                        </div>
+                        <div class="form-group">
+                            <label>Article Title</label>
+                            <input type="text" class="form-input" id="ref-art-title" placeholder="Article Title">
+                        </div>
+                        <div class="form-group">
+                            <label>Journal Name</label>
+                            <input type="text" class="form-input" id="ref-art-journal" placeholder="Journal Name">
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Year</label>
+                                <input type="text" class="form-input" id="ref-art-year" placeholder="2024">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Volume</label>
+                                <input type="text" class="form-input" id="ref-art-volume" placeholder="1">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Pages</label>
+                                <input type="text" class="form-input" id="ref-art-pages" placeholder="1-10">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-input" id="ref-web-title" placeholder="Page Title">
+                    
+                    <div class="tab-content hidden" id="ref-tab-web">
+                        <div class="form-group">
+                            <label>Author</label>
+                            <input type="text" class="form-input" id="ref-web-author" placeholder="Author or Organization">
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" class="form-input" id="ref-web-title" placeholder="Page Title">
+                        </div>
+                        <div class="form-group">
+                            <label>Website Name</label>
+                            <input type="text" class="form-input" id="ref-web-site" placeholder="Website Name">
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" class="form-input" id="ref-web-url" placeholder="https://example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Access Date</label>
+                            <input type="date" class="form-input" id="ref-web-date">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Website Name</label>
-                        <input type="text" class="form-input" id="ref-web-site" placeholder="Website Name">
+                    
+                    <div style="background: var(--c-panel-alt); border-radius: var(--radius); padding: 12px; margin-top: 16px;">
+                        <label style="font-size: 10px; font-weight: 500; color: var(--c-text-muted); margin-bottom: 8px; display: block;">PREVIEW</label>
+                        <div id="ref-preview" style="font-size: 12px; line-height: 1.6; color: var(--c-text);"></div>
                     </div>
-                    <div class="form-group">
-                        <label>URL</label>
-                        <input type="text" class="form-input" id="ref-web-url" placeholder="https://example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Access Date</label>
-                        <input type="date" class="form-input" id="ref-web-date">
-                    </div>
-                </div>
-                
-                <div style="background: var(--c-panel-alt); border: var(--border-width) solid var(--c-border); padding: 12px; margin-top: 16px;">
-                    <label style="font-size: 10px; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 8px; display: block;">Preview</label>
-                    <div id="ref-preview" style="font-size: 12px; line-height: 1.6;"></div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('ref-modal')">Cancel</button>
                 <button class="btn btn-primary" onclick="App.insertReference()">
-                    <i class="fas fa-plus"></i> Insert Reference
+                    <i class="fas fa-plus"></i> Insert
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div class="modal-overlay hidden" id="settings-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <span><i class="fas fa-cog"></i> Settings</span>
-                <button class="modal-close" onclick="App.closeModal('settings-modal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Daily Word Goal</label>
-                    <input type="number" class="form-input" id="setting-goal" value="1000" min="100">
-                </div>
-                <div class="form-group">
-                    <label>Auto-save Interval (seconds)</label>
-                    <input type="number" class="form-input" id="setting-autosave" value="30" min="10" max="300">
-                </div>
-                <div class="form-group">
-                    <label>Theme</label>
-                    <select class="form-input" id="setting-theme" onchange="App.setTheme(this.value)">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Spell Check</label>
-                    <select class="form-input" id="setting-spell" onchange="App.toggleSpellCheck(this.value)">
-                        <option value="true">Enabled</option>
-                        <option value="false">Disabled</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="App.saveSettings()">Save Settings</button>
             </div>
         </div>
     </div>
@@ -1490,46 +1476,38 @@
     <div class="modal-overlay hidden" id="image-modal">
         <div class="modal">
             <div class="modal-header">
-                <span><i class="fas fa-image"></i> Insert Image</span>
+                <span>Insert Image</span>
                 <button class="modal-close" onclick="App.closeModal('image-modal')">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0;">
                 <div class="tabs">
                     <button class="tab active" onclick="App.switchTab('image', 'upload')">Upload</button>
                     <button class="tab" onclick="App.switchTab('image', 'url')">URL</button>
                 </div>
-                <div class="tab-content" id="image-tab-upload">
-                    <div class="file-drop-zone" id="image-drop-zone" onclick="document.getElementById('image-file').click()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <div style="font-weight: 600;">Click or drag image here</div>
-                        <div style="font-size: 11px; color: var(--c-text-muted); margin-top: 4px;">PNG, JPG, GIF up to 5MB</div>
-                        <input type="file" id="image-file" accept="image/*" style="display: none;" onchange="App.handleImageUpload(this)">
+                <div style="padding: 20px;">
+                    <div class="tab-content" id="image-tab-upload">
+                        <div class="file-drop-zone" id="image-drop-zone" onclick="document.getElementById('image-file').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div style="font-weight: 500;">Click or drag image here</div>
+                            <div style="font-size: 11px; color: var(--c-text-muted); margin-top: 4px;">PNG, JPG up to 5MB</div>
+                            <input type="file" id="image-file" accept="image/*" style="display: none;" onchange="App.handleImageUpload(this)">
+                        </div>
                     </div>
-                </div>
-                <div class="tab-content hidden" id="image-tab-url">
-                    <div class="form-group">
-                        <label>Image URL</label>
-                        <input type="text" class="form-input" id="image-url" placeholder="https://example.com/image.jpg">
+                    <div class="tab-content hidden" id="image-tab-url">
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="text" class="form-input" id="image-url" placeholder="https://example.com/image.jpg">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group" style="margin-top: 16px;">
-                    <label>Caption (optional)</label>
-                    <input type="text" class="form-input" id="image-caption" placeholder="Figure 1: Description">
-                </div>
-                <div class="form-group">
-                    <label>Alignment</label>
-                    <select class="form-input" id="image-align">
-                        <option value="left">Left</option>
-                        <option value="center" selected>Center</option>
-                        <option value="right">Right</option>
-                    </select>
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label>Caption (optional)</label>
+                        <input type="text" class="form-input" id="image-caption" placeholder="Figure 1: Description">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('image-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.insertImageConfirm()">
-                    <i class="fas fa-plus"></i> Insert Image
-                </button>
+                <button class="btn btn-primary" onclick="App.insertImageConfirm()">Insert Image</button>
             </div>
         </div>
     </div>
@@ -1538,7 +1516,7 @@
     <div class="modal-overlay hidden" id="table-modal">
         <div class="modal">
             <div class="modal-header">
-                <span><i class="fas fa-table"></i> Insert Table</span>
+                <span>Insert Table</span>
                 <button class="modal-close" onclick="App.closeModal('table-modal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1566,9 +1544,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('table-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.insertTableConfirm()">
-                    <i class="fas fa-plus"></i> Insert Table
-                </button>
+                <button class="btn btn-primary" onclick="App.insertTableConfirm()">Insert Table</button>
             </div>
         </div>
     </div>
@@ -1577,7 +1553,7 @@
     <div class="modal-overlay hidden" id="link-modal">
         <div class="modal">
             <div class="modal-header">
-                <span><i class="fas fa-link"></i> Insert Link</span>
+                <span>Insert Link</span>
                 <button class="modal-close" onclick="App.closeModal('link-modal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1586,40 +1562,20 @@
                     <input type="text" class="form-input" id="link-url" placeholder="https://example.com">
                 </div>
                 <div class="form-group">
-                    <label>Text</label>
-                    <input type="text" class="form-input" id="link-text" placeholder="Link text (leave empty to use URL)">
+                    <label>Text (optional)</label>
+                    <input type="text" class="form-input" id="link-text" placeholder="Link text">
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="App.closeModal('link-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.insertLinkConfirm()">
-                    <i class="fas fa-plus"></i> Insert Link
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Clear Modal -->
-    <div class="modal-overlay hidden" id="clear-modal">
-        <div class="modal">
-            <div class="modal-header" style="background: var(--c-danger); color: #fff;">
-                <span><i class="fas fa-exclamation-triangle"></i> Clear Document</span>
-                <button class="modal-close" style="color: #fff;" onclick="App.closeModal('clear-modal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size: 14px;">Are you sure you want to clear all content?</p>
-                <p style="font-size: 12px; color: var(--c-text-muted); margin-top: 8px;">This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="App.closeModal('clear-modal')">Cancel</button>
-                <button class="btn btn-danger" onclick="App.clearDocument()">Clear All</button>
+                <button class="btn btn-primary" onclick="App.insertLinkConfirm()">Insert Link</button>
             </div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // THESIS.WEB v1 - MAIN APPLICATION
+        // THESIS - MAIN APPLICATION
         // ============================================
         
         class ThesisApp {
@@ -1631,14 +1587,10 @@
                 this.currentDocId = null;
                 this.documents = [];
                 this.zoomLevel = 1;
-                this.settings = {
-                    goal: 1000,
-                    autosave: 30,
-                    theme: 'light'
-                };
-                this.autosaveTimer = null;
+                this.settings = { goal: 1000, theme: 'light' };
                 this.pendingImageData = null;
                 this.currentRefTab = 'book';
+                this.hasUnsavedChanges = false;
             }
 
             init() {
@@ -1646,12 +1598,9 @@
                 this.loadDocuments();
                 this.bindEvents();
                 this.updateStats();
-                this.startAutosave();
                 
                 if (this.documents.length === 0) {
-                    this.toast('Welcome to Thesis.web Pro!', 'info');
-                } else {
-                    this.toast('Ready to continue writing', 'success');
+                    this.toast('Welcome to Thesis', 'info');
                 }
             }
 
@@ -1663,11 +1612,15 @@
                 // Editor events
                 this.editor.addEventListener('input', () => {
                     this.updateStats();
-                    this.scheduleAutosave();
+                    this.hasUnsavedChanges = true;
+                    this.updateStatus('Editing...');
                 });
 
-                // Smart paste
+                // Improved paste handler - preserves formatting
                 this.editor.addEventListener('paste', (e) => this.handlePaste(e));
+
+                // Handle blockquote exit
+                this.editor.addEventListener('keydown', (e) => this.handleEditorKeydown(e));
 
                 // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => this.handleKeyboard(e));
@@ -1717,24 +1670,56 @@
                         tab.addEventListener('input', () => this.updateRefPreview());
                     }
                 });
+            }
 
-                // Find & Replace
-                document.getElementById('find-input')?.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') this.findNext();
-                });
+            handleEditorKeydown(e) {
+                // Exit blockquote with Enter twice
+                if (e.key === 'Enter') {
+                    const sel = window.getSelection();
+                    if (sel.rangeCount) {
+                        let node = sel.anchorNode;
+                        while (node && node !== this.editor) {
+                            if (node.nodeName === 'BLOCKQUOTE') {
+                                const range = sel.getRangeAt(0);
+                                if (range.collapsed && range.startOffset === 0) {
+                                    // Already at start of blockquote, let it exit
+                                }
+                                break;
+                            }
+                            node = node.parentNode;
+                        }
+                    }
+                }
+                
+                // Tab to exit blockquote
+                if (e.key === 'Tab') {
+                    const sel = window.getSelection();
+                    if (sel.rangeCount) {
+                        let node = sel.anchorNode;
+                        while (node && node !== this.editor) {
+                            if (node.nodeName === 'BLOCKQUOTE') {
+                                e.preventDefault();
+                                // Move cursor outside blockquote
+                                const range = sel.getRangeAt(0);
+                                range.setStartAfter(node);
+                                range.collapse(true);
+                                sel.removeAllRanges();
+                                sel.addRange(range);
+                                this.toast('Exited quote', 'info');
+                                return;
+                            }
+                            node = node.parentNode;
+                        }
+                    }
+                }
             }
 
             handleKeyboard(e) {
-                // Ctrl/Cmd shortcuts
                 if (e.ctrlKey || e.metaKey) {
                     switch(e.key.toLowerCase()) {
                         case 's':
                             e.preventDefault();
-                            if (this.currentDocId) {
-                                this.updateCurrentDoc();
-                            } else {
-                                this.openModal('save-modal');
-                            }
+                            this.saveCurrent();
                             break;
                         case 'b':
                             e.preventDefault();
@@ -1752,20 +1737,14 @@
                             e.preventDefault();
                             this.toggleFindReplace();
                             break;
-                        case 'p':
-                            e.preventDefault();
-                            this.openModal('export-modal');
-                            break;
                     }
                 }
 
-                // F11 for Zen mode
                 if (e.key === 'F11') {
                     e.preventDefault();
                     this.toggleZen();
                 }
 
-                // Escape to close modals
                 if (e.key === 'Escape') {
                     const visibleModal = document.querySelector('.modal-overlay:not(.hidden)');
                     if (visibleModal) {
@@ -1774,11 +1753,13 @@
                     if (document.body.classList.contains('zen-mode')) {
                         this.toggleZen();
                     }
+                    // Close find bar
+                    document.getElementById('find-replace-bar').classList.remove('open');
                 }
             }
 
             handlePaste(e) {
-                // Check if pasting image
+                // Check for image paste
                 const items = e.clipboardData?.items;
                 if (items) {
                     for (let item of items) {
@@ -1791,33 +1772,8 @@
                     }
                 }
 
-                // Handle text paste with auto-formatting
-                e.preventDefault();
-                const text = e.clipboardData?.getData('text/plain');
-                if (!text) return;
-
-                const paragraphs = text.split(/\r\n|\r|\n/).filter(line => line.trim() !== '');
-                if (paragraphs.length === 0) return;
-
-                const frag = document.createDocumentFragment();
-                paragraphs.forEach(paraText => {
-                    const p = document.createElement('p');
-                    p.textContent = paraText;
-                    frag.appendChild(p);
-                });
-
-                const selection = window.getSelection();
-                if (selection.rangeCount) {
-                    const range = selection.getRangeAt(0);
-                    range.deleteContents();
-                    range.insertNode(frag);
-                    range.setStartAfter(frag.lastChild);
-                    range.setEndAfter(frag.lastChild);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
-
-                this.toast('Text auto-formatted', 'success');
+                // For text, let browser handle it naturally to preserve formatting
+                // This fixes the "text not formatted when copy/paste" issue
             }
 
             // ============================================
@@ -1862,8 +1818,26 @@
                     li.addEventListener('click', () => this.loadDocument(doc.id));
                     list.appendChild(li);
                 });
+            }
 
-                document.getElementById('btn-save').disabled = !this.currentDocId;
+            newDocument() {
+                this.currentDocId = null;
+                this.editor.innerHTML = '<h1>Title</h1><p>Start writing your document...</p>';
+                this.cover.style.display = 'none';
+                document.getElementById('cover-btn-text').textContent = 'Add Cover Page';
+                this.updateFooterDoc('Untitled Document');
+                document.getElementById('header-doc-name').textContent = 'Untitled Document';
+                this.renderDocList();
+                this.toast('New document created', 'success');
+            }
+
+            saveCurrent() {
+                if (this.currentDocId) {
+                    this.updateDocument();
+                } else {
+                    document.getElementById('save-name').value = '';
+                    this.openModal('save-modal');
+                }
             }
 
             saveDocument() {
@@ -1882,28 +1856,26 @@
 
                 this.documents.unshift(doc);
                 this.currentDocId = doc.id;
+                this.hasUnsavedChanges = false;
                 this.saveToStorage();
                 this.renderDocList();
                 this.closeModal('save-modal');
                 this.updateFooterDoc(name);
+                document.getElementById('header-doc-name').textContent = name;
                 this.toast('Document saved', 'success');
             }
 
-            updateCurrentDoc() {
-                if (!this.currentDocId) {
-                    this.openModal('save-modal');
-                    return;
-                }
-
+            updateDocument() {
                 const doc = this.documents.find(d => d.id === this.currentDocId);
                 if (doc) {
                     doc.content = this.editor.innerHTML;
                     doc.cover = this.cover.style.display !== 'none' ? this.cover.innerHTML : null;
                     doc.standard = this.currentStandard;
                     doc.updatedAt = new Date().toISOString();
+                    this.hasUnsavedChanges = false;
                     this.saveToStorage();
                     this.renderDocList();
-                    this.toast('Document updated', 'success');
+                    this.toast('Document saved', 'success');
                 }
             }
 
@@ -1911,7 +1883,7 @@
                 const doc = this.documents.find(d => d.id === id);
                 if (!doc) return;
 
-                this.editor.innerHTML = doc.content || '';
+                this.editor.innerHTML = doc.content || '<p>Empty document</p>';
                 if (doc.cover) {
                     this.cover.innerHTML = doc.cover;
                     this.cover.style.display = 'flex';
@@ -1926,9 +1898,9 @@
                 this.renderDocList();
                 this.updateStats();
                 this.updateFooterDoc(doc.name);
+                document.getElementById('header-doc-name').textContent = doc.name;
                 this.toast(`Loaded: ${doc.name}`, 'success');
 
-                // Close mobile sidebar
                 document.getElementById('sidebar').classList.remove('mobile-open');
             }
 
@@ -1937,10 +1909,7 @@
 
                 this.documents = this.documents.filter(d => d.id !== id);
                 if (this.currentDocId === id) {
-                    this.currentDocId = null;
-                    this.editor.innerHTML = '<p>Start writing...</p>';
-                    this.cover.style.display = 'none';
-                    this.updateFooterDoc('Unsaved Document');
+                    this.newDocument();
                 }
                 this.saveToStorage();
                 this.renderDocList();
@@ -1948,13 +1917,10 @@
             }
 
             clearDocument() {
+                if (!confirm('Clear all content?')) return;
                 this.editor.innerHTML = '<p>Start writing...</p>';
-                this.cover.style.display = 'none';
-                this.currentDocId = null;
-                this.renderDocList();
                 this.updateStats();
-                this.closeModal('clear-modal');
-                this.toast('Document cleared', 'info');
+                this.toast('Content cleared', 'info');
             }
 
             // ============================================
@@ -1964,38 +1930,54 @@
             exec(command, value = null) {
                 document.execCommand(command, false, value);
                 this.editor.focus();
-                this.scheduleAutosave();
             }
 
             formatBlock(tag) {
                 document.execCommand('formatBlock', false, `<${tag}>`);
                 this.editor.focus();
-                this.scheduleAutosave();
+            }
+
+            setFontFamily(font) {
+                document.execCommand('fontName', false, font);
+                this.editor.focus();
+            }
+
+            setFontSize(size) {
+                // Use CSS for font size since execCommand fontSize uses 1-7 scale
+                const selection = window.getSelection();
+                if (selection.rangeCount && !selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.style.fontSize = size;
+                    range.surroundContents(span);
+                }
+                this.editor.focus();
+            }
+
+            increaseIndent() {
+                document.execCommand('indent', false, null);
+            }
+
+            decreaseIndent() {
+                document.execCommand('outdent', false, null);
             }
 
             setStandard(standard) {
                 this.currentStandard = standard;
                 
-                // Update UI
                 document.querySelectorAll('.format-option').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.style === standard);
                 });
                 
-                // Update paper class
-                this.paper.className = '';
-                this.paper.classList.add(`style-${standard}`);
+                this.paper.className = `paper style-${standard}`;
                 
-                // Update footer
                 document.getElementById('footer-standard').innerHTML = `<i class="fas fa-ruler"></i> ${standard.toUpperCase()}`;
-                
-                this.scheduleAutosave();
             }
 
             toggleCover() {
                 const isHidden = this.cover.style.display === 'none';
                 this.cover.style.display = isHidden ? 'flex' : 'none';
                 document.getElementById('cover-btn-text').textContent = isHidden ? 'Remove Cover' : 'Add Cover Page';
-                this.scheduleAutosave();
             }
 
             // ============================================
@@ -2034,7 +2016,6 @@
             insertImageConfirm() {
                 const url = this.pendingImageData || document.getElementById('image-url').value.trim();
                 const caption = document.getElementById('image-caption').value.trim();
-                const align = document.getElementById('image-align').value;
 
                 if (!url) {
                     this.toast('Please provide an image', 'error');
@@ -2042,7 +2023,7 @@
                 }
 
                 const figure = document.createElement('figure');
-                figure.style.textAlign = align;
+                figure.style.textAlign = 'center';
 
                 const img = document.createElement('img');
                 img.src = url;
@@ -2126,45 +2107,9 @@
                 this.toast('Link inserted', 'success');
             }
 
-            insertHR() {
-                const hr = document.createElement('hr');
-                this.insertNodeAtCursor(hr);
-                this.toast('Horizontal line inserted', 'success');
-            }
-
-            insertBlockquote() {
-                const quote = document.createElement('blockquote');
-                quote.innerHTML = '<p>Quote text here...</p>';
-                this.insertNodeAtCursor(quote);
-            }
-
-            insertStructure(type) {
-                let html = '';
-                
-                switch(type) {
-                    case 'abstract':
-                        const abstractTitle = this.currentStandard === 'abnt' ? 'RESUMO' : 'ABSTRACT';
-                        html = `<h2>${abstractTitle}</h2><p>Write your abstract here...</p>`;
-                        break;
-                    case 'references':
-                        const refTitle = this.currentStandard === 'abnt' ? 'REFERÊNCIAS' : 'REFERENCES';
-                        html = `<h2>${refTitle}</h2><p>References will be listed here...</p>`;
-                        break;
-                    case 'toc':
-                        html = `<h2>SUMÁRIO</h2><p style="color: #666;">[Table of Contents - Update manually]</p>`;
-                        break;
-                }
-
-                if (html) {
-                    document.execCommand('insertHTML', false, html);
-                    this.toast(`${type} section inserted`, 'success');
-                }
-            }
-
             insertPageBreak() {
                 const div = document.createElement('div');
                 div.className = 'page-break';
-                div.innerHTML = '<p style="color:#999;font-size:10pt;text-align:center;">--- Page Break ---</p>';
                 this.insertNodeAtCursor(div);
                 this.toast('Page break inserted', 'success');
             }
@@ -2183,7 +2128,6 @@
                     this.editor.appendChild(node);
                 }
                 this.editor.focus();
-                this.scheduleAutosave();
             }
 
             // ============================================
@@ -2207,7 +2151,7 @@
                     if (this.currentStandard === 'abnt') {
                         ref = `${authors}. <b>${title}</b>. ${edition ? edition + '. ed. ' : ''}${city}: ${publisher}, ${year}.`;
                     } else if (this.currentStandard === 'apa') {
-                        ref = `${authors} (${year}). <i>${title}</i>. ${edition ? `(${edition}th ed.)` : ''} ${publisher}.`;
+                        ref = `${authors} (${year}). <i>${title}</i>. ${edition ? `(${edition}th ed.) ` : ''}${publisher}.`;
                     } else {
                         ref = `${authors}. <i>${title}</i>. ${publisher}, ${year}.`;
                     }
@@ -2220,7 +2164,7 @@
                     const pages = document.getElementById('ref-art-pages')?.value || '';
 
                     if (this.currentStandard === 'abnt') {
-                        ref = `${authors}. ${title}. <b>${journal}</b>, ${city || 'S.l.'}, v. ${volume}, p. ${pages}, ${year}.`;
+                        ref = `${authors}. ${title}. <b>${journal}</b>, v. ${volume}, p. ${pages}, ${year}.`;
                     } else {
                         ref = `${authors} (${year}). ${title}. <i>${journal}</i>, <i>${volume}</i>, ${pages}.`;
                     }
@@ -2269,14 +2213,10 @@
                 const searchText = document.getElementById('find-input').value;
                 if (!searchText) return;
 
-                const selection = window.getSelection();
-                const range = document.createRange();
-                
-                // Simple find implementation
                 const content = this.editor.textContent;
-                const currentIndex = content.indexOf(searchText);
+                const index = content.indexOf(searchText);
                 
-                if (currentIndex >= 0) {
+                if (index >= 0) {
                     this.toast(`Found: "${searchText}"`, 'info');
                 } else {
                     this.toast('Not found', 'info');
@@ -2299,7 +2239,7 @@
                 const content = this.editor.innerHTML;
                 const newContent = content.split(searchText).join(replaceText);
                 this.editor.innerHTML = newContent;
-                this.toast('All occurrences replaced', 'success');
+                this.toast('All replaced', 'success');
             }
 
             // ============================================
@@ -2309,29 +2249,32 @@
             exportPDF() {
                 this.toast('Generating PDF...', 'info');
                 
-                const element = this.paper.cloneNode(true);
-                const cover = element.querySelector('#cover-page');
-                if (cover && getComputedStyle(cover).display === 'none') {
-                    cover.remove();
+                // Clone and prepare content
+                const clone = this.paper.cloneNode(true);
+                
+                // Remove cover if hidden
+                const coverEl = clone.querySelector('#cover-page');
+                if (coverEl && getComputedStyle(coverEl).display === 'none') {
+                    coverEl.remove();
                 }
 
-                // Remove page break indicators
-                element.querySelectorAll('.page-break').forEach(pb => {
-                    pb.style.borderTop = 'none';
+                // Remove page break text
+                clone.querySelectorAll('.page-break').forEach(pb => {
                     pb.innerHTML = '';
+                    pb.style.borderTop = 'none';
                 });
 
                 const opt = {
                     margin: 0,
                     filename: `thesis-document-${Date.now()}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
+                    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
                 };
 
-                html2pdf().set(opt).from(element).save().then(() => {
-                    this.toast('PDF downloaded successfully', 'success');
+                html2pdf().set(opt).from(clone).save().then(() => {
+                    this.toast('PDF downloaded', 'success');
                     this.closeModal('export-modal');
                 }).catch(err => {
                     console.error(err);
@@ -2340,10 +2283,8 @@
             }
 
             exportWord() {
-                const content = this.generateHTMLContent();
-                const blob = new Blob(['\ufeff', content], {
-                    type: 'application/msword'
-                });
+                const content = this.generateExportHTML();
+                const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
                 
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -2357,7 +2298,7 @@
             }
 
             exportHTML() {
-                const content = this.generateHTMLContent();
+                const content = this.generateExportHTML();
                 const blob = new Blob([content], { type: 'text/html' });
                 
                 const url = URL.createObjectURL(blob);
@@ -2367,32 +2308,51 @@
                 a.click();
                 URL.revokeObjectURL(url);
                 
-                this.toast('HTML document downloaded', 'success');
+                this.toast('HTML downloaded', 'success');
                 this.closeModal('export-modal');
             }
 
-            generateHTMLContent() {
-                const style = this.currentStandard === 'abnt' ? `
-                    body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: justify; padding: 3cm 2cm 2cm 3cm; }
-                    h1 { font-size: 14pt; text-align: center; }
-                    h2 { font-size: 12pt; font-weight: bold; }
-                    p { text-indent: 1.25cm; margin-bottom: 0; }
-                ` : this.currentStandard === 'apa' ? `
-                    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2; padding: 1in; }
-                    h1 { font-size: 12pt; text-align: center; font-weight: bold; }
-                    p { text-indent: 0.5in; margin-bottom: 0; }
-                ` : `
-                    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 2; padding: 1in; }
-                    h1 { font-size: 14pt; text-align: center; }
-                    p { text-indent: 0.5in; }
-                `;
+            generateExportHTML() {
+                // Get proper styles based on standard
+                let styleRules = '';
+                const computedStyle = getComputedStyle(this.editor);
+                
+                if (this.currentStandard === 'abnt') {
+                    styleRules = `
+                        body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: justify; padding: 3cm 2cm 2cm 3cm; }
+                        h1 { font-size: 14pt; text-align: center; font-weight: bold; margin: 24px 0 12px; }
+                        h2 { font-size: 12pt; font-weight: bold; margin: 12px 0; }
+                        p { text-indent: 1.25cm; margin-bottom: 0; }
+                        blockquote { border-left: 3px solid #2563eb; padding-left: 16px; margin: 16px 0; background: #f8fafc; }
+                    `;
+                } else if (this.currentStandard === 'apa') {
+                    styleRules = `
+                        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 2; padding: 1in; }
+                        h1 { font-size: 12pt; text-align: center; font-weight: bold; margin: 12px 0; }
+                        p { text-indent: 0.5in; margin-bottom: 0; }
+                    `;
+                } else {
+                    styleRules = `
+                        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 2; padding: 1in; }
+                        h1 { font-size: 14pt; text-align: center; margin: 12px 0; }
+                        p { text-indent: 0.5in; }
+                    `;
+                }
 
                 return `<!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <title>Thesis Document</title>
-    <style>${style}</style>
+    <style>
+        ${styleRules}
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        td, th { border: 1px solid #000; padding: 8px; }
+        th { background: #f5f5f5; font-weight: bold; }
+        figure { margin: 16px 0; text-align: center; }
+        figcaption { font-size: 10pt; color: #666; margin-top: 8px; }
+        img { max-width: 100%; }
+    </style>
 </head>
 <body>
  ${this.cover.style.display !== 'none' ? this.cover.outerHTML : ''}
@@ -2402,7 +2362,7 @@
             }
 
             // ============================================
-            // ZOOM FUNCTIONS
+            // ZOOM
             // ============================================
 
             zoomIn() {
@@ -2432,7 +2392,7 @@
             toggleZen() {
                 document.body.classList.toggle('zen-mode');
                 const isActive = document.body.classList.contains('zen-mode');
-                this.toast(isActive ? 'Zen mode enabled' : 'Zen mode disabled', 'info');
+                this.toast(isActive ? 'Focus mode on' : 'Focus mode off', 'info');
             }
 
             // ============================================
@@ -2467,12 +2427,15 @@
                 document.getElementById('stat-pages').textContent = pages;
                 document.getElementById('stat-time').textContent = readTime + 'm';
 
-                // Update goal progress
                 const goal = this.settings.goal || 1000;
                 const progress = Math.min(100, (words / goal) * 100);
                 document.getElementById('goal-current').textContent = words;
                 document.getElementById('goal-target').textContent = goal;
                 document.getElementById('goal-progress').style.width = progress + '%';
+            }
+
+            updateStatus(text) {
+                document.getElementById('footer-status').innerHTML = `<i class="fas fa-pen"></i> ${text}`;
             }
 
             // ============================================
@@ -2487,25 +2450,10 @@
                     }
                 } catch (e) {}
 
-                // Apply theme
                 if (this.settings.theme === 'dark') {
                     document.documentElement.setAttribute('data-theme', 'dark');
                     document.getElementById('setting-theme').value = 'dark';
                 }
-
-                // Apply goal
-                document.getElementById('setting-goal').value = this.settings.goal;
-                document.getElementById('setting-autosave').value = this.settings.autosave;
-            }
-
-            saveSettings() {
-                this.settings.goal = parseInt(document.getElementById('setting-goal').value) || 1000;
-                this.settings.autosave = parseInt(document.getElementById('setting-autosave').value) || 30;
-                
-                localStorage.setItem('thesis_settings', JSON.stringify(this.settings));
-                this.closeModal('settings-modal');
-                this.toast('Settings saved', 'success');
-                this.updateStats();
             }
 
             setTheme(theme) {
@@ -2515,26 +2463,7 @@
                 } else {
                     document.documentElement.removeAttribute('data-theme');
                 }
-            }
-
-            toggleSpellCheck(value) {
-                this.editor.spellcheck = value === 'true';
-            }
-
-            // ============================================
-            // AUTOSAVE
-            // ============================================
-
-            startAutosave() {
-                setInterval(() => {
-                    if (this.currentDocId) {
-                        this.updateCurrentDoc();
-                    }
-                }, (this.settings.autosave || 30) * 1000);
-            }
-
-            scheduleAutosave() {
-                document.getElementById('footer-status').innerHTML = '<i class="fas fa-pen"></i> Editing...';
+                localStorage.setItem('thesis_settings', JSON.stringify(this.settings));
             }
 
             // ============================================
@@ -2552,25 +2481,22 @@
             switchTab(context, tab) {
                 this.currentRefTab = tab;
                 
-                // Update tab buttons
                 document.querySelectorAll(`[onclick*="App.switchTab('${context}'"]`).forEach(btn => {
                     btn.classList.toggle('active', btn.textContent.toLowerCase() === tab);
                 });
 
-                // Update tab content
                 document.querySelectorAll(`[id^="${context}-tab-"]`).forEach(content => {
                     content.classList.add('hidden');
                 });
                 document.getElementById(`${context}-tab-${tab}`)?.classList.remove('hidden');
 
-                // Update reference preview if in reference modal
                 if (context === 'ref') {
                     this.updateRefPreview();
                 }
             }
 
             // ============================================
-            // UTILITY FUNCTIONS
+            // UTILITIES
             // ============================================
 
             toast(message, type = 'info') {
@@ -2578,19 +2504,15 @@
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
                 
-                const icons = {
-                    success: 'check-circle',
-                    error: 'exclamation-circle',
-                    info: 'info-circle'
-                };
-                
+                const icons = { success: 'check-circle', error: 'exclamation-circle', info: 'info-circle' };
                 toast.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${message}`;
                 container.appendChild(toast);
 
                 setTimeout(() => {
                     toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(10px)';
                     setTimeout(() => toast.remove(), 300);
-                }, 3000);
+                }, 2500);
             }
 
             escapeHtml(text) {
@@ -2615,7 +2537,7 @@
             }
         }
 
-        // Initialize application
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             window.App = new ThesisApp();
             window.App.init();
