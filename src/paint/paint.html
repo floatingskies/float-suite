@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAINT.WEB v4.0 - Raster Editor</title>
+    <title>PAINT.WEB v5.0 - Raster Editor</title>
       <link rel="icon" type="image/png" href="/favicons/favicon_paint.png">
     <meta name="theme-color" content="#FFDE59">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+    // Auto Dark/Light Mode — runs before body renders to prevent flash
+    (function(){
+      var mode = localStorage.getItem('paint_theme_mode') || 'auto';
+      var isDark = false;
+      if (mode === 'dark') isDark = true;
+      else if (mode === 'light') isDark = false;
+      else isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) document.documentElement.setAttribute('data-theme','dark');
+      else document.documentElement.removeAttribute('data-theme');
+      window._paintThemeMode = mode;
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e){
+        if (localStorage.getItem('paint_theme_mode') === 'auto' || !localStorage.getItem('paint_theme_mode')) {
+          if (e.matches) document.documentElement.setAttribute('data-theme','dark');
+          else document.documentElement.removeAttribute('data-theme');
+          updateThemeIcon();
+        }
+      });
+      function updateThemeIcon(){
+        var icon = document.getElementById('theme-icon');
+        if(!icon)return;
+        var m = localStorage.getItem('paint_theme_mode')||'auto';
+        icon.className = m==='auto'?'fas fa-circle-half-stroke':m==='dark'?'fas fa-moon':'fas fa-sun';
+      }
+      document.addEventListener('DOMContentLoaded',updateThemeIcon);
+    })();
+    </script>
 <style>
 /* ===========================
    NEO-BRUTALIST DESIGN v4
@@ -225,7 +252,22 @@ input:focus,select:focus,textarea:focus{
     position:absolute;top:0;left:0;
     box-shadow:12px 12px 0 rgba(0,0,0,.5);
     transform-origin:0 0;border:var(--border-w) solid rgba(0,0,0,.8);
-    background:#fff;
+    background-color:#fff;
+    background-image:
+        linear-gradient(45deg,#ddd 25%,transparent 25%),
+        linear-gradient(-45deg,#ddd 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#ddd 75%),
+        linear-gradient(-45deg,transparent 75%,#ddd 75%);
+    background-size:16px 16px;
+    background-position:0 0,0 8px,8px -8px,-8px 0;
+}
+[data-theme="dark"] #canvas-wrapper{
+    background-color:#2a2a2a;
+    background-image:
+        linear-gradient(45deg,#333 25%,transparent 25%),
+        linear-gradient(-45deg,#333 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#333 75%),
+        linear-gradient(-45deg,transparent 75%,#333 75%);
 }
 canvas{position:absolute;top:0;left:0;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges;}
 canvas.active-canvas{pointer-events:auto;}
@@ -474,6 +516,7 @@ canvas.active-canvas{pointer-events:auto;}
 .vp-crosshair{cursor:crosshair;}
 .vp-move{cursor:grab;}
 .vp-move:active{cursor:grabbing;}
+.vp-cursor-move{cursor:move;}
 .vp-text{cursor:text;}
 .vp-zoom-in{cursor:zoom-in;}
 .vp-zoom-out{cursor:zoom-out;}
@@ -530,6 +573,46 @@ canvas.active-canvas{pointer-events:auto;}
     border:2px solid #fff;opacity:0;transition:opacity .3s;z-index:100;
 }
 #pan-indicator.visible{opacity:1;}
+
+/* ---- MOBILE SUPPORT ---- */
+@media(max-width:768px){
+    :root{--sidebar-w:100%;--right-w:100%;--bottom-h:160px;--header-h:50px;--menu-h:30px;}
+    .topbar{padding:0 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;}
+    .logo{font-size:16px;padding:4px 8px;}
+    .toolbar{position:fixed;bottom:0;left:0;right:0;width:100%;height:auto;max-height:50vh;
+        z-index:200;transform:translateY(calc(100% - 44px));transition:transform .3s;
+        border-right:none;border-top:var(--border-w) solid var(--c-border);
+        flex-direction:column;padding:8px;overflow-y:auto;}
+    .toolbar.open{transform:translateY(0);}
+    .toolbar-handle{display:flex;justify-content:center;padding:4px;cursor:pointer;}
+    .toolbar-handle::after{content:'';width:40px;height:4px;background:var(--c-border);border-radius:2px;}
+    .right-panel{position:fixed;top:0;right:0;bottom:0;width:280px;z-index:200;
+        transform:translateX(100%);transition:transform .3s;box-shadow:-4px 0 0 var(--c-border);}
+    .right-panel.open{transform:translateX(0);}
+    .bottom-bar{display:none;}
+    #app{flex-direction:column;}
+    .btn-icon{width:44px;height:44px;font-size:16px;}
+    .btn{min-height:44px;}
+    .menubar{flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:0 6px;}
+    .menu-item{padding:4px 6px;font-size:9px;}
+    .menu-right{display:none;}
+    #mobile-toolbar-toggle{display:flex!important;}
+    #mobile-panel-toggle{display:flex!important;}
+}
+#mobile-toolbar-toggle,#mobile-panel-toggle{display:none;}
+
+/* ---- PREFERS REDUCED MOTION ---- */
+@media(prefers-reduced-motion:reduce){
+    *{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;}
+}
+
+/* ---- CURSOR SIZE INDICATOR ---- */
+#cursor-size-indicator{
+    position:fixed;pointer-events:none;z-index:9999;
+    border:2px solid var(--c-accent);border-radius:50%;
+    transform:translate(-50%,-50%);display:none;
+    mix-blend-mode:difference;
+}
 </style>
 </head>
 <body>
@@ -537,7 +620,9 @@ canvas.active-canvas{pointer-events:auto;}
 <!-- TOP BAR -->
 <div class="topbar">
     <div class="logo">PAINT<span style="color:#000;background:#fff;padding:0 4px;border:2px solid #000;box-shadow:2px 2px 0 #000;margin-left:4px;">.WEB</span></div>
-    <span style="font-family:var(--font-head);font-size:9px;color:#888;margin-left:4px;letter-spacing:1px;">v4.0</span>
+    <span style="font-family:var(--font-head);font-size:9px;color:#888;margin-left:4px;letter-spacing:1px;">v5.0</span>
+    <button class="btn btn-sm btn-icon" id="mobile-toolbar-toggle" onclick="document.getElementById('toolbar').classList.toggle('open')" data-tip="Toggle Tools"><i class="fas fa-palette"></i></button>
+    <button class="btn btn-sm btn-icon" id="mobile-panel-toggle" onclick="document.querySelector('.right-panel').classList.toggle('open')" data-tip="Toggle Panels"><i class="fas fa-layer-group"></i></button>
     <div class="topbar-sep"></div>
     <input type="file" id="file-input" accept="image/*" class="hidden-file" multiple>
     <button class="btn" onclick="document.getElementById('file-input').click()" data-tip="Open image (Ctrl+O)"><i class="fas fa-folder-open"></i> Open</button>
@@ -550,7 +635,7 @@ canvas.active-canvas{pointer-events:auto;}
     <button class="btn btn-sm" onclick="App.ui.openModal('modal-filters')" data-tip="Filters & Effects"><i class="fas fa-magic"></i> Filters</button>
     <div class="topbar-right">
         <button class="btn btn-accent" id="btn-export" onclick="App.ui.openModal('modal-export')" data-tip="Export (Ctrl+S)"><i class="fas fa-download"></i> Export</button>
-        <button class="btn btn-sm" onclick="App.toggleTheme()" id="btn-theme" data-tip="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <button class="btn btn-sm" onclick="App.cycleTheme()" id="btn-theme" data-tip="Cycle theme (Auto/Light/Dark)"><i class="fas fa-circle-half-stroke" id="theme-icon"></i></button>
         <a href="./index.html" class="btn btn-sm" data-tip="Back to Float Suite"><i class="fas fa-th-large"></i></a>
     </div>
 </div>
@@ -593,7 +678,7 @@ canvas.active-canvas{pointer-events:auto;}
         <div class="tool-group">
             <div class="section-label">Tools</div>
             <div class="tools-grid">
-                <button class="btn btn-icon active" data-tool="move" data-tip="Move Canvas (H)"><i class="fas fa-arrows-alt"></i></button>
+                <button class="btn btn-icon active" data-tool="move" data-tip="Move Content (Space+Drag to Pan)"><i class="fas fa-arrows-alt"></i></button>
                 <button class="btn btn-icon" data-tool="select-rect" data-tip="Rect Select (M)"><i class="far fa-object-group"></i></button>
                 <button class="btn btn-icon" data-tool="select-lasso" data-tip="Lasso Select (L)"><i class="fas fa-draw-polygon"></i></button>
                 <button class="btn btn-icon" data-tool="select-magic" data-tip="Magic Wand (W)"><i class="fas fa-magic"></i></button>
@@ -885,8 +970,8 @@ canvas.active-canvas{pointer-events:auto;}
             </div>
             <div><label>Background</label>
                 <select id="new-bg">
-                    <option value="white">White</option>
                     <option value="transparent">Transparent</option>
+                    <option value="white">White</option>
                     <option value="black">Black</option>
                 </select>
             </div>
@@ -1028,6 +1113,7 @@ canvas.active-canvas{pointer-events:auto;}
 </div>
 
 <div id="toast-container"></div>
+<div id="cursor-size-indicator"></div>
 
 <!-- =============== SCRIPT =============== -->
 <script>
@@ -1198,6 +1284,14 @@ const App = {
     _brushDistance: 0,
     _lastBrushX: 0,
     _lastBrushY: 0,
+    _spaceHeld: false,
+    _isPanning: false,
+    _panStartX: 0,
+    _panStartY: 0,
+    _moveStartX: 0,
+    _moveStartY: 0,
+    _moveLayerStartX: 0,
+    _moveLayerStartY: 0,
 
     ui: {
         wrapper: null,
@@ -1262,7 +1356,7 @@ const App = {
         this.ui.wrapper.appendChild(this.ui.previewCanvas);
 
         this.resizeCanvas(this.width, this.height, false);
-        this.addLayer('Background', '#ffffff');
+        this.addLayer('Background', null);
         this.history.save(this.layers, this.width, this.height, 'New Canvas');
         this.initSwatches();
         this.bindEvents();
@@ -1280,6 +1374,16 @@ const App = {
         this.ui.wrapper.innerHTML='';
         this.layers=[];
         this.activeLayerId=null;
+        // Recreate preview canvas after clearing wrapper
+        this.ui.previewCanvas = document.createElement('canvas');
+        this.ui.previewCanvas.id = 'preview-canvas';
+        this.ui.previewCtx = this.ui.previewCanvas.getContext('2d');
+        this.ui.wrapper.appendChild(this.ui.previewCanvas);
+        // Recreate grid canvas
+        this.ui.gridCanvas = document.createElement('canvas');
+        this.ui.gridCanvas.id = 'grid-canvas';
+        this.ui.gridCtx = this.ui.gridCanvas.getContext('2d');
+        this.ui.wrapper.appendChild(this.ui.gridCanvas);
         this.resizeCanvas(w, h, false);
         const fill = bg==='white'?'#ffffff':bg==='black'?'#000000':null;
         this.addLayer('Background', fill);
@@ -2014,6 +2118,23 @@ const App = {
 
         // VIEWPORT EVENTS
         this.bindViewportEvents();
+
+        // Space key for panning
+        document.addEventListener('keydown', e => {
+            if(e.code === 'Space' && !e.repeat && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+                e.preventDefault();
+                this._spaceHeld = true;
+                this.ui.viewport.style.cursor = 'grab';
+            }
+        });
+        document.addEventListener('keyup', e => {
+            if(e.code === 'Space'){
+                this._spaceHeld = false;
+                this._isPanning = false;
+                this.ui.viewport.classList.remove('vp-grabbing');
+                this.ui.viewport.style.cursor = '';
+            }
+        });
     },
 
     bindViewportEvents() {
@@ -2115,6 +2236,16 @@ const App = {
         const snapped=this.snapCoords(pos.x,pos.y);
         const drawX=snapped.x-l.x, drawY=snapped.y-l.y;
 
+        // Space+drag = pan viewport
+        if(e.spaceKey || this._spaceHeld){
+            this._isPanning = true;
+            this._panStartX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            this._panStartY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+            this.ui.viewport.classList.add('vp-grabbing');
+            this.isDrawing=false;
+            return;
+        }
+
         this.isDrawing=true;
         this.startX=snapped.x; this.startY=snapped.y;
         this.lastX=drawX; this.lastY=drawY;
@@ -2135,7 +2266,11 @@ const App = {
             this.isDrawing=false; return;
         }
         if(this.tool==='move'){
-            this.ui.viewport.classList.add('vp-grabbing'); return;
+            this._moveStartX = snapped.x;
+            this._moveStartY = snapped.y;
+            this._moveLayerStartX = l.x;
+            this._moveLayerStartY = l.y;
+            return;
         }
         if(this.tool==='clone'&&e.altKey){
             this.cloneState.active=true;
@@ -2201,17 +2336,26 @@ const App = {
         const snapped=this.snapCoords(pos.x,pos.y);
         const drawX=snapped.x-l.x, drawY=snapped.y-l.y;
 
+        if(this._isPanning){
+            const cx = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            const cy = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+            this.pan.x += cx - this._panStartX;
+            this.pan.y += cy - this._panStartY;
+            this._panStartX = cx;
+            this._panStartY = cy;
+            this.updateTransform();
+            return;
+        }
+
         if(!this.isDrawing) return;
 
         if(this.tool==='move'){
-            if(e.touches&&e.touches.length>0){
-                this.pan.x+=(snapped.x-this.startX)*this.zoom;
-                this.pan.y+=(snapped.y-this.startY)*this.zoom;
-                this.startX=snapped.x; this.startY=snapped.y;
-            } else {
-                this.pan.x+=e.movementX; this.pan.y+=e.movementY;
-            }
-            this.updateTransform(); return;
+            const dx = snapped.x - this._moveStartX;
+            const dy = snapped.y - this._moveStartY;
+            l.x = this._moveLayerStartX + dx;
+            l.y = this._moveLayerStartY + dy;
+            l.canvas.style.transform = `translate(${l.x}px,${l.y}px)`;
+            return;
         }
         if(this.tool==='pan-layer'){
             l.x+=(snapped.x-this.startX); l.y+=(snapped.y-this.startY);
@@ -2354,9 +2498,21 @@ const App = {
     },
 
     handlePointerUp(e) {
+        // Handle panning cleanup even if isDrawing is false
+        if(this._isPanning){
+            this._isPanning = false;
+            this.ui.viewport.classList.remove('vp-grabbing');
+            this.isDrawing = false;
+            return;
+        }
         if(!this.isDrawing) return;
         this.isDrawing=false;
         this.ui.viewport.classList.remove('vp-grabbing');
+        const wasMove = this.tool==='move';
+        if(wasMove){
+            this.history.save(this.layers,this.width,this.height,'Move Layer');
+            this.updateLayerThumb(this.activeLayerId);
+        }
 
         const l=this.getLayer(this.activeLayerId);
         if(!l) return;
@@ -2452,7 +2608,7 @@ const App = {
         document.getElementById('polygon-sides-row').style.display=t==='polygon'?'block':'none';
 
         // Cursor
-        const cursors={move:'vp-move','pan-layer':'vp-move',brush:'vp-crosshair',pencil:'vp-crosshair',eraser:'vp-crosshair',picker:'vp-eyedropper',text:'vp-text',fill:'vp-crosshair',clone:'vp-crosshair',gradient:'vp-crosshair','select-rect':'vp-crosshair','select-lasso':'vp-crosshair','select-magic':'vp-crosshair',crop:'vp-crosshair',line:'vp-crosshair','rect-shape':'vp-crosshair',ellipse:'vp-crosshair',polygon:'vp-crosshair',smudge:'vp-crosshair','blur-tool':'vp-crosshair'};
+        const cursors={move:'vp-cursor-move','pan-layer':'vp-cursor-move',brush:'vp-crosshair',pencil:'vp-crosshair',eraser:'vp-crosshair',picker:'vp-eyedropper',text:'vp-text',fill:'vp-crosshair',clone:'vp-crosshair',gradient:'vp-crosshair','select-rect':'vp-crosshair','select-lasso':'vp-crosshair','select-magic':'vp-crosshair',crop:'vp-crosshair',line:'vp-crosshair','rect-shape':'vp-crosshair',ellipse:'vp-crosshair',polygon:'vp-crosshair',smudge:'vp-crosshair','blur-tool':'vp-crosshair'};
         this.ui.viewport.className='viewport '+(cursors[t]||'');
 
         if(!isText&&!isShape) this.clearSelection();
@@ -2878,14 +3034,24 @@ const App = {
     },
 
     // ---- THEME ----
-    toggleTheme() {
-        const isDark=document.body.getAttribute('data-theme')==='dark';
-        if(isDark) document.body.removeAttribute('data-theme');
-        else document.body.setAttribute('data-theme','dark');
-        const icon=document.getElementById('theme-icon');
-        icon.className=isDark?'fas fa-moon':'fas fa-sun';
-        try{localStorage.setItem('paint_theme',isDark?'light':'dark');}catch(e){}
+    cycleTheme() {
+        const modes = ['auto','light','dark'];
+        let cur = localStorage.getItem('paint_theme_mode') || 'auto';
+        let idx = modes.indexOf(cur);
+        let next = modes[(idx + 1) % modes.length];
+        localStorage.setItem('paint_theme_mode', next);
+        if (next === 'dark') document.documentElement.setAttribute('data-theme','dark');
+        else if (next === 'light') document.documentElement.removeAttribute('data-theme');
+        else {
+            // auto: follow OS
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+            else document.documentElement.removeAttribute('data-theme');
+        }
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.className = next==='auto'?'fas fa-circle-half-stroke':next==='dark'?'fas fa-moon':'fas fa-sun';
+        Utils.toast('Theme: ' + next.charAt(0).toUpperCase() + next.slice(1), '');
     },
+    toggleTheme() { this.cycleTheme(); },
 
     // ---- KEYBOARD SHORTCUTS ----
     bindKeyboard() {
