@@ -48,7 +48,7 @@ function buildMenu(){
     { label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
     { label: 'View', submenu: [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }] },
     { label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, { type: 'separator' }, { role: 'front' }] },
-    { label: 'Help', submenu: [{ label: 'About Thesis', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Thesis', message: 'Thesis 5.2', detail: 'Academic word processor: Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'thesis-512.png') }); } }] }
+    { label: 'Help', submenu: [{ label: 'About Thesis', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Thesis', message: 'Thesis 5.3', detail: 'Academic word processor: Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'thesis-512.png') }); } }] }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
