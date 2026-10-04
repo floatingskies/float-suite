@@ -1,44 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Thesis: open book on blue background, neo-brutalist. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Thesis: the open book from the original icon, now with curved pages,
+       a gold ribbon and a deep blue gradient tile. -->
   <defs>
-    <style>
-      .stroke{fill:none;stroke:#000;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
-    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6BA6F5"/>
+      <stop offset="0.55" stop-color="#2D7DD2"/>
+      <stop offset="1" stop-color="#14448A"/>
+    </linearGradient>
+    <linearGradient id="pageL" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DDE3EC"/>
+    </linearGradient>
+    <linearGradient id="pageR" x1="1" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D3DAE6"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE066"/>
+      <stop offset="1" stop-color="#F0A500"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.4" r="0.55">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
   </defs>
-  <!-- Background -->
-  <rect x="0" y="0" width="64" height="64" fill="#2D7DD2"/>
-  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#000" stroke-width="3.5"/>
 
-  <!-- Hard shadow offset (neo-brutalist) -->
-  <g transform="translate(3,3)">
-    <!-- Left page -->
-    <path d="M 8 18 L 30 22 L 30 50 L 8 46 Z" fill="#000"/>
-    <!-- Right page -->
-    <path d="M 56 18 L 34 22 L 34 50 L 56 46 Z" fill="#000"/>
-    <!-- Spine -->
-    <path d="M 30 22 L 32 20 L 34 22 L 34 50 L 32 52 L 30 50 Z" fill="#000"/>
+  <rect x="10" y="12" width="108" height="108" rx="24" fill="#000" opacity="0.32" filter="url(#soft)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#bg)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#sheen)"/>
+  <circle cx="64" cy="50" r="46" fill="url(#glow)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="none" stroke="#0B0B12" stroke-width="7"/>
+
+  <!-- shadow -->
+  <g transform="translate(6,7)" opacity="0.32" filter="url(#soft)">
+    <path d="M 16 40 C 30 34 48 36 62 44 L 62 96 C 48 88 30 86 16 92 Z" fill="#000"/>
+    <path d="M 112 40 C 98 34 80 36 66 44 L 66 96 C 80 88 98 86 112 92 Z" fill="#000"/>
   </g>
 
-  <!-- Foreground book (white pages, black outline) -->
-  <!-- Left page -->
-  <path d="M 8 18 L 30 22 L 30 50 L 8 46 Z" fill="#fff" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
-  <!-- Right page -->
-  <path d="M 56 18 L 34 22 L 34 50 L 56 46 Z" fill="#fff" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
-  <!-- Spine (center, slightly darker) -->
-  <path d="M 30 22 L 32 20 L 34 22 L 34 50 L 32 52 L 30 50 Z" fill="#f0ede6" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- pages -->
+  <path d="M 16 40 C 30 34 48 36 62 44 L 62 96 C 48 88 30 86 16 92 Z"
+        fill="url(#pageL)" stroke="#0B0B12" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M 112 40 C 98 34 80 36 66 44 L 66 96 C 80 88 98 86 112 92 Z"
+        fill="url(#pageR)" stroke="#0B0B12" stroke-width="7" stroke-linejoin="round"/>
+  <!-- spine -->
+  <path d="M 62 44 L 66 44 L 66 96 L 62 96 Z" fill="#0B0B12" opacity="0.85"/>
 
-  <!-- Text lines on left page -->
-  <line x1="13" y1="27" x2="25" y2="29" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="13" y1="32" x2="25" y2="34" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="13" y1="37" x2="25" y2="39" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="13" y1="42" x2="22" y2="43" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <!-- text lines -->
+  <g stroke="#0B0B12" stroke-width="5" stroke-linecap="round" opacity="0.85">
+    <line x1="26" y1="54" x2="52" y2="59"/>
+    <line x1="26" y1="66" x2="52" y2="71"/>
+    <line x1="26" y1="78" x2="44" y2="82"/>
+    <line x1="76" y1="59" x2="102" y2="54"/>
+    <line x1="76" y1="71" x2="102" y2="66"/>
+    <line x1="76" y1="82" x2="94" y2="78"/>
+  </g>
 
-  <!-- Text lines on right page -->
-  <line x1="39" y1="29" x2="51" y2="27" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="39" y1="34" x2="51" y2="32" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="39" y1="39" x2="51" y2="37" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-  <line x1="39" y1="44" x2="48" y2="43" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <!-- ribbon -->
+  <path d="M 84 32 L 94 30 L 94 60 L 89 55 L 84 60 Z"
+        fill="url(#ribbon)" stroke="#0B0B12" stroke-width="6" stroke-linejoin="round"/>
 
-  <!-- Bookmark ribbon (yellow accent) -->
-  <path d="M 44 18 L 48 18 L 48 30 L 46 28 L 44 30 Z" fill="#FFDE59" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M 26 14 C 42 9 60 9 74 13" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
 </svg>

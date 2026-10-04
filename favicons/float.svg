@@ -1,45 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Float Suite: portal favicon. Composite of the three app glyphs. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Float Suite: the same 2x2 grid of app marks as the original, unified on a
+       neutral gradient tile with one shared highlight. -->
   <defs>
-    <style>
-      .stroke{fill:none;stroke:#000;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
-      .fill{stroke:#000;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
-    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBFAF7"/>
+      <stop offset="0.5" stop-color="#F1F0EC"/>
+      <stop offset="1" stop-color="#DEDDD6"/>
+    </linearGradient>
+    <linearGradient id="paint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE98A"/><stop offset="1" stop-color="#F5B921"/>
+    </linearGradient>
+    <linearGradient id="inkling" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFC2EC"/><stop offset="1" stop-color="#E847B4"/>
+    </linearGradient>
+    <linearGradient id="thesis" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6BA6F5"/><stop offset="1" stop-color="#14448A"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A3A46"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.35" r="0.6">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
   </defs>
-  <!-- Background -->
-  <rect x="0" y="0" width="64" height="64" fill="#f0ede6"/>
-  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#000" stroke-width="3.5"/>
-  <!-- Three mini cards in a 2x2 grid (top-right is the "F" mark) -->
-  <!-- Paint (top-left, yellow) -->
-  <g transform="translate(6,6) scale(0.45)">
-    <rect x="0" y="0" width="44" height="44" fill="#FFDE59" stroke="#000" stroke-width="4"/>
-    <path d="M14 30 L26 18 L34 26 L22 38 Z" fill="#000"/>
-    <rect x="28" y="10" width="10" height="10" transform="rotate(45 33 15)" fill="#000"/>
+
+  <rect x="10" y="12" width="108" height="108" rx="24" fill="#000" opacity="0.25" filter="url(#soft)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#bg)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#sheen)"/>
+  <circle cx="64" cy="44" r="52" fill="url(#glow)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="none" stroke="#0B0B12" stroke-width="7"/>
+
+  <!-- tile shadows -->
+  <g opacity="0.22" filter="url(#soft)" fill="#000">
+    <rect x="22" y="26" width="42" height="42" rx="10" transform="translate(4,4)"/>
+    <rect x="70" y="26" width="42" height="42" rx="10" transform="translate(4,4)"/>
+    <rect x="22" y="74" width="42" height="42" rx="10" transform="translate(4,4)"/>
+    <rect x="70" y="74" width="42" height="42" rx="10" transform="translate(4,4)"/>
   </g>
-  <!-- Inkling (top-right, pink) -->
-  <g transform="translate(34,6) scale(0.45)">
-    <rect x="0" y="0" width="44" height="44" fill="#FF90E8" stroke="#000" stroke-width="4"/>
-    <!-- Mini squid silhouette -->
-    <path d="M22 8 C30 8 33 14 33 22 C33 26 31 28 31 30 C31 30 33 32 33 35 C33 38 30 38 28 36 C27 38 25 38 24 36 C23 38 21 38 20 36 C18 38 15 38 15 35 C15 32 17 30 17 30 C17 28 15 26 15 22 C15 14 14 8 22 8 Z" fill="#000"/>
-    <circle cx="19" cy="20" r="2" fill="#FF90E8"/>
-    <circle cx="25" cy="20" r="2" fill="#FF90E8"/>
+
+  <!-- Paint -->
+  <rect x="20" y="22" width="42" height="42" rx="10" fill="url(#paint)" stroke="#0B0B12" stroke-width="5"/>
+  <g transform="rotate(-45 41 43)">
+    <rect x="38" y="28" width="6" height="14" rx="3" fill="#0B0B12"/>
+    <rect x="35.5" y="41" width="11" height="7" rx="1.5" fill="#FFFFFF" stroke="#0B0B12" stroke-width="2.5"/>
+    <path d="M 36.5 48 L 45.5 48 C 45 53 44.5 55 41 58 C 37.5 55 37 53 36.5 48 Z" fill="#FF3355" stroke="#0B0B12" stroke-width="2.5" stroke-linejoin="round"/>
   </g>
-  <!-- Thesis (bottom-left, blue) -->
-  <g transform="translate(6,34) scale(0.45)">
-    <rect x="0" y="0" width="44" height="44" fill="#2D7DD2" stroke="#000" stroke-width="4"/>
-    <!-- Open book -->
-    <path d="M8 14 L22 16 L22 34 L8 32 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
-    <path d="M36 14 L22 16 L22 34 L36 32 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
-    <line x1="11" y1="20" x2="18" y2="21" stroke="#000" stroke-width="1.5"/>
-    <line x1="11" y1="24" x2="18" y2="25" stroke="#000" stroke-width="1.5"/>
-    <line x1="11" y1="28" x2="18" y2="29" stroke="#000" stroke-width="1.5"/>
-    <line x1="26" y1="21" x2="33" y2="20" stroke="#000" stroke-width="1.5"/>
-    <line x1="26" y1="25" x2="33" y2="24" stroke="#000" stroke-width="1.5"/>
-    <line x1="26" y1="29" x2="33" y2="28" stroke="#000" stroke-width="1.5"/>
-  </g>
-  <!-- "F" mark (bottom-right, dark) -->
-  <g transform="translate(34,34) scale(0.45)">
-    <rect x="0" y="0" width="44" height="44" fill="#000" stroke="#000" stroke-width="4"/>
-    <text x="22" y="34" font-family="Arial Black, sans-serif" font-size="32" font-weight="900" fill="#FFDE59" text-anchor="middle">F</text>
-  </g>
+
+  <!-- Inkling -->
+  <rect x="68" y="22" width="42" height="42" rx="10" fill="url(#inkling)" stroke="#0B0B12" stroke-width="5"/>
+  <path d="M 89 30 C 96 30 99 36 99 43 C 99 47 97 49 97 51 C 97 51 99 53 99 56
+           C 99 59 96 59 94 57 C 93 59 91 59 90 57 C 88 59 85 59 84 56
+           C 83 59 80 58 80 56 C 80 53 82 51 82 51 C 82 49 81 47 81 43
+           C 81 36 82 30 89 30 Z" fill="#0B0B12"/>
+  <circle cx="86" cy="41" r="2.4" fill="#FFC2EC"/>
+  <circle cx="93" cy="41" r="2.4" fill="#FFC2EC"/>
+
+  <!-- Thesis -->
+  <rect x="20" y="70" width="42" height="42" rx="10" fill="url(#thesis)" stroke="#0B0B12" stroke-width="5"/>
+  <path d="M 27 80 L 41 82 L 41 102 L 27 100 Z" fill="#FFFFFF" stroke="#0B0B12" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M 55 80 L 41 82 L 41 102 L 55 100 Z" fill="#EAF1FB" stroke="#0B0B12" stroke-width="3.5" stroke-linejoin="round"/>
+  <line x1="30" y1="87" x2="38" y2="88.5" stroke="#0B0B12" stroke-width="2.6" stroke-linecap="round"/>
+  <line x1="30" y1="93" x2="38" y2="94.5" stroke="#0B0B12" stroke-width="2.6" stroke-linecap="round"/>
+  <line x1="44" y1="88.5" x2="52" y2="87" stroke="#0B0B12" stroke-width="2.6" stroke-linecap="round"/>
+  <line x1="44" y1="94.5" x2="52" y2="93" stroke="#0B0B12" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- F mark -->
+  <rect x="68" y="70" width="42" height="42" rx="10" fill="url(#mark)" stroke="#0B0B12" stroke-width="5"/>
+  <text x="89" y="103" font-family="Arial Black, DejaVu Sans, sans-serif" font-size="30" font-weight="900" fill="#FFDE59" text-anchor="middle">F</text>
+
+  <path d="M 26 14 C 42 9 60 9 74 13" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
 </svg>

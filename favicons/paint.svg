@@ -1,35 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Paint.web: yellow background, black paint brush, neo-brutalist. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Paint.web: paint brush on a warm gradient tile. Same iconography as the
+       original (diagonal brush, ferrule, tip, drip), drawn with depth. -->
   <defs>
-    <style>
-      .stroke{fill:none;stroke:#000;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}
-    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE98A"/>
+      <stop offset="0.55" stop-color="#FFDE59"/>
+      <stop offset="1" stop-color="#F5B921"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF6B7F"/>
+      <stop offset="0.5" stop-color="#FF3355"/>
+      <stop offset="1" stop-color="#C8103E"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.45" stop-color="#E8ECF2"/>
+      <stop offset="1" stop-color="#A8B2C0"/>
+    </linearGradient>
+    <linearGradient id="bristle" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#FF6B7F"/>
+      <stop offset="0.55" stop-color="#FF3355"/>
+      <stop offset="1" stop-color="#A30D34"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.5"/>
+      <stop offset="0.6" stop-color="#FFFFFF" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
   </defs>
-  <!-- Background -->
-  <rect x="0" y="0" width="64" height="64" fill="#FFDE59"/>
-  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#000" stroke-width="3.5"/>
-  <!-- Hard shadow offset (neo-brutalist) -->
-  <g transform="translate(3,3)">
-    <!-- Brush handle (diagonal) -->
-    <rect x="34" y="6" width="8" height="36" transform="rotate(45 38 24)" fill="#000"/>
-    <!-- Ferrule (metal band) -->
-    <rect x="22" y="28" width="14" height="6" transform="rotate(45 29 31)" fill="#fff" stroke="#000" stroke-width="3"/>
-    <!-- Brush tip (the painting end) -->
-    <path d="M 12 44 L 22 36 L 28 42 L 18 52 Z" fill="#000"/>
-    <!-- Paint drip -->
-    <circle cx="14" cy="54" r="3" fill="#000"/>
-    <!-- Paint dab on the bristles -->
-    <ellipse cx="20" cy="46" rx="3" ry="2" fill="#FF3355" transform="rotate(45 20 46)"/>
+
+  <!-- tile -->
+  <rect x="10" y="12" width="108" height="108" rx="24" fill="#000" opacity="0.28" filter="url(#soft)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#bg)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#sheen)"/>
+  <circle cx="44" cy="38" r="42" fill="url(#glow)"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="none" stroke="#0B0B12" stroke-width="7"/>
+
+  <!-- soft cast shadow of the brush -->
+  <g transform="translate(6,7)" opacity="0.35" filter="url(#soft)" fill="#000">
+    <rect x="55" y="14" width="18" height="46" rx="9" transform="rotate(-45 64 64)"/>
+    <path d="M 54 76 L 74 76 C 72 92 70 100 64 108 C 58 100 56 92 54 76 Z" transform="rotate(-45 64 64)"/>
   </g>
-  <!-- Foreground (same shapes, no offset) -->
-  <!-- Brush handle -->
-  <rect x="34" y="6" width="8" height="36" transform="rotate(45 38 24)" fill="#FF3355" stroke="#000" stroke-width="3.5"/>
-  <!-- Ferrule -->
-  <rect x="22" y="28" width="14" height="6" transform="rotate(45 29 31)" fill="#fff" stroke="#000" stroke-width="3.5"/>
-  <!-- Brush tip -->
-  <path d="M 12 44 L 22 36 L 28 42 L 18 52 Z" fill="#000" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
-  <!-- Paint drip -->
-  <circle cx="14" cy="54" r="3" fill="#000"/>
-  <!-- Highlight on handle -->
-  <line x1="36" y1="14" x2="44" y2="22" stroke="#fff" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- brush: drawn upright then rotated, so the silhouette stays clean -->
+  <g transform="rotate(-45 64 64)">
+    <rect x="55" y="12" width="18" height="48" rx="9" fill="url(#handle)" stroke="#0B0B12" stroke-width="7"/>
+    <line x1="61" y1="20" x2="61" y2="46" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+    <rect x="51" y="58" width="26" height="19" rx="3" fill="url(#metal)" stroke="#0B0B12" stroke-width="7"/>
+    <line x1="55" y1="66" x2="73" y2="66" stroke="#0B0B12" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
+    <path d="M 54 77 L 74 77 C 72 93 70 101 64 109 C 58 101 56 93 54 77 Z"
+          fill="url(#bristle)" stroke="#0B0B12" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M 58 84 C 60 92 61 98 64 104" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+  </g>
+
+  <!-- paint drip that fell off the tip -->
+  <circle cx="26" cy="104" r="9" fill="#0B0B12"/>
+  <circle cx="24" cy="101" r="3" fill="#FFFFFF" opacity="0.35"/>
+
+  <!-- sheen on the tile -->
+  <path d="M 26 12 C 42 8 60 8 74 12" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
 </svg>
