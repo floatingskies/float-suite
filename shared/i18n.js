@@ -295,7 +295,7 @@
       'thesis.toast_image_required':'Pick a file or enter a URL','thesis.toast_url_required':'URL required',
       'thesis.footnote_sample':'Footnote text.',
       'notes.title':'Notebase','notes.tagline':'Local-first Markdown knowledge base',
-      'notes.search_placeholder':'Search notes…','notes.new_note':'New Note','notes.daily':'Daily Note',
+      'notes.search_placeholder':'Search notes…','notes.new_note':'New Note','notes.daily':'Daily Note','notes.all_notes':'All notes','notes.root':'Root','notes.folders':'Folders','notes.prompt_folder':'New folder path (use / for subfolders):','notes.delete_folder':'Remove folder',
       'notes.pinned':'Pinned','notes.tags':'Tags','notes.backlinks':'Backlinks','notes.no_backlinks':'No backlinks yet',
       'notes.none':'Nothing here yet. Create your first note.','notes.untitled':'Untitled',
       'notes.title_placeholder':'Note title…','notes.edit':'Edit','notes.split':'Split','notes.preview':'Preview',

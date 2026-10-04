@@ -104,7 +104,7 @@ function buildMenu(){
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Float Suite',
-              message: 'Float Suite 5.1',
+              message: 'Float Suite 5.2',
               detail: 'Offline-first creative & academic suite.\n\nPaint.web · Inkling · Thesis\n\n© 2025 Arik Closs Novais',
               buttons: ['OK'],
               icon: path.join(__dirname, '..', 'favicons', 'float-512.png')

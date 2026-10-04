@@ -121,6 +121,40 @@ transition:none;
     font-family:var(--font-ui);
   }
   .note-title-input::placeholder{ color:var(--c-muted); }
+  .note-folder-select{
+    font-family:var(--font-ui);font-size:11px;background:var(--c-bg);
+    border:var(--bw-sm) solid var(--c-border);color:var(--c-text);
+    padding:4px 6px;max-width:170px;
+  }
+  .folders-section{
+    border-bottom:var(--bw-sm) solid var(--c-border);
+    padding:8px 10px;max-height:200px;overflow-y:auto;
+  }
+  .folders-head{
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--font-ui);font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:1px;color:var(--c-muted);
+    margin-bottom:6px;
+  }
+  .folders-head button{
+    background:none;border:none;cursor:pointer;color:var(--c-muted);padding:2px 4px;
+  }
+  .folders-head button:hover{ color:var(--notes-accent); }
+  .folder-list{ display:flex;flex-direction:column;gap:2px; }
+  .folder-item{
+    display:flex;align-items:center;gap:7px;width:100%;
+    background:none;border:none;cursor:pointer;text-align:left;
+    font-family:var(--font-ui);font-size:12px;color:var(--c-text);
+    padding:4px 10px;
+  }
+  .folder-item:hover{ background:var(--c-surface2); }
+  .folder-item.active{ background:var(--notes-accent);color:#fff; }
+  .folder-item .fi-name{ flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .folder-item .fi-count{ font-size:10px;opacity:.7; }
+  .folder-item .folder-del{ opacity:0;font-size:14px;line-height:1;padding:0 2px; }
+  .folder-item:hover .folder-del{ opacity:.8; }
+  .folder-item .folder-del:hover{ color:var(--c-danger); opacity:1; }
+  .folder-item.active .folder-del:hover{ color:#fff; }
   .view-toggle{ display:flex;gap:4px; }
   .view-btn{
     background:var(--c-bg);border:var(--bw-sm) solid var(--c-border);
@@ -294,6 +328,13 @@ transition:none;
       <i class="fa-solid fa-magnifying-glass"></i>
       <input type="text" id="note-search" autocomplete="off" data-i18n="notes.search_placeholder" placeholder="Search notes…">
     </div>
+    <div class="folders-section">
+      <div class="folders-head">
+        <span data-i18n="notes.folders">Folders</span>
+        <button id="btn-new-folder" title="New folder"><i class="fa-solid fa-folder-plus"></i></button>
+      </div>
+      <div id="folder-list" class="folder-list"></div>
+    </div>
     <div class="sidebar-scroll">
       <div id="note-list" class="note-list"></div>
       <div id="backlinks" class="backlinks"></div>
@@ -311,6 +352,7 @@ transition:none;
     <div id="editor-shell" style="display:none;flex:1;min-height:0">
       <div class="note-header">
         <input type="text" id="note-title" class="note-title-input" autocomplete="off" spellcheck="false">
+        <select id="note-folder" class="note-folder-select" title="Folder"></select>
         <div class="view-toggle">
           <button id="view-edit" class="view-btn" title="Edit"><i class="fa-solid fa-pen"></i></button>
           <button id="view-split" class="view-btn active" title="Split"><i class="fa-solid fa-columns"></i></button>
@@ -397,10 +439,13 @@ transition:none;
       this._renderTimer = null;
       this._deleting = null;
       this._cmdsRegistered = false;
+      this.folderFilter = '__all__';
+      this.folders = [];
     }
 
     init(){
       this.loadNotes();
+      this.loadFolders();
       this.bindUI();
       this.bindHUD();
       Float.initModals();
@@ -431,10 +476,31 @@ transition:none;
           body: I.t('notes.welcome_body'),
           created: now,
           modified: now,
-          pinned: true
+          pinned: true,
+          folder: ''
         });
         this.persist(false);
       }
+      this.notes.forEach(n => { if(typeof n.folder !== 'string') n.folder = ''; });
+    }
+
+    loadFolders(){
+      try{
+        const raw = localStorage.getItem('notebase_folders');
+        this.folders = raw ? JSON.parse(raw) : [];
+      }catch(e){ this.folders = []; }
+      if(!Array.isArray(this.folders)) this.folders = [];
+      this.folders = this.folders.filter(f => typeof f === 'string' && f.trim() !== '');
+    }
+
+    saveFolders(){
+      try{ localStorage.setItem('notebase_folders', JSON.stringify(this.folders)); }catch(e){}
+    }
+
+    allFolders(){
+      const set = new Set(this.folders);
+      this.notes.forEach(n => { if(n.folder) set.add(n.folder); });
+      return Array.from(set).sort();
     }
 
     persist(quiet){
@@ -478,6 +544,8 @@ transition:none;
       if(title.value !== a.title || document.activeElement !== title) title.value = a.title;
       if(body.value !== a.body || document.activeElement !== body) body.value = a.body;
       title.setAttribute('placeholder', I.t('notes.title_placeholder'));
+      const folderSel = $('#note-folder');
+      if(folderSel && folderSel.value !== a.folder) folderSel.value = a.folder || '';
     }
 
     applyView(){
@@ -493,15 +561,45 @@ transition:none;
     renderAll(){
       this.refreshActive();
       this.renderNoteList();
+      this.renderFolders();
       this.renderBacklinks();
       this.renderPreview();
       this.updateCounts();
+    }
+
+    renderFolders(){
+      const box = $('#folder-list');
+      if(!box) return;
+      const folders = this.allFolders();
+      let html = '<button class="folder-item' + (this.folderFilter === '__all__' ? ' active' : '') + '" data-folder="__all__"><i class="fa-solid fa-layer-group"></i><span class="fi-name">' + I.t('notes.all_notes') + '</span><span class="fi-count">' + this.notes.length + '</span></button>';
+      const countIn = f => this.notes.filter(n => f === '' ? !n.folder : (n.folder === f || n.folder.startsWith(f + '/'))).length;
+      html += '<button class="folder-item' + (this.folderFilter === '' ? ' active' : '') + '" data-folder=""><i class="fa-solid fa-house"></i><span class="fi-name">' + I.t('notes.root') + '</span><span class="fi-count">' + countIn('') + '</span></button>';
+      for(const f of folders){
+        const depth = f.split('/').length - 1;
+        const leaf = f.split('/').pop();
+        html += '<button class="folder-item' + (this.folderFilter === f ? ' active' : '') + '" data-folder="' + this.esc(f) + '" style="padding-left:' + (10 + depth * 14) + 'px">' +
+                '<i class="fa-solid fa-folder"></i><span class="fi-name">' + this.esc(leaf) + '</span>' +
+                '<span class="fi-count">' + countIn(f) + '</span>' +
+                '<span class="folder-del" data-del="' + this.esc(f) + '" title="' + I.t('notes.delete_folder') + '">×</span>' +
+                '</button>';
+      }
+      box.innerHTML = html;
+      const sel = $('#note-folder');
+      if(sel){
+        const cur = sel.value;
+        sel.innerHTML = '<option value="">' + I.t('notes.root') + '</option>' + folders.map(f => '<option value="' + this.esc(f) + '">' + this.esc(f) + '</option>').join('');
+        sel.value = cur;
+      }
     }
 
     renderNoteList(){
       const list = $('#note-list');
       const q = this.search.toLowerCase();
       let notes = this.notes.filter(n => {
+        if(this.folderFilter === ''){ if(n.folder) return false; }
+        else if(this.folderFilter !== '__all__'){
+          if(n.folder !== this.folderFilter && !n.folder.startsWith(this.folderFilter + '/')) return false;
+        }
         if(!q) return true;
         return (n.title + '\n' + n.body).toLowerCase().includes(q);
       });
@@ -723,7 +821,7 @@ transition:none;
     /* ---- Note actions --------------------------------------------------- */
     createNote(title){
       const now = new Date().getTime();
-      const n = {id: uid(), title: title || I.t('notes.untitled'), body: '', created: now, modified: now, pinned: false};
+      const n = {id: uid(), title: title || I.t('notes.untitled'), body: '', created: now, modified: now, pinned: false, folder: this.folderFilter === '__all__' ? '' : this.folderFilter};
       this.notes.push(n);
       this.persist(true);
       this.openNote(n.id);
@@ -964,6 +1062,45 @@ transition:none;
 
       $('#note-title').addEventListener('input', () => this.onTitleInput());
       $('#note-body').addEventListener('input', () => this.onBodyInput());
+
+      const noteFolder = $('#note-folder');
+      if(noteFolder) noteFolder.addEventListener('change', () => {
+        const a = this.active();
+        if(!a) return;
+        a.folder = noteFolder.value;
+        a.modified = Date.now();
+        this.persist(true);
+        this.renderAll();
+      });
+
+      const btnNewFolder = $('#btn-new-folder');
+      if(btnNewFolder) btnNewFolder.addEventListener('click', () => {
+        const name = prompt(I.t('notes.prompt_folder'), '');
+        if(!name) return;
+        const path = name.trim().replace(/^\/+|\/+$/g, '');
+        if(!path) return;
+        if(!this.folders.includes(path)){ this.folders.push(path); this.saveFolders(); }
+        this.folderFilter = path;
+        this.renderAll();
+      });
+
+      const folderList = $('#folder-list');
+      if(folderList) folderList.addEventListener('click', e => {
+        const del = e.target.closest('.folder-del');
+        if(del){
+          e.stopPropagation();
+          const f = del.dataset.del;
+          this.notes.forEach(n => { if(n.folder === f || n.folder.startsWith(f + '/')) n.folder = ''; });
+          this.folders = this.folders.filter(x => x !== f && !x.startsWith(f + '/'));
+          this.saveFolders();
+          this.persist(true);
+          if(this.folderFilter === f || (typeof this.folderFilter === 'string' && this.folderFilter.startsWith(f + '/'))) this.folderFilter = '__all__';
+          this.renderAll();
+          return;
+        }
+        const item = e.target.closest('.folder-item');
+        if(item){ this.folderFilter = item.dataset.folder; this.renderAll(); }
+      });
 
       $('#note-list').addEventListener('click', e => {
         const pin = e.target.closest('.ni-pin');

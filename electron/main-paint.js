@@ -48,7 +48,7 @@ function buildMenu(){
     { label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
     { label: 'View', submenu: [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }] },
     { label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, { type: 'separator' }, { role: 'front' }] },
-    { label: 'Help', submenu: [{ label: 'About Paint.web', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Paint.web', message: 'Paint.web 5.1', detail: 'Raster paint studio: Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'paint-512.png') }); } }] }
+    { label: 'Help', submenu: [{ label: 'About Paint.web', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Paint.web', message: 'Paint.web 5.2', detail: 'Raster paint studio: Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'paint-512.png') }); } }] }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
