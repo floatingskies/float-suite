@@ -494,6 +494,22 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
 
+/* ----- Custom scrollbars ---------------------------------------------- */
+/* The default scrollbar chrome (arrows, double buttons, glow) is replaced by
+   a single square neo-brutalist bar that matches the rest of the UI. */
+*{ scrollbar-width:thin; scrollbar-color:var(--c-border) var(--c-surface2); }
+::-webkit-scrollbar{ width:14px; height:14px; background:var(--c-surface2); }
+::-webkit-scrollbar-track{ background:var(--c-surface2); border-left:2px solid var(--c-border); }
+::-webkit-scrollbar-thumb{
+  background:var(--c-primary);
+  border:2px solid var(--c-border);
+  min-height:40px;
+}
+::-webkit-scrollbar-thumb:hover{ background:var(--c-text); }
+::-webkit-scrollbar-corner{ background:var(--c-surface2); }
+::-webkit-scrollbar-button{ display:none; width:0; height:0; }
+textarea, .note-body, .paper, [contenteditable="true"]{ scrollbar-width:thin; }
+
 /* ----- Reduced motion ------------------------------------------------- */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{

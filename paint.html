@@ -22,8 +22,8 @@
 :root{
   --header-h:50px;
   --menu-h:32px;
-  --sidebar-w:62px;
-  --right-w:240px;
+  --sidebar-w:74px;
+  --right-w:300px;
   --bottom-h:140px;
 }
 html,body{height:100%;overflow:hidden}
@@ -166,13 +166,13 @@ body{display:flex;flex-direction:column}
 .export-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 @media (max-width:900px){
-  :root{--right-w:200px;--bottom-h:120px}
-  .swatches-section{width:200px}
+  :root{--right-w:250px;--bottom-h:120px;--sidebar-w:66px}
+  .swatches-section{width:220px}
 }
 @media (max-width:680px){
   .right-panel,.swatches-section{display:none}
-  :root{--sidebar-w:52px}
-  .tool-btn{width:38px;height:38px;font-size:12px}
+  :root{--sidebar-w:60px}
+  .tool-btn{width:40px;height:40px;font-size:12px}
 }
 </style>
 </head>
