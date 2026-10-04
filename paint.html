@@ -1206,24 +1206,25 @@ body{display:flex;flex-direction:column}
         if(e.code === 'Space'){ spaceHeld = false; vp.style.cursor = this.toolCursor(this.tool); }
       });
 
-      // Middle mouse pan
-      vp.addEventListener('mousedown', e => {
-        if(e.button === 1 || spaceHeld){
+      // Middle mouse, space+drag or the hand tool pans the view. The pan offset
+      // is applied to the wrapper transform, and getCoords() reads the
+      // transformed bounding rect, so the brush always stays under the cursor.
+      vp.addEventListener('pointerdown', e => {
+        if(e.button === 1 || spaceHeld || this.tool === 'pan-layer'){
           isPanning = true;
           panStart = {x:e.clientX, y:e.clientY, panX:this.panX, panY:this.panY};
           vp.style.cursor = 'grabbing';
-          e.preventDefault();
+          if(e.cancelable) e.preventDefault();
         }
+      }, true);
+      window.addEventListener('pointermove', e => {
+        if(!isPanning) return;
+        this.panX = panStart.panX + (e.clientX - panStart.x);
+        this.panY = panStart.panY + (e.clientY - panStart.y);
+        this.updateTransform();
+        this.showPanIndicator();
       });
-      window.addEventListener('mousemove', e => {
-        if(isPanning){
-          this.panX = panStart.panX + (e.clientX - panStart.x);
-          this.panY = panStart.panY + (e.clientY - panStart.y);
-          this.updateTransform();
-          this.showPanIndicator();
-        }
-      });
-      window.addEventListener('mouseup', () => {
+      window.addEventListener('pointerup', () => {
         if(isPanning){ isPanning = false; vp.style.cursor = this.toolCursor(this.tool); }
       });
 
@@ -1235,6 +1236,7 @@ body{display:flex;flex-direction:column}
 
     onPointerDown(e){
       if(e.button !== 0) return;
+      if(this.tool === 'pan-layer') return;
       // Stylus pressure (defaults to 1 for mouse/finger)
       this._pressureScale = (e.pointerType === 'pen' && e.pressure > 0) ? Math.max(0.05, e.pressure) : 1;
       const layer = this.getLayer();
@@ -1320,8 +1322,7 @@ body{display:flex;flex-direction:column}
           this.snapshot = layer.ctx.getImageData(0, 0, this.width, this.height);
           break;
         case 'move':
-        case 'pan-layer':
-          // Move layer content
+          // Move layer content (the hand tool pans the view instead)
           this._layerStart = {x:sc.x, y:sc.y, ox:layer.offsetX, oy:layer.offsetY};
           break;
       }
@@ -1433,7 +1434,6 @@ body{display:flex;flex-direction:column}
           this.updateSelectionOverlay();
           break;
         case 'move':
-        case 'pan-layer':
           if(this._layerStart){
             layer.offsetX = this._layerStart.ox + (sc.x - this._layerStart.x);
             layer.offsetY = this._layerStart.oy + (sc.y - this._layerStart.y);
@@ -1491,7 +1491,6 @@ body{display:flex;flex-direction:column}
           this.cropCanvas();
           break;
         case 'move':
-        case 'pan-layer':
           this.history.save('Move layer');
           this._layerStart = null;
           break;

@@ -23,7 +23,7 @@
   --header-h:50px;
   --menu-h:32px;
   --toolbar-w:54px;
-  --right-w:280px;
+  --right-w:300px;
   --footer-h:24px;
 }
 html,body{height:100%;overflow:hidden}
@@ -94,6 +94,9 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 .layer-row.active{background:var(--c-pink);color:#000}
 .layer-row .vis{cursor:pointer;font-size:11px}
 .layer-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-row .layer-del{opacity:0;cursor:pointer;font-size:11px;padding:2px 4px;color:var(--c-danger)}
+.layer-row:hover .layer-del{opacity:.9}
+.layer-row .layer-del:hover{color:var(--c-danger);font-weight:700}
 
 /* Assets */
 .shape-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
@@ -114,7 +117,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 /* Modal */
 .export-modal-section{margin-top:14px;padding-top:14px;border-top:1px dashed var(--c-border)}
 
-@media(max-width:900px){:root{--right-w:240px}}
+@media(max-width:900px){:root{--right-w:260px}}
 @media(max-width:680px){
   #properties{display:none}
   .header-center{display:none}
@@ -406,6 +409,15 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 
       this.tool = 'select';
       this.selectedIds = new Set();
+      // Brush defaults: every drawing tool uses these, and the property
+      // panel edits them live so changes apply to the next stroke instantly.
+      this.brush = {
+        stroke: '#000000',
+        width: 3,
+        fill: '#FF90E8',
+        fillOpacity: 100,
+        opacity: 100
+      };
       this.isDrawing = false;
       this.isDragging = false;
       this.startPos = null;
@@ -620,21 +632,45 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       this.centerView();
     }
 
+    // Panning is applied as a translate on the artboard container, so the
+    // cursor and the drawing stay aligned (SVG coords come from getScreenCTM).
+    updateViewTransform(){
+      this.container.style.transform =
+        `translate(calc(-50% + ${this.panX || 0}px), calc(-50% + ${this.panY || 0}px)) scale(${this.zoom})`;
+      this.renderRulers();
+    }
+    startPan(e){
+      this.isPanning = true;
+      this.panStart = {x:e.clientX, y:e.clientY, panX:this.panX || 0, panY:this.panY || 0};
+      if(this.viewport) this.viewport.style.cursor = 'grabbing';
+      if(e.cancelable) e.preventDefault();
+    }
+    applyPan(e){
+      if(!this.panStart) return;
+      this.panX = this.panStart.panX + (e.clientX - this.panStart.x);
+      this.panY = this.panStart.panY + (e.clientY - this.panStart.y);
+      this.updateViewTransform();
+    }
+    endPan(){
+      if(!this.isPanning) return;
+      this.isPanning = false;
+      this.panStart = null;
+      if(this.viewport) this.viewport.style.cursor = '';
+    }
+
     setZoom(z){
       this.zoom = clamp(z, 0.05, 32);
-      this.container.style.transform = `translate(-50%, -50%) scale(${this.zoom})`;
+      this.updateViewTransform();
       $('#sb-zoom').textContent = Math.round(this.zoom * 100) + '%';
-      this.renderRulers();
     }
 
     centerView(){
       const vp = this.viewport;
       const vw = vp.clientWidth, vh = vp.clientHeight;
-      const z = Math.min(vw / this.artW, vh / this.artH) * 0.85;
-      this.zoom = z;
-      this.container.style.transform = `translate(-50%, -50%) scale(${this.zoom})`;
+      this.zoom = Math.min(vw / this.artW, vh / this.artH) * 0.85;
+      this.panX = 0; this.panY = 0;
+      this.updateViewTransform();
       $('#sb-zoom').textContent = Math.round(this.zoom * 100) + '%';
-      this.renderRulers();
     }
 
     toggleRulers(){
@@ -775,9 +811,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       if(e.button !== 0 && e.button !== 1) return;
       // Hand tool pans
       if(this.tool === 'hand' || e.button === 1 || e.altKey){
-        this.isPanning = true;
-        this.panStart = {x:e.clientX, y:e.clientY, panX:this.panX, panY:this.panY};
-        e.preventDefault();
+        this.startPan(e);
         return;
       }
 
@@ -822,8 +856,9 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
           this.freehandPts = [sp];
           this.currentEl = document.createElementNS(NS, 'path');
           this.currentEl.setAttribute('fill', 'none');
-          this.currentEl.setAttribute('stroke', '#000');
-          this.currentEl.setAttribute('stroke-width', '3');
+          this.currentEl.setAttribute('stroke', this.brush.stroke);
+          this.currentEl.setAttribute('stroke-width', this.brush.width);
+          this.currentEl.setAttribute('opacity', this.brush.opacity / 100);
           this.currentEl.setAttribute('stroke-linecap', 'round');
           this.currentEl.setAttribute('stroke-linejoin', 'round');
           this.currentEl.classList.add('vel');
@@ -844,9 +879,12 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
         case 'arrow':
           this.isDrawing = true;
           this.currentEl = this.createShapeElement(this.tool, sp);
-          this.currentEl.setAttribute('fill', '#FF90E8');
-          this.currentEl.setAttribute('stroke', '#000');
-          this.currentEl.setAttribute('stroke-width', '2');
+          this.currentEl.setAttribute('fill', this.tool === 'line' ? 'none' : this.brush.fill);
+          this.currentEl.setAttribute('fill-opacity', this.brush.fillOpacity / 100);
+          this.currentEl.setAttribute('stroke', this.brush.stroke);
+          this.currentEl.setAttribute('stroke-width', this.tool === 'line' ? this.brush.width : Math.max(1, this.brush.width - 1));
+          this.currentEl.setAttribute('opacity', this.brush.opacity / 100);
+          this.currentEl.setAttribute('stroke-linejoin', 'round');
           this.currentEl.classList.add('vel');
           this.currentEl.id = 'el-' + (this._idCounter++);
           this.layer.appendChild(this.currentEl);
@@ -1030,9 +1068,12 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       this.penPoints.push(p);
       if(this.penPoints.length === 1){
         this.penPath = document.createElementNS(NS, 'path');
-        this.penPath.setAttribute('fill', 'none');
-        this.penPath.setAttribute('stroke', '#000');
-        this.penPath.setAttribute('stroke-width', '2');
+        this.penPath.setAttribute('fill', this.brush.fill);
+        this.penPath.setAttribute('fill-opacity', this.brush.fillOpacity / 100);
+        this.penPath.setAttribute('stroke', this.brush.stroke);
+        this.penPath.setAttribute('stroke-width', this.brush.width);
+        this.penPath.setAttribute('opacity', this.brush.opacity / 100);
+        this.penPath.setAttribute('stroke-linejoin', 'round');
         this.penPath.classList.add('vel');
         this.penPath.id = 'el-' + (this._idCounter++);
         this.layer.appendChild(this.penPath);
@@ -1393,6 +1434,29 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       this.saveState('Delete');
     }
 
+    /* Delete one top-level object straight from the layers list */
+    deleteLayer(node){
+      if(!node) return;
+      const id = node.id;
+      node.remove();
+      this.selectedIds.delete(id);
+      this._hiddenIds.delete(id);
+      this.refreshSelectionHighlights();
+      this.updatePropsFromSelection();
+      this.renderLayers();
+      this.saveState('Delete layer');
+    }
+
+    /* The trash button always deletes something: the selection, or the
+       topmost object on the artboard when nothing is selected. */
+    deleteTop(){
+      if(this.selectedIds.size > 0) return this.deleteSelection();
+      const children = Array.from(this.layer.children).filter(c => c.id && c.id !== 'art-rect');
+      const top = children[children.length - 1];
+      if(!top){ toast(I.t('common.no_results'), 'warn', 1200); return; }
+      this.deleteLayer(top);
+    }
+
     /* ---- Clipboard ---- */
     copy(){
       if(this.selectedIds.size === 0) return;
@@ -1613,7 +1677,8 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
           onclick: () => { this.deselect(); this.selectSingle(node); }
         },
           el('span', {class:'vis', onclick:e => { e.stopPropagation(); this.toggleVisible(node); }}, el('i', {class:'fa-solid ' + (this._hiddenIds.has(node.id) ? 'fa-eye-slash' : 'fa-eye')})),
-          el('span', {class:'name'}, node.tagName.toLowerCase() + ' #' + node.id)
+          el('span', {class:'name'}, node.tagName.toLowerCase() + ' #' + node.id),
+          el('span', {class:'layer-del', title:'Delete', onclick:e => { e.stopPropagation(); this.deleteLayer(node); }}, el('i', {class:'fa-solid fa-xmark'}))
         );
         list.appendChild(row);
       });
@@ -1935,6 +2000,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       $('#prop-h').addEventListener('input', e => this.applySizeFromProps());
       $('#prop-rot').addEventListener('input', e => this.applyTransformFromProps());
       $('#prop-fill').addEventListener('input', e => this.applyFill(e.target.value));
+      $('#prop-fill-op').addEventListener('input', e => this.applyFillOp(e.target.value));
       $('#prop-stroke').addEventListener('input', e => this.applyStroke(e.target.value));
       $('#prop-stroke-w').addEventListener('input', e => this.applyStrokeW(e.target.value));
       $('#prop-opacity').addEventListener('input', e => this.applyOpacity(e.target.value));
@@ -1965,7 +2031,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
         this.renderLayers();
       });
       $('#btn-layer-dup').addEventListener('click', () => this.duplicateSelection());
-      $('#btn-layer-del').addEventListener('click', () => this.deleteSelection());
+      $('#btn-layer-del').addEventListener('click', () => this.deleteTop());
       $('#btn-layer-up').addEventListener('click', () => this.bringForward());
       $('#btn-layer-down').addEventListener('click', () => this.sendBackward());
 
@@ -1986,30 +2052,14 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       $('#exp-png').addEventListener('click', () => this.exportPNG());
       $('#exp-pdf').addEventListener('click', () => this.exportPDF());
 
-      // Panning on viewport (middle mouse or alt)
+      // Panning: middle mouse or Alt+drag outside the artboard. The hand tool
+      // starts a pan from the SVG itself (see onStart), so all panning shares
+      // one code path and one panX/panY state.
       this.viewport.addEventListener('pointerdown', e => {
-        if(e.button === 1 || (e.altKey && this.tool !== 'pen')){
-          this.isPanning = true;
-          this.panStart = {x:e.clientX, y:e.clientY, scrollLeft:this.viewport.scrollLeft, scrollTop:this.viewport.scrollTop};
-          this.viewport.style.cursor = 'grabbing';
-          e.preventDefault();
-        }
+        if(e.button === 1 || (e.altKey && e.target === this.viewport)) this.startPan(e);
       });
-      window.addEventListener('pointermove', e => {
-        if(this.isPanning){
-          // Use translate on container
-          const dx = e.clientX - this.panStart.x;
-          const dy = e.clientY - this.panStart.y;
-          this.container.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${this.zoom})`;
-          this.renderRulers();
-        }
-      });
-      window.addEventListener('pointerup', () => {
-        if(this.isPanning){
-          this.isPanning = false;
-          this.viewport.style.cursor = '';
-        }
-      });
+      window.addEventListener('pointermove', e => { if(this.isPanning) this.applyPan(e); });
+      window.addEventListener('pointerup', () => this.endPan());
 
       // Text modal
       $('#text-ok').addEventListener('click', () => this.applyTextEdit());
@@ -2055,28 +2105,53 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       }catch(e){}
     }
     applyFill(c){
+      this.brush.fill = c;
       this.selectedIds.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.setAttribute('fill', c);
       });
     }
     applyStroke(c){
+      this.brush.stroke = c;
+      if(this.selectedIds.size === 0) this.syncBrushUI();
       this.selectedIds.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.setAttribute('stroke', c);
       });
     }
     applyStrokeW(w){
+      this.brush.width = parseFloat(w) || 0;
+      if(this.selectedIds.size === 0) this.syncBrushUI();
       this.selectedIds.forEach(id => {
         const el = document.getElementById(id);
-        if(el) el.setAttribute('stroke-width', w);
+        if(el) el.setAttribute('stroke-width', this.brush.width);
       });
     }
     applyOpacity(v){
+      this.brush.opacity = parseFloat(v) || 0;
+      if(this.selectedIds.size === 0) this.syncBrushUI();
       this.selectedIds.forEach(id => {
         const el = document.getElementById(id);
-        if(el) el.setAttribute('opacity', v/100);
+        if(el) el.setAttribute('opacity', this.brush.opacity / 100);
       });
+    }
+    applyFillOp(v){
+      this.brush.fillOpacity = parseFloat(v) || 0;
+      if(this.selectedIds.size === 0) this.syncBrushUI();
+      this.selectedIds.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.setAttribute('fill-opacity', this.brush.fillOpacity / 100);
+      });
+    }
+    /* Write the current brush values back into the panel inputs */
+    syncBrushUI(){
+      const f = $('#prop-fill'), fo = $('#prop-fill-op'), s = $('#prop-stroke'),
+            sw = $('#prop-stroke-w'), op = $('#prop-opacity');
+      if(f) f.value = this.brush.fill;
+      if(fo) fo.value = this.brush.fillOpacity;
+      if(s) s.value = this.brush.stroke;
+      if(sw) sw.value = this.brush.width;
+      if(op) op.value = this.brush.opacity;
     }
     applyFont(font, size){
       this.selectedIds.forEach(id => {

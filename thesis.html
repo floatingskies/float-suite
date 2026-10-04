@@ -154,6 +154,42 @@ body{display:flex;flex-direction:column}
 #page-numbers{display:none;text-align:center;font-family:'Times New Roman',serif;font-size:10pt;color:#666;padding-top:8pt;border-top:1px solid #eee;margin-top:12pt}
 #page-numbers.visible{display:block}
 
+/* Dark theme: the sheet, the text and every light-filled element inside the
+   document follow the theme instead of staying bright white. */
+[data-theme="dark"] #paper{
+  color:#EDEDF2;
+  background:
+    repeating-linear-gradient(to bottom,
+      #16161B 0,
+      #16161B calc(var(--page-h) - 7mm),
+      var(--c-bg) calc(var(--page-h) - 7mm),
+      var(--c-bg) calc(var(--page-h) - 5mm),
+      #3A3A45 calc(var(--page-h) - 5mm),
+      #3A3A45 calc(var(--page-h) - 4.2mm),
+      #16161B calc(var(--page-h) - 4.2mm));
+}
+[data-theme="dark"] #cover-page{border-color:#EDEDF2}
+[data-theme="dark"] #editor-area blockquote{color:#C2C2CE;border-left-color:#5A5A66}
+[data-theme="dark"] #editor-area pre{background:#22222A;border-color:#3A3A45;color:#EDEDF2}
+[data-theme="dark"] #editor-area code{background:#22222A;color:#FFD9F2}
+[data-theme="dark"] #editor-area th{background:#24242C;color:#EDEDF2}
+[data-theme="dark"] #editor-area td,[data-theme="dark"] #editor-area th{border-color:#3A3A45}
+[data-theme="dark"] #editor-area hr{border-top-color:#3A3A45}
+[data-theme="dark"] #editor-area .toc-link{color:#EDEDF2}
+[data-theme="dark"] #editor-area .toc-num,[data-theme="dark"] #editor-area .toc-l4{color:#A9A9B8}
+[data-theme="dark"] #editor-area .toc-container{border-color:#3A3A45}
+[data-theme="dark"] #editor-area .page-break{color:#8A8A99;border-top-color:#3A3A45}
+[data-theme="dark"] #page-numbers{color:#9A9A99;border-top-color:#2A2A33}
+[data-theme="dark"] .stat-row{border-bottom-color:#2A2A33}
+[data-theme="dark"] .find-bar input,[data-theme="dark"] .rich-toolbar input[type="text"]{color:var(--c-text)}
+
+/* Exports always come out on white paper with dark text */
+#paper.exporting{background:#fff !important;color:#000 !important}
+#paper.exporting .toc-link,#paper.exporting .toc-num,#paper.exporting .toc-l4{color:#000 !important}
+#paper.exporting blockquote{color:#444 !important}
+#paper.exporting pre,#paper.exporting code{background:#f4f4f4 !important;border-color:#ccc !important;color:#000 !important}
+#paper.exporting th{background:#eee !important;color:#000 !important}
+
 /* Zen mode */
 body.zen-mode #sidebar,body.zen-mode .rich-toolbar,body.zen-mode #hud-menubar,body.zen-mode footer,body.zen-mode #find-bar{display:none !important}
 body.zen-mode #workspace{padding:20px 0}
@@ -1037,9 +1073,8 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
 
     insertImage(src, alt){
       this.saveRange();
-      const img = '<img src="' + src + '" alt="' + (alt||'') + '">';
-      document.execCommand('insertHTML', false, img);
-      this.updateStats();
+      const img = '<img src="' + src + '" alt="' + this.escapeHtml(alt||'') + '">';
+      this.insertHTMLAtCursor(img);
     }
     insertTable(rows, cols){
       this.saveRange();
@@ -1051,14 +1086,36 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
         for(let c = 0; c < cols; c++) html += '<td>·</td>';
         html += '</tr>';
       }
-      html += '</tbody></table>';
+      html += '</tbody></table><p><br></p>';
+      this.insertHTMLAtCursor(html);
+    }
+    /* Insert HTML at the caret that was active before a modal opened */
+    insertHTMLAtCursor(html){
+      this.restoreRange();
+      this.editor.focus();
+      // Make sure the caret really sits inside the editor
+      const sel = window.getSelection();
+      if(!sel.rangeCount || !this.editor.contains(sel.anchorNode)){
+        const r = document.createRange();
+        r.selectNodeContents(this.editor);
+        r.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
       document.execCommand('insertHTML', false, html);
       this.updateStats();
     }
+
     insertLink(text, url){
       this.saveRange();
-      const html = '<a href="' + url + '" target="_blank">' + text + '</a>';
-      document.execCommand('insertHTML', false, html);
+      url = (url || '').trim();
+      if(!url) return;
+      // Bare domains get a protocol so the link is actually clickable
+      if(!/^[a-z][a-z0-9+.-]*:/i.test(url)) url = 'https://' + url.replace(/^\/+/, '');
+      const safe = this.escapeHtml(url);
+      const label = this.escapeHtml(text || url);
+      this.insertHTMLAtCursor('<a href="' + safe + '" target="_blank" rel="noopener">' + label + '</a>');
+      toast(I.t('thesis.toast_link_inserted'), 'success', 1200);
     }
 
     /* ---- Reference generator ---- */
@@ -1407,9 +1464,8 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       const includePageNums = $('#exp-include-pagenums').checked;
       // Build a clean copy of the paper for export
       const exportNode = this.paper.cloneNode(true);
-      // Exports are plain white pages: no on-screen sheet separators
-      exportNode.style.background = '#fff';
-      exportNode.style.boxShadow = 'none';
+      // Exports are plain white pages: no on-screen sheet separators or theme colours
+      exportNode.classList.add('exporting');
       // Reset zoom
       exportNode.style.transform = '';
       exportNode.style.transformOrigin = '';

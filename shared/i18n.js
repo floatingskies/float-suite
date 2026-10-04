@@ -292,7 +292,7 @@
       'thesis.toast_replace_done':'Replaced {count} occurrence(s)','thesis.toast_footnote':'Footnote inserted',
       'thesis.toast_quota':'Storage quota exceeded',
       'thesis.toast_zen':'Zen mode. Press F11 or Esc to exit.',
-      'thesis.toast_image_required':'Pick a file or enter a URL','thesis.toast_url_required':'URL required',
+      'thesis.toast_image_required':'Pick a file or enter a URL','thesis.toast_url_required':'URL required','thesis.toast_link_inserted':'Link inserted',
       'thesis.footnote_sample':'Footnote text.',
       'notes.title':'Notebase','notes.tagline':'Local-first Markdown knowledge base',
       'notes.search_placeholder':'Search notes…','notes.new_note':'New Note','notes.daily':'Daily Note','notes.all_notes':'All notes','notes.root':'Root','notes.folders':'Folders','notes.prompt_folder':'New folder path (use / for subfolders):','notes.delete_folder':'Remove folder',
