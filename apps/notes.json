@@ -53,12 +53,14 @@
     "synopsis": "Local-first Markdown knowledge base",
     "executableName": "notebase",
     "desktop": {
-      "Name": "Notebase",
-      "Comment": "Local-first Markdown knowledge base",
-      "Categories": "Office;Utility;TextEditor;",
-      "Keywords": "notes;markdown;knowledge;wiki;float;",
-      "StartupWMClass": "Notebase",
-      "Icon": "notebase"
+      "entry": {
+        "Name": "Notebase",
+        "Comment": "Local-first Markdown knowledge base",
+        "Categories": "Office;Utility;TextEditor;",
+        "Keywords": "notes;markdown;knowledge;wiki;float;",
+        "StartupWMClass": "Notebase",
+        "Icon": "notebase"
+      }
     }
   },
   "deb": {

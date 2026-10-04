@@ -53,12 +53,14 @@
     "synopsis": "Academic word processor",
     "executableName": "thesis",
     "desktop": {
-      "Name": "Thesis",
-      "Comment": "Academic word processor with ABNT, APA and MLA standards",
-      "Categories": "Office;WordProcessor;TextEditor;Education;",
-      "Keywords": "thesis;academic;writing;abnt;apa;mla;float;",
-      "StartupWMClass": "Thesis",
-      "Icon": "thesis"
+      "entry": {
+        "Name": "Thesis",
+        "Comment": "Academic word processor with ABNT, APA and MLA standards",
+        "Categories": "Office;WordProcessor;TextEditor;Education;",
+        "Keywords": "thesis;academic;writing;abnt;apa;mla;float;",
+        "StartupWMClass": "Thesis",
+        "Icon": "thesis"
+      }
     }
   },
   "deb": {

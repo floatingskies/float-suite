@@ -53,12 +53,14 @@
     "synopsis": "Vector editor",
     "executableName": "inkling",
     "desktop": {
-      "Name": "Inkling",
-      "Comment": "Vector editor with pen, shapes, gradients and SVG export",
-      "Categories": "Graphics;2DGraphics;VectorGraphics;",
-      "Keywords": "vector;svg;illustration;logo;design;float;",
-      "StartupWMClass": "Inkling",
-      "Icon": "inkling"
+      "entry": {
+        "Name": "Inkling",
+        "Comment": "Vector editor with pen, shapes, gradients and SVG export",
+        "Categories": "Graphics;2DGraphics;VectorGraphics;",
+        "Keywords": "vector;svg;illustration;logo;design;float;",
+        "StartupWMClass": "Inkling",
+        "Icon": "inkling"
+      }
     }
   },
   "deb": {

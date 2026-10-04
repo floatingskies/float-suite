@@ -53,12 +53,14 @@
     "synopsis": "Raster paint studio",
     "executableName": "paint-web",
     "desktop": {
-      "Name": "Paint Web",
-      "Comment": "Raster paint studio with layers, filters and adjustments",
-      "Categories": "Graphics;2DGraphics;RasterGraphics;",
-      "Keywords": "paint;draw;brush;art;creative;float;",
-      "StartupWMClass": "Paint Web",
-      "Icon": "paint-web"
+      "entry": {
+        "Name": "Paint Web",
+        "Comment": "Raster paint studio with layers, filters and adjustments",
+        "Categories": "Graphics;2DGraphics;RasterGraphics;",
+        "Keywords": "paint;draw;brush;art;creative;float;",
+        "StartupWMClass": "Paint Web",
+        "Icon": "paint-web"
+      }
     }
   },
   "deb": {
