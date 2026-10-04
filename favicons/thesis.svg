@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Thesis — open book on blue background, neo-brutalist. -->
+  <!-- Thesis: open book on blue background, neo-brutalist. -->
   <defs>
     <style>
       .stroke{fill:none;stroke:#000;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}

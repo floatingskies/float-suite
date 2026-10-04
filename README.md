@@ -32,7 +32,7 @@ That's it. No server, no install, no build step. The suite works from a USB stic
 
 Every app has a **global menu bar at the top** with the standard menus (File, Edit, View, etc.). Click a menu to drop down its items, or use the keyboard.
 
-Press **`Alt`** (or `Ctrl+Space`) anywhere to open the **command palette** — a search box that lets you find and run any command by name. Type "export", "layer", "undo", "save" — the palette filters instantly. Press `Enter` to run.
+Press **`Alt`** (or `Ctrl+Space`) anywhere to open the **command palette**: a search box that lets you find and run any command by name. Type "export", "layer", "undo", "save": the palette filters instantly. Press `Enter` to run.
 
 Press **`?`** (or click the `?` button on the menu bar) to see the full list of keyboard shortcuts for the current app.
 
@@ -40,7 +40,7 @@ Press **`?`** (or click the `?` button on the menu bar) to see the full list of 
 
 ## Languages
 
-Eight languages are built in. Switch from the language selector on the menu bar — your choice persists across sessions and apps:
+Eight languages are built in. Switch from the language selector on the menu bar: your choice persists across sessions and apps:
 
 - English (`en`)
 - Português brasileiro (`pt-BR`)
@@ -55,9 +55,9 @@ Eight languages are built in. Switch from the language selector on the menu bar 
 
 ## Themes
 
-- **Auto** — follows your operating system preference
-- **Light** — forced light
-- **Dark** — forced dark
+- **Auto**: follows your operating system preference
+- **Light**: forced light
+- **Dark**: forced dark
 
 Themes sync across all five pages (portal + four apps) automatically.
 
@@ -99,7 +99,7 @@ float-suite/
 └── README.md               ← This file
 ```
 
-Each app HTML is self-contained — it only depends on `shared/` and `favicons/`. You can host the folder anywhere, or open files directly from disk.
+Each app HTML is self-contained: it only depends on `shared/` and `favicons/`. You can host the folder anywhere, or open files directly from disk.
 
 ---
 
@@ -110,7 +110,7 @@ Press `?` in any app to see its full shortcut list. The most common ones:
 | Shortcut | Action |
 |----------|--------|
 | `Alt` | Open command palette (HUD search) |
-| `Ctrl+Space` | Same — command palette |
+| `Ctrl+Space` | Same: command palette |
 | `?` | Show shortcuts help |
 | `Ctrl+S` | Save / Export |
 | `Ctrl+Z` / `Ctrl+Y` | Undo / Redo |
@@ -191,12 +191,12 @@ Paste the JSON back into `localStorage` with the same keys.
 
 ## Native desktop builds (Electron)
 
-The suite ships as static HTML/CSS/JS — but it can be wrapped in Electron for native installation on Linux, macOS, and Windows. The repo includes:
+The suite ships as static HTML/CSS/JS: but it can be wrapped in Electron for native installation on Linux, macOS, and Windows. The repo includes:
 
-- `electron/main.js` — Electron main process. Creates a 1440×900 window, loads the portal, sets a native menu, exposes `window.floatDesktop.isDesktop` to pages.
-- `electron/preload.js` — minimal context-isolated bridge.
-- `package.json` — full `electron-builder` config for all 6 targets.
-- `.github/workflows/build.yml` — CI that builds everything on push to `main`, on PRs, and on `v*` tags. Tag pushes publish a GitHub Release.
+- `electron/main.js`: Electron main process. Creates a 1440×900 window, loads the portal, sets a native menu, exposes `window.floatDesktop.isDesktop` to pages.
+- `electron/preload.js`: minimal context-isolated bridge.
+- `package.json`: full `electron-builder` config for all 6 targets.
+- `.github/workflows/build.yml`: CI that builds everything on push to `main`, on PRs, and on `v*` tags. Tag pushes publish a GitHub Release.
 
 ### Targets
 
@@ -221,7 +221,7 @@ The suite ships as static HTML/CSS/JS — but it can be wrapped in Electron for 
 - Fixed Paint.web: magic wand, smudge, blur tools now work; invert selection implemented
 - Fixed Inkling: boolean ops (via clip-path / mask), align to artboard, snap-to-objects
 - Fixed Thesis: PDF export zoom bug fixed, page-break visual artifacts removed, autosave restored
-- New app: **Notebase** — local-first Markdown knowledge base (live preview, search, tags, wiki-links, backlinks, daily notes, MD/TXT/HTML/PDF/DOCX/ODT export)
+- New app: **Notebase**: local-first Markdown knowledge base (live preview, search, tags, wiki-links, backlinks, daily notes, MD/TXT/HTML/PDF/DOCX/ODT export)
 - Cross-app theme sync
 - Shortcuts help overlay
 - Autosave in Paint.web, Inkling, and Thesis; instant autosave in Notebase

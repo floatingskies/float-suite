@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thesis — Float Suite</title>
+<title>Thesis | Float Suite</title>
 <link rel="icon" type="image/svg+xml" href="favicons/thesis.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/thesis-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/thesis-16.png">
@@ -79,7 +79,7 @@ body{display:flex;flex-direction:column}
 .stat-row .stat-key{color:var(--c-muted);text-transform:uppercase;font-size:9px;letter-spacing:.5px}
 .stat-row .stat-val{font-weight:700}
 .goal-bar{height:8px;background:var(--c-border);overflow:hidden;margin-top:6px}
-.goal-fill{height:100%;background:var(--c-success);width:0;transition:width .3s}
+.goal-fill{height:100%;background:var(--c-success);width:0;transition:none}
 
 /* Workspace */
 #workspace{flex:1;overflow:auto;background:var(--c-bg);padding:30px 0;position:relative;display:flex;flex-direction:column;align-items:center}
@@ -101,7 +101,7 @@ body{display:flex;flex-direction:column}
 #paper[data-width="letter"]{width:8.5in;min-height:11in}
 #paper[data-width="full"]{width:auto;max-width:900px;min-height:auto;padding:2cm}
 
-#cover-page{display:none;border-bottom:1px solid #000;padding-bottom:2cm;margin-bottom:2cm;text-align:center;min-height:8cm;display:flex;flex-direction:column;justify-content:center;gap:8px}
+#cover-page{display:none;border-bottom:1px solid #000;padding-bottom:2cm;margin-bottom:2cm;text-align:center;min-height:8cm;flex-direction:column;justify-content:center;gap:8px}
 #cover-page.visible{display:flex}
 #cover-page .cover-top{flex:1;display:flex;align-items:flex-start;justify-content:center;font-family:var(--font-ui);font-size:10pt;text-transform:uppercase}
 #cover-page .cover-mid{flex:2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px}
@@ -170,8 +170,6 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
 /* Writing indicator */
 #writing-indicator{position:fixed;top:var(--header-h);right:14px;z-index:100;background:var(--c-blue);color:#fff;padding:4px 10px;font-family:var(--font-ui);font-size:10px;display:none;align-items:center;gap:6px}
 #writing-indicator.visible{display:flex}
-#writing-indicator .pen{animation:write .8s ease-in-out infinite}
-@keyframes write{0%,100%{transform:rotate(0)}50%{transform:rotate(20deg)}}
 
 /* Reference modal */
 .ref-tabs{display:flex;gap:4px;margin-bottom:12px}
@@ -184,12 +182,15 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
 .setting-row label{font-family:var(--font-ui);font-size:11px}
 .setting-row input,.setting-row select{padding:4px 6px;font-family:var(--font-ui);font-size:11px;border:1px solid var(--c-border)}
 
+#btn-sidebar{display:none}
 @media(max-width:900px){
   :root{--sidebar-w:220px}
   #paper{margin:0 14px}
 }
 @media(max-width:680px){
-  #sidebar{display:none}
+  #btn-sidebar{display:inline-flex}
+  #sidebar{display:flex;position:fixed;left:0;top:calc(var(--header-h) + var(--menu-h));bottom:0;width:260px;z-index:500;transform:translateX(-100%);box-shadow:6px 0 0 rgba(0,0,0,.15);flex-direction:column}
+  body.sidebar-open #sidebar{transform:translateX(0)}
   .rich-toolbar{overflow-x:auto}
 }
 </style>
@@ -205,6 +206,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
     <button class="btn btn-sm" id="btn-find" title="Find & Replace (Ctrl+H)"><i class="fa-solid fa-magnifying-glass"></i></button>
     <button class="btn btn-sm" id="btn-zen" title="Zen Mode (F11)"><i class="fa-solid fa-expand"></i></button>
     <button class="btn btn-sm" id="btn-export" title="Export (Ctrl+P)"><i class="fa-solid fa-file-export"></i></button>
+    <button class="btn btn-sm" id="btn-sidebar" title="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
     <a href="index.html" class="btn btn-sm" title="Back to Float Suite"><i class="fa-solid fa-arrow-left"></i></a>
   </div>
 </header>
@@ -380,7 +382,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
 <div id="zen-wc">0 words</div>
 
 <footer>
-  <span class="f-section"><span class="k">Doc</span> <span id="f-doc">—</span></span>
+  <span class="f-section"><span class="k">Doc</span> <span id="f-doc">(none)</span></span>
   <span class="f-section"><span class="k">Standard</span> <span id="f-std">ABNT</span></span>
   <span class="f-section"><span class="k">Words</span> <span id="f-words">0</span></span>
   <span class="f-section" style="margin-left:auto"><span class="k">F11</span> Zen · <span class="k">Alt</span> Commands · <span class="k">?</span> Shortcuts</span>
@@ -939,7 +941,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       const div = document.createElement('div');
       div.className = 'page-break';
       div.contentEditable = false;
-      div.textContent = '— Page Break —';
+      div.textContent = 'Page Break';
       const sel = window.getSelection();
       if(sel.rangeCount){
         const r = sel.getRangeAt(0);
@@ -1006,7 +1008,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       });
       const tocHtml = tocItems.length
         ? tocItems.join('')
-        : '<div class="toc-empty">[No headings yet — add H1/H2/H3 to generate the table of contents.]</div>';
+        : '<div class="toc-empty">[No headings yet. Add H1/H2/H3 to generate the table of contents.]</div>';
       containers.forEach(c => { c.innerHTML = tocHtml; });
       // Wire up clicks to scroll smoothly
       $$('.toc-link', this.editor).forEach(a => {
@@ -1119,7 +1121,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
         const typeLabel = {ms:'Dissertação (Mestrado)', phd:'Tese (Doutorado)', tcc:'TCC'}[data.type] || data.type;
         if(std === 'apa') return `${A(data.author)} (${A(data.year)}). <i>${A(data.title)}</i> [${typeLabel}]. ${A(data.school)}.`;
         if(std === 'mla') return `${A(data.author)}. "${A(data.title)}." ${typeLabel}. ${A(data.school)}, ${A(data.year)}.`;
-        return `${A(data.author).toUpperCase()}. ${A(data.title)}. ${A(data.year)}. ${typeLabel} – ${A(data.school)}, ${A(data.city)}.`;
+        return `${A(data.author).toUpperCase()}. ${A(data.title)}. ${A(data.year)}. ${typeLabel} , ${A(data.school)}, ${A(data.city)}.`;
       }
       return '';
     }
@@ -1246,7 +1248,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       this.cover.classList.remove('visible');
       this.updateStats();
       this.renderDocList();
-      $('#f-doc').textContent = '—';
+      $('#f-doc').textContent = '';
       toast(I.t('common.new_document'), 'info', 1200);
     }
     openSaveModal(){
@@ -1560,6 +1562,8 @@ a{color:#2D7DD2;text-decoration:underline}
       // Sidebar buttons
       $('#btn-new-doc').addEventListener('click', () => this.newDocument());
       $('#btn-save-doc').addEventListener('click', () => this.openSaveModal());
+      const sideBtn = $('#btn-sidebar');
+      if(sideBtn) sideBtn.addEventListener('click', () => document.body.classList.toggle('sidebar-open'));
       $('#save-confirm').addEventListener('click', () => this.saveDocument());
       $$('.standard-btn').forEach(b => b.addEventListener('click', () => this.setStandard(b.dataset.std)));
       $$('.insert-btn').forEach(b => b.addEventListener('click', () => {

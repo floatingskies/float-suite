@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notebase — Float Suite</title>
+<title>Notebase | Float Suite</title>
 <link rel="icon" type="image/svg+xml" href="favicons/notes.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/notes-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/notes-16.png">
@@ -17,7 +17,7 @@
 <style>
   /* ----- Notebase layout ------------------------------------------------ */
   :root{
-    --notes-accent:#9966FF;
+    --notes-accent:#7C3AED;
     --notes-accent-dark:#7B3FE4;
   }
   .notes-layout{
@@ -60,13 +60,17 @@
     padding:8px 10px;cursor:pointer;color:var(--c-text);
     font-family:var(--font-ui);
     box-shadow:2px 2px 0 var(--c-border);
-    transition:transform .08s ease;
+transition:none;
   }
   .note-item:hover{ transform:translate(-1px,-1px); }
   .note-item.active{
     border-color:var(--notes-accent);
     box-shadow:0 0 0 1px var(--notes-accent), 2px 2px 0 var(--c-border);
   }
+  .header-left{display:flex;align-items:center;gap:12px}
+  .header-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .app-brand{font-family:var(--font-ui)}
+  .app-logo{background:var(--notes-accent);color:#fff}
   .note-item .ni-title{
     display:flex;align-items:center;gap:6px;
     font-weight:700;font-size:13px;
@@ -242,7 +246,7 @@
     .sidebar{
       position:fixed;left:0;top:calc(var(--header-h) + var(--menu-h));bottom:0;width:270px;
       z-index:500;box-shadow:6px 0 0 rgba(0,0,0,.15);
-      transform:translateX(-100%);transition:transform .15s ease;
+      transform:translateX(-100%);transition:none;
     }
     .sidebar.open{ transform:translateX(0); }
     .editors{ grid-template-columns:1fr; }

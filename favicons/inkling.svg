@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <!--
-    Inkling — black Blooper-style squid on pink background.
+    Inkling: black Blooper-style squid on pink background.
     Blooper (Mario enemy) silhouette: pointed mantle, two big eyes,
     6 wavy tentacles. Neo-brutalist: thick black border, hard offset shadow.
   -->
@@ -15,7 +15,7 @@
 
   <!-- Hard shadow offset (neo-brutalist) -->
   <g transform="translate(3,3)" fill="#000">
-    <!-- Squid body (mantle) — pointed top, rounded bottom -->
+    <!-- Squid body (mantle): pointed top, rounded bottom -->
     <path d="
       M 32 8
       C 44 8 48 18 48 28

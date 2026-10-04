@@ -1,5 +1,5 @@
 /* =========================================================================
-   Float Suite — Electron main process
+   Float Suite: Electron main process
    Loads the portal (index.html) inside a desktop window.
    Each app is loaded in the same window via in-page navigation; we intercept
    link clicks so the back button works correctly.

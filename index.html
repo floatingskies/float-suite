@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FLOAT SUITE — Offline-First Creative & Academic Suite</title>
+<title>FLOAT SUITE: Offline-First Creative & Academic Suite</title>
 <link rel="icon" type="image/svg+xml" href="favicons/float.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/float-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/float-16.png">
@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#FFDE59">
 <meta name="description" content="Three offline-first tools for academic and creative work. No accounts, no cloud, no tracking.">
 <meta name="author" content="Arik Closs Novais">
-<meta property="og:title" content="FLOAT SUITE — Offline-First Creative & Academic Suite">
+<meta property="og:title" content="FLOAT SUITE: Offline-First Creative & Academic Suite">
 <meta property="og:description" content="Three offline-first tools. No accounts, no cloud, no tracking.">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="shared/float.css">
 
 <style>
-/* Portal-specific styles only — shared tokens are in float.css */
+/* Portal-specific styles only: shared tokens are in float.css */
 :root{
   --portal-gap:60px;
 }
@@ -40,7 +40,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
   background:var(--c-primary);padding:8px 14px;
   border:var(--bw) solid var(--c-border);
   box-shadow:4px 4px 0 var(--c-border);
-  transform:rotate(-1.5deg);color:#000;white-space:nowrap;
+  transform:rotate(-1.5deg);color:#fff;white-space:nowrap;
   display:inline-flex;align-items:baseline;gap:4px;
 }
 .portal-logo:hover{transform:rotate(1deg) scale(1.02)}
@@ -56,8 +56,7 @@ main{flex:1;max-width:1180px;margin:0 auto;padding:0 28px;width:100%;position:re
 /* Hero */
 .hero{display:grid;grid-template-columns:1.3fr .9fr;gap:var(--portal-gap);align-items:center;margin:70px 0 90px;position:relative}
 .hero-eyebrow{font-family:var(--font-ui);font-size:12px;color:var(--c-red);letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:18px;text-transform:uppercase;font-weight:700}
-.hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--c-success);box-shadow:0 0 0 0 rgba(0,200,83,.5);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,200,83,.5)}50%{box-shadow:0 0 0 6px rgba(0,200,83,0)}}
+.hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--c-success)}}
 .hero h1{font-size:clamp(3rem,8vw,7rem);margin-bottom:24px;line-height:.95;text-shadow:5px 5px 0 var(--c-surface)}
 [data-theme="dark"] .hero h1{text-shadow:5px 5px 0 rgba(0,0,0,.4)}
 .hero p{font-size:1.1rem;margin-bottom:32px;max-width:520px;line-height:1.7;opacity:.88}
@@ -74,13 +73,10 @@ main{flex:1;max-width:1180px;margin:0 auto;padding:0 28px;width:100%;position:re
 .status-key{color:var(--c-muted);font-size:10px}
 .status-val{font-weight:700}
 .status-bar{height:6px;background:var(--c-border);overflow:hidden;margin-top:8px}
-.status-fill{height:100%;background:var(--c-success);width:100%;transform-origin:left;animation:fill-bar 1.4s ease-out}
-@keyframes fill-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.status-fill{height:100%;background:var(--c-success);width:100%}
 
 .float-tag{position:absolute;color:#fff;padding:8px 14px;font-family:var(--font-ui);font-weight:bold;font-size:11px;border:var(--bw) solid var(--c-border);box-shadow:4px 4px 0 var(--c-border);z-index:3;white-space:nowrap}
-.float-tag.ft-1{top:-18px;left:-18px;background:var(--c-blue);transform:rotate(-4deg);animation:float-anim 5s ease-in-out infinite}
-.float-tag.ft-2{bottom:-22px;right:-22px;background:var(--c-red);transform:rotate(4deg);animation:float-anim 5s ease-in-out infinite reverse}
-@keyframes float-anim{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.float-tag.ft-1{top:-18px;left:-18px;background:var(--c-blue);transform:rotate(-4deg)}
 
 /* Stats */
 .stats-band{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:50px 0}
@@ -100,7 +96,7 @@ main{flex:1;max-width:1180px;margin:0 auto;padding:0 28px;width:100%;position:re
 .card{
   background:var(--c-surface);border:var(--bw) solid var(--c-border);
   box-shadow:var(--shadow);display:flex;flex-direction:column;
-  transition:transform .15s,box-shadow .15s;overflow:hidden;
+  overflow:hidden;
 }
 .card:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-hover)}
 .card-stripe{height:18px;border-bottom:var(--bw) solid var(--c-border)}
@@ -144,7 +140,7 @@ main{flex:1;max-width:1180px;margin:0 auto;padding:0 28px;width:100%;position:re
 .changelog-section{margin-bottom:60px}
 .changelog-list{display:flex;flex-direction:column;gap:16px}
 .changelog-entry{background:var(--c-surface);border:var(--bw-sm) solid var(--c-border);padding:18px;display:flex;gap:18px;align-items:flex-start}
-.changelog-date{font-family:var(--font-ui);font-size:11px;background:var(--c-primary);color:#000;padding:6px 10px;border:2px solid var(--c-border);white-space:nowrap;flex-shrink:0}
+.changelog-date{font-family:var(--font-ui);font-size:11px;background:var(--c-primary);color:#fff;padding:6px 10px;border:2px solid var(--c-border);white-space:nowrap;flex-shrink:0}
 .changelog-content{flex:1}
 .changelog-content h3{font-size:16px;margin-bottom:6px}
 .changelog-content p{font-size:.9rem;line-height:1.55;opacity:.85}
@@ -170,32 +166,27 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
 @media(max-width:768px){.hamburger{display:block}}
 
 /* Marquee */
-.marquee-wrap{border-top:var(--bw) solid var(--c-border);border-bottom:6px solid var(--c-border);background:var(--c-primary);overflow:hidden;white-space:nowrap;padding:12px 0;cursor:pointer;user-select:none}
-.marquee-inner{display:inline-block;animation:marquee 35s linear infinite;font-family:var(--font-head);font-weight:900;font-size:14px;text-transform:uppercase;color:#000;letter-spacing:3px}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.marquee-wrap:hover .marquee-inner{animation-play-state:paused}
+
 
 /* Back to top */
-.back-to-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;background:var(--c-primary);border:var(--bw) solid var(--c-border);box-shadow:var(--shadow-sm);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:18px;color:#000;z-index:200}
+.back-to-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;background:var(--c-primary);border:var(--bw) solid var(--c-border);box-shadow:var(--shadow-sm);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:18px;color:#fff;z-index:200}
 .back-to-top.visible{display:flex}
 .back-to-top:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow)}
 
 /* Loading screen */
-.loading-screen{position:fixed;inset:0;z-index:9999;background:var(--c-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .35s ease,visibility .35s ease}
+.loading-screen{position:fixed;inset:0;z-index:9999;background:var(--c-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:none}
 .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
 
 .scroll-progress{position:fixed;top:0;left:0;height:3px;background:var(--c-primary);z-index:1001;width:0;border-bottom:2px solid var(--c-border)}
 
 /* Particles */
-#particle-canvas{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5}
 
 /* Scroll reveal */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.reveal{opacity:1;transform:none}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
 /* Print */
 @media print{
-  .marquee-wrap,.back-to-top,.scroll-progress,.loading-screen,#particle-canvas{display:none !important}
   body::after{display:none}
 }
 </style>
@@ -210,14 +201,6 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
 
 <!-- Scroll progress -->
 <div class="scroll-progress" id="scroll-progress"></div>
-
-<!-- Marquee -->
-<div class="marquee-wrap" id="marquee-wrap" title="Pause">
-  <div class="marquee-inner" id="marquee-inner">
-    ★ OFFLINE FIRST ★ NO ACCOUNTS ★ NO TRACKING ★ OPEN FORMATS ★ PDF / DOCX / ODT / SVG / PNG ★ 8 LANGUAGES ★ LIGHT & DARK ★ MADE FOR ACADEMIC & CREATIVE WORK ★&nbsp;&nbsp;&nbsp;
-    ★ OFFLINE FIRST ★ NO ACCOUNTS ★ NO TRACKING ★ OPEN FORMATS ★ PDF / DOCX / ODT / SVG / PNG ★ 8 LANGUAGES ★ LIGHT & DARK ★ MADE FOR ACADEMIC & CREATIVE WORK ★&nbsp;&nbsp;&nbsp;
-  </div>
-</div>
 
 <!-- Header -->
 <header class="app-header portal" role="banner">
@@ -241,14 +224,13 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
 
   <!-- Hero -->
   <section class="hero">
-    <canvas id="particle-canvas" aria-hidden="true"></canvas>
     <div class="hero-content">
       <div class="hero-eyebrow">
         <span class="dot"></span>
-        <span>SUITE 5.0 — STABLE</span>
+        <span>SUITE 5.0 · STABLE</span>
       </div>
       <h1 data-i18n="portal.tagline">CREATE WITHOUT LIMITS.</h1>
-      <p data-i18n="portal.subtitle">Three offline-first tools for academic and creative work. No accounts. No cloud. No tracking.</p>
+      <p data-i18n="portal.subtitle">Three offline-first tools for academic and creative work.</p>
       <div class="hero-ctas">
         <a href="#apps" class="btn btn-primary">
           <i class="fa-solid fa-bolt"></i>
@@ -262,7 +244,6 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
     </div>
     <div class="hero-visual">
       <div class="float-tag ft-1">100% LOCAL</div>
-      <div class="float-tag ft-2">NO TRACKING</div>
       <div class="hero-card">
         <div class="hero-card-header">
           <span class="hero-card-title">FLOAT SUITE / STATUS</span>
@@ -520,7 +501,7 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
     </div>
   </div>
   <div class="footer-bottom">
-    <span>v5.0 — STABLE</span>
+    <span>v5.0 · STABLE</span>
     <span>BUILT WITH VANILLA JS · NO FRAMEWORKS</span>
   </div>
 </footer>
@@ -572,16 +553,6 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
   if(hamburger && navLinks){
     hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
     navLinks.querySelectorAll('a,button').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
-  }
-
-  /* ---- Marquee pause on click ---- */
-  const marquee = document.getElementById('marquee-wrap');
-  if(marquee){
-    marquee.addEventListener('click', () => {
-      const inner = document.getElementById('marquee-inner');
-      const paused = inner.style.animationPlayState === 'paused';
-      inner.style.animationPlayState = paused ? 'running' : 'paused';
-    });
   }
 
   /* ---- Scroll progress + back to top ---- */
@@ -641,49 +612,6 @@ footer .footer-bottom{max-width:1180px;margin:30px auto 0;padding-top:18px;borde
       clock.textContent = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
     }
     tick(); setInterval(tick, 1000);
-  }
-
-  /* ---- Particle canvas ---- */
-  const canvas = document.getElementById('particle-canvas');
-  if(canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function resize(){
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width; canvas.height = rect.height;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-    for(let i=0;i<28;i++){
-      particles.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        vx: (Math.random()-0.5)*0.3,
-        vy: (Math.random()-0.5)*0.3,
-        r: Math.random()*2.5+0.5,
-        c: ['#FFDE59','#FF90E8','#2D7DD2','#00C853'][i%4]
-      });
-    }
-    let running = true;
-    function loop(){
-      if(!running) return;
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0||p.x>canvas.width) p.vx*=-1;
-        if(p.y<0||p.y>canvas.height) p.vy*=-1;
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle = p.c;
-        ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
-    document.addEventListener('visibilitychange', () => {
-      running = !document.hidden;
-      if(running) loop();
-    });
   }
 
   /* ---- Smooth scroll for in-page anchors ---- */

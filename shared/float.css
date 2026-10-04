@@ -1,5 +1,5 @@
 /* =========================================================================
-   FLOAT SUITE — Shared Design System
+   FLOAT SUITE: Shared Design System
    Neo-brutalist foundation used by the portal and all three apps.
    Loaded via <link rel="stylesheet" href="shared/float.css">.
    ========================================================================= */
@@ -7,30 +7,30 @@
 /* ----- Design tokens -------------------------------------------------- */
 :root{
   /* Surfaces */
-  --c-bg:#f0ede6;
+  --c-bg:#F4F4F7;
   --c-surface:#ffffff;
-  --c-surface2:#f8f5ef;
-  --c-panel:#f5f5f1;
-  --c-text:#000000;
-  --c-border:#000000;
-  --c-muted:#555555;
+  --c-surface2:#FAFAFC;
+  --c-panel:#ECECF1;
+  --c-text:#15151A;
+  --c-border:#15151A;
+  --c-muted:#5C5C6B;
 
   /* Brand accents */
-  --c-primary:#FFDE59;
-  --c-pink:#FF90E8;
-  --c-blue:#2D7DD2;
-  --c-accent:#23C9FF;
-  --c-green:#00C853;
-  --c-orange:#FF8C00;
-  --c-red:#E63329;
-  --c-purple:#9966FF;
-  --c-yellow:#FFE066;
+  --c-primary:#5B5BD6;
+  --c-pink:#F272B6;
+  --c-blue:#2F6FED;
+  --c-accent:#00B8D9;
+  --c-green:#10B981;
+  --c-orange:#F97316;
+  --c-red:#E03131;
+  --c-purple:#7C3AED;
+  --c-yellow:#FACC15;
 
   /* Status colors */
-  --c-success:#00C853;
-  --c-danger:#E63329;
-  --c-warn:#FF8C00;
-  --c-info:#23C9FF;
+  --c-success:#10B981;
+  --c-danger:#E03131;
+  --c-warn:#F97316;
+  --c-info:#00B8D9;
 
   /* Lines & shadows */
   --bw:3px;
@@ -54,30 +54,30 @@
   --bottom-h:180px;
 
   /* Motion */
-  --theme-transition:background .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease;
+  --theme-transition:none;
   --grain-opacity:.04;
   --radius:0;
 }
 
-/* Dark theme — full token override */
+/* Dark theme: full token override */
 [data-theme="dark"]{
-  --c-bg:#0e0e0e;
-  --c-surface:#161616;
-  --c-surface2:#1c1c1c;
-  --c-panel:#141414;
-  --c-text:#f0f0e0;
-  --c-border:#e8e8e0;
-  --c-muted:#9a9a90;
+  --c-bg:#101014;
+  --c-surface:#18181F;
+  --c-surface2:#1F1F28;
+  --c-panel:#131318;
+  --c-text:#F2F2F8;
+  --c-border:#EAEAF2;
+  --c-muted:#A0A0B0;
 
-  --c-primary:#FFDE59;
-  --c-pink:#FF90E8;
+  --c-primary:#6E6CD8;
+  --c-pink:#F272B6;
   --c-blue:#5BA6F0;
   --c-accent:#5BD6FF;
   --c-green:#3DDC84;
-  --c-orange:#FFA94D;
+  --c-orange:#FB923C;
   --c-red:#FF5C5C;
   --c-purple:#B591FF;
-  --c-yellow:#FFE066;
+  --c-yellow:#FACC15;
 
   --c-success:#3DDC84;
   --c-danger:#FF5C5C;
@@ -138,17 +138,17 @@ small{font-size:.85em}
 /* ----- Buttons -------------------------------------------------------- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--c-surface);border:var(--bw) solid var(--c-border);
+  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
   padding:11px 20px;font-family:var(--font-ui);font-weight:700;
   text-transform:uppercase;cursor:pointer;box-shadow:var(--shadow-sm);
   font-size:12px;letter-spacing:.5px;color:var(--c-text);
-  transition:transform .12s ease,box-shadow .12s ease,background .15s;
+  transition:none;
   user-select:none;white-space:nowrap;
 }
-.btn:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow)}
-.btn:active{transform:translate(1px,1px);box-shadow:var(--shadow-active)}
+.btn:hover{box-shadow:var(--shadow)}
+.btn:active{box-shadow:var(--shadow-active)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--shadow-sm)}
-.btn-primary{background:var(--c-primary);color:#000}
+.btn-primary{background:var(--c-primary);color:#fff}
 .btn-danger{background:var(--c-danger);color:#fff}
 .btn-success{background:var(--c-success);color:#000}
 .btn-info{background:var(--c-info);color:#000}
@@ -167,7 +167,7 @@ small{font-size:.85em}
   padding:3px 8px;font-size:10px;font-weight:700;
   font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.5px;
 }
-.badge-primary{background:var(--c-primary);color:#000}
+.badge-primary{background:var(--c-primary);color:#fff}
 .badge-success{background:var(--c-success);color:#000}
 .badge-danger{background:var(--c-danger);color:#fff}
 .badge-info{background:var(--c-info);color:#000}
@@ -176,10 +176,10 @@ small{font-size:.85em}
   background:var(--c-surface2);border:2px solid var(--c-border);
   padding:6px 12px;font-family:var(--font-ui);font-size:11px;
   cursor:pointer;user-select:none;text-transform:uppercase;
-  transition:transform .1s,box-shadow .1s;
+  transition:none;
 }
-.chip:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--c-border)}
-.chip.active{background:var(--c-primary);color:#000}
+.chip:hover{box-shadow:2px 2px 0 var(--c-border)}
+.chip.active{background:var(--c-primary);color:#fff}
 
 /* ----- Forms ---------------------------------------------------------- */
 input[type="text"],input[type="number"],input[type="email"],
@@ -255,7 +255,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
   border-right:1px solid transparent;border-left:1px solid transparent;
 }
 .hud-menu-btn:hover,.hud-menu.open .hud-menu-btn{
-  background:var(--c-primary);color:#000;
+  background:var(--c-primary);color:#fff;
 }
 .hud-menu.open .hud-menu-btn{
   border-left-color:var(--c-border);
@@ -263,7 +263,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 }
 .hud-dropdown{
   position:absolute;top:100%;left:0;min-width:240px;
-  background:var(--c-surface);border:var(--bw) solid var(--c-border);
+  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
   box-shadow:var(--shadow);padding:6px 0;
   /* Very high z-index so the dropdown is always above app content
      (toolbars, sidebars, viewports, etc.). */
@@ -278,7 +278,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
   color:var(--c-text);background:transparent;border:none;width:100%;
   text-align:left;text-transform:none;letter-spacing:0;
 }
-.hud-item:hover{background:var(--c-primary);color:#000}
+.hud-item:hover{background:var(--c-primary);color:#fff}
 .hud-item:disabled{opacity:.4;cursor:not-allowed}
 .hud-item:disabled:hover{background:transparent;color:var(--c-text)}
 .hud-item .hud-kbd{
@@ -306,17 +306,17 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 /* ----- HUD search overlay (Alt-triggered) ---------------------------- */
 .hud-overlay{
   position:fixed;inset:0;z-index:9000;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  background:rgba(10,10,16,.5);backdrop-filter:blur(6px);
   display:flex;align-items:flex-start;justify-content:center;
   padding-top:15vh;opacity:0;visibility:hidden;
-  transition:opacity .18s ease,visibility .18s ease;
+  transition:none;
 }
 .hud-overlay.open{opacity:1;visibility:visible}
 .hud-search-box{
   width:min(640px,90vw);background:var(--c-surface);
   border:var(--bw) solid var(--c-border);
   box-shadow:var(--shadow-lg);transform:translateY(-12px);
-  transition:transform .18s ease;
+  transition:none;
 }
 .hud-overlay.open .hud-search-box{transform:translateY(0)}
 .hud-search-input{
@@ -334,7 +334,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
   padding:10px 20px;cursor:pointer;border-bottom:1px solid var(--c-border);
   font-family:var(--font-ui);font-size:12px;
 }
-.hud-result:hover,.hud-result.selected{background:var(--c-primary);color:#000}
+.hud-result:hover,.hud-result.selected{background:var(--c-primary);color:#fff}
 .hud-result-group{font-size:10px;text-transform:uppercase;opacity:.6;letter-spacing:.5px}
 .hud-result-kbd{
   font-family:var(--font-ui);font-size:10px;
@@ -345,15 +345,15 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 /* ----- Shortcuts overlay ---------------------------------------------- */
 .shortcuts-overlay{
   position:fixed;inset:0;z-index:9100;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  background:rgba(10,10,16,.55);backdrop-filter:blur(6px);
   display:flex;align-items:center;justify-content:center;
   padding:20px;opacity:0;visibility:hidden;
-  transition:opacity .18s ease,visibility .18s ease;
+  transition:none;
 }
 .shortcuts-overlay.open{opacity:1;visibility:visible}
 .shortcuts-modal{
   width:min(720px,95vw);max-height:88vh;overflow-y:auto;
-  background:var(--c-surface);border:var(--bw) solid var(--c-border);
+  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
   box-shadow:var(--shadow-lg);padding:28px;
 }
 .shortcuts-modal h2{
@@ -383,31 +383,31 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 /* ----- Modal ---------------------------------------------------------- */
 .modal-overlay{
   position:fixed;inset:0;z-index:8500;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(3px);
+  background:rgba(10,10,16,.5);backdrop-filter:blur(6px);
   display:flex;align-items:center;justify-content:center;
   padding:20px;opacity:0;visibility:hidden;
-  transition:opacity .15s ease,visibility .15s ease;
+  transition:none;
 }
 .modal-overlay.open{opacity:1;visibility:visible}
 .modal{
-  background:var(--c-surface);border:var(--bw) solid var(--c-border);
+  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
   box-shadow:var(--shadow-lg);width:min(540px,95vw);
   max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;
-  transform:translateY(-10px);transition:transform .15s ease;
+  transform:none;
 }
 .modal-overlay.open .modal{transform:translateY(0)}
 .modal-header{
   display:flex;align-items:center;justify-content:space-between;
   padding:14px 20px;border-bottom:var(--bw-sm) solid var(--c-border);
-  background:var(--c-primary);color:#000;
+  background:var(--c-primary);color:#fff;
 }
 .modal-header h3{font-size:16px}
 .modal-close{
-  background:transparent;border:var(--bw-sm) solid #000;cursor:pointer;
+  background:transparent;border:var(--bw-sm) solid var(--c-border);cursor:pointer;
   font-family:var(--font-ui);font-weight:700;font-size:14px;
-  width:28px;height:28px;display:grid;place-items:center;color:#000;
+  width:28px;height:28px;display:grid;place-items:center;color:var(--c-text);
 }
-.modal-close:hover{background:#000;color:var(--c-primary)}
+.modal-close:hover{background:var(--c-text);color:var(--c-surface)}
 .modal-body{padding:20px;flex:1}
 .modal-footer{
   display:flex;justify-content:flex-end;gap:8px;
@@ -427,22 +427,20 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
   padding:10px 16px;font-family:var(--font-ui);font-size:12px;
   box-shadow:var(--shadow-sm);pointer-events:auto;
   display:inline-flex;align-items:center;gap:8px;
-  animation:toast-in .25s ease;
+
   text-transform:uppercase;letter-spacing:.5px;font-weight:700;
 }
 .toast.success{background:var(--c-success);color:#000}
 .toast.danger{background:var(--c-danger);color:#fff}
 .toast.warn{background:var(--c-warn);color:#000}
 .toast.info{background:var(--c-info);color:#000}
-@keyframes toast-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes toast-out{to{opacity:0;transform:translateY(12px)}}
 
 /* ----- Loading screen ------------------------------------------------- */
 .loading-screen{
   position:fixed;inset:0;z-index:9999;background:var(--c-bg);
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;gap:16px;
-  transition:opacity .35s ease,visibility .35s ease;
+  transition:none;
 }
 .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .loading-logo{
@@ -450,12 +448,10 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
   background:var(--c-primary);padding:10px 20px;
   border:var(--bw) solid var(--c-border);
   box-shadow:4px 4px 0 var(--c-border);color:#000;
-  transform:rotate(-2deg);animation:load-bounce 1s ease-in-out infinite;
+  transform:rotate(-2deg);
 }
 .loading-bar{width:120px;height:6px;background:var(--c-border);overflow:hidden}
-.loading-bar-fill{height:100%;background:var(--c-success);width:0;animation:load-fill .8s ease forwards}
-@keyframes load-bounce{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-6px)}}
-@keyframes load-fill{0%{width:0}100%{width:100%}}
+.loading-bar-fill{height:100%;background:var(--c-success);width:0}
 
 /* ----- Scroll progress bar (portal) ---------------------------------- */
 .scroll-progress{

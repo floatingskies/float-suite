@@ -1,5 +1,5 @@
 /* =========================================================================
-   FLOAT SUITE — Shared exporters (PDF, DOCX, ODT)
+   FLOAT SUITE: Shared exporters (PDF, DOCX, ODT)
    Loads external libs lazily from CDN on first use:
    - jsPDF            https://cdnjs.cloudflare.com/ajax/libs/jspdf/...
    - docx             https://cdnjs.cloudflare.com/ajax/libs/docx/...

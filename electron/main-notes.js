@@ -1,5 +1,5 @@
 /* =========================================================================
-   Notebase — Electron main process
+   Notebase: Electron main process
    ========================================================================= */
 const { app, BrowserWindow, shell, Menu, dialog } = require('electron');
 const path = require('path');
@@ -48,7 +48,7 @@ function buildMenu(){
     { label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
     { label: 'View', submenu: [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }] },
     { label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, { type: 'separator' }, { role: 'front' }] },
-    { label: 'Help', submenu: [{ label: 'About Notebase', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Notebase', message: 'Notebase 1.0', detail: 'Local-first Markdown knowledge base — Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'notes-512.png') }); } }] }
+    { label: 'Help', submenu: [{ label: 'About Notebase', click: () => { dialog.showMessageBox(mainWindow, { type: 'info', title: 'Notebase', message: 'Notebase 1.0', detail: 'Local-first Markdown knowledge base: Float Suite\n\n© 2025 Arik Closs Novais', buttons: ['OK'], icon: path.join(__dirname, '..', 'favicons', 'notes-512.png') }); } }] }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }

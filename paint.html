@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paint.web — Float Suite</title>
+<title>Paint.web | Float Suite</title>
 <link rel="icon" type="image/svg+xml" href="favicons/paint.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/paint-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/paint-16.png">
@@ -47,12 +47,12 @@ body{display:flex;flex-direction:column}
 .tool-btn{
   width:42px;height:42px;background:var(--c-surface);border:var(--bw-sm) solid var(--c-border);
   cursor:pointer;display:grid;place-items:center;font-size:14px;color:var(--c-text);
-  transition:transform .1s,box-shadow .1s,background .1s;
+  transition:none;
   box-shadow:2px 2px 0 var(--c-border);
 }
 .tool-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--c-border)}
 .tool-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--c-border)}
-.tool-btn.active{background:var(--c-primary);color:#000}
+.tool-btn.active{background:var(--c-primary);color:#fff}
 .tool-btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none}
 
 /* Color swatches */
@@ -71,16 +71,16 @@ body{display:flex;flex-direction:column}
 .brush-preview{height:30px;background:var(--c-surface);border:1px solid var(--c-border);display:grid;place-items:center;overflow:hidden}
 
 /* Viewport */
-.viewport{flex:1;position:relative;overflow:hidden;background:var(--c-bg);background-image:linear-gradient(45deg,var(--c-surface2) 25%,transparent 25%),linear-gradient(-45deg,var(--c-surface2) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--c-surface2) 75%),linear-gradient(-45deg,transparent 75%,var(--c-surface2) 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.viewport{flex:1;position:relative;overflow:hidden;touch-action:none;background:var(--c-bg);background-image:linear-gradient(45deg,var(--c-surface2) 25%,transparent 25%),linear-gradient(-45deg,var(--c-surface2) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--c-surface2) 75%),linear-gradient(-45deg,transparent 75%,var(--c-surface2) 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
 #canvas-wrapper{position:absolute;left:50%;top:50%;transform-origin:center center;will-change:transform}
-#canvas-wrapper canvas, #canvas-wrapper .layer-canvas{position:absolute;left:0;top:0;display:block;image-rendering:pixelated}
+#canvas-wrapper canvas, #canvas-wrapper .layer-canvas{position:absolute;left:0;top:0;display:block;image-rendering:pixelated;touch-action:none}
 #canvas-wrapper .layer-canvas{pointer-events:none}
 #canvas-wrapper .layer-canvas.active{pointer-events:auto}
 #selection-overlay{position:absolute;left:0;top:0;pointer-events:none;border:1px dashed var(--c-info);background:rgba(35,201,255,.1);display:none}
 #selection-overlay.active{display:block}
 
 #ctx-cursor{position:absolute;width:0;height:0;pointer-events:none;border:1px solid #000;box-shadow:0 0 0 1px #fff;border-radius:50%;display:none;z-index:100}
-#pan-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:var(--c-text);color:var(--c-bg);padding:6px 12px;font-family:var(--font-ui);font-size:11px;opacity:0;transition:opacity .2s;pointer-events:none}
+#pan-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:var(--c-text);color:var(--c-bg);padding:6px 12px;font-family:var(--font-ui);font-size:11px;opacity:0;transition:none;pointer-events:none}
 #pan-indicator.visible{opacity:1}
 
 /* Right panel */
@@ -89,7 +89,7 @@ body{display:flex;flex-direction:column}
 .panel-tab{flex:1;padding:8px;background:transparent;border:none;font-family:var(--font-ui);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;border-right:1px solid var(--c-border);color:var(--c-text)}
 .panel-tab:last-child{border-right:none}
 .panel-tab:hover{background:var(--c-surface2)}
-.panel-tab.active{background:var(--c-primary);color:#000}
+.panel-tab.active{background:var(--c-primary);color:#fff}
 .panel-content{flex:1;overflow-y:auto;padding:8px}
 .panel-section{display:none}
 .panel-section.active{display:block}
@@ -97,7 +97,7 @@ body{display:flex;flex-direction:column}
 /* Layers */
 .layer-item{display:flex;align-items:center;gap:6px;padding:6px;background:var(--c-surface);border:2px solid var(--c-border);margin-bottom:6px;cursor:pointer;font-family:var(--font-ui);font-size:11px}
 .layer-item:hover{background:var(--c-surface2)}
-.layer-item.active{background:var(--c-primary);color:#000}
+.layer-item.active{background:var(--c-primary);color:#fff}
 .layer-thumb{width:32px;height:32px;background:#fff;border:1px solid var(--c-border);background-image:linear-gradient(45deg,#ccc 25%,transparent 25%),linear-gradient(-45deg,#ccc 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ccc 75%),linear-gradient(-45deg,transparent 75%,#ccc 75%);background-size:8px 8px;flex-shrink:0}
 .layer-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .layer-vis{cursor:pointer;font-size:11px}
@@ -107,7 +107,7 @@ body{display:flex;flex-direction:column}
 /* History */
 .history-item{padding:6px;background:var(--c-surface);border:1px solid var(--c-border);margin-bottom:4px;font-family:var(--font-ui);font-size:11px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .history-item:hover{background:var(--c-surface2)}
-.history-item.current{background:var(--c-primary);color:#000}
+.history-item.current{background:var(--c-primary);color:#fff}
 .history-item.future{opacity:.5}
 
 /* Info */
@@ -130,7 +130,7 @@ body{display:flex;flex-direction:column}
 /* Status bar in menubar */
 .menubar-status{margin-left:auto;display:flex;gap:14px;padding-right:10px;font-family:var(--font-ui);font-size:10px;align-items:center}
 .menubar-status .status-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;background:var(--c-surface);border:1px solid var(--c-border)}
-.menubar-status .status-chip.active{background:var(--c-primary);color:#000}
+.menubar-status .status-chip.active{background:var(--c-primary);color:#fff}
 
 /* Rulers */
 .ruler{position:absolute;background:var(--c-surface);z-index:5;overflow:hidden;pointer-events:none}
@@ -160,7 +160,7 @@ body{display:flex;flex-direction:column}
 .export-format-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
 .export-format{padding:10px 6px;background:var(--c-surface);border:var(--bw-sm) solid var(--c-border);cursor:pointer;text-align:center;font-family:var(--font-ui);font-size:10px;font-weight:700;text-transform:uppercase}
 .export-format:hover{background:var(--c-surface2)}
-.export-format.active{background:var(--c-primary);color:#000}
+.export-format.active{background:var(--c-primary);color:#fff}
 .export-preview-box{margin:12px 0;background:var(--c-bg);border:2px solid var(--c-border);padding:10px;text-align:center;max-height:240px;overflow:auto}
 .export-preview-box img{max-width:100%;height:auto;border:1px solid var(--c-border)}
 .export-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -202,7 +202,7 @@ body{display:flex;flex-direction:column}
   <nav class="toolbar" aria-label="Tools">
     <div class="tool-group">
       <div class="tool-group-label" data-i18n="common.tool">Tool</div>
-      <button class="tool-btn active" data-tool="move" title="Move (H)"><i class="fa-solid fa-arrows-up-down-left-right"></i></button>
+      <button class="tool-btn active" data-tool="move" title="Move (V)"><i class="fa-solid fa-arrows-up-down-left-right"></i></button>
       <button class="tool-btn" data-tool="select-rect" title="Rectangular Select (M)"><i class="fa-solid fa-vector-square"></i></button>
       <button class="tool-btn" data-tool="select-lasso" title="Lasso (L)"><i class="fa-solid fa-draw-polygon"></i></button>
       <button class="tool-btn" data-tool="select-magic" title="Magic Wand (W)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
@@ -224,7 +224,7 @@ body{display:flex;flex-direction:column}
       <button class="tool-btn" data-tool="ellipse" title="Ellipse (O)"><i class="fa-regular fa-circle"></i></button>
       <button class="tool-btn" data-tool="polygon" title="Polygon"><i class="fa-solid fa-shapes"></i></button>
       <button class="tool-btn" data-tool="crop" title="Crop (C)"><i class="fa-solid fa-crop"></i></button>
-      <button class="tool-btn" data-tool="pan-layer" title="Pan Layer (V)"><i class="fa-solid fa-hand"></i></button>
+      <button class="tool-btn" data-tool="pan-layer" title="Pan Layer (H)"><i class="fa-solid fa-hand"></i></button>
     </div>
     <div class="tool-group">
       <div class="tool-group-label">Color</div>
@@ -316,7 +316,7 @@ body{display:flex;flex-direction:column}
         <div id="history-list"></div>
       </div>
       <div class="panel-section" id="pane-info">
-        <div class="info-row"><span class="key">CANVAS</span><span id="info-canvas">—</span></div>
+        <div class="info-row"><span class="key">CANVAS</span><span id="info-canvas">(none)</span></div>
         <div class="info-row"><span class="key">LAYERS</span><span id="info-layers">0</span></div>
         <div class="info-row"><span class="key">MEMORY</span><span id="info-memory">0 KB</span></div>
         <div class="info-row"><span class="key">ZOOM</span><span id="info-zoom">100%</span></div>
@@ -341,7 +341,7 @@ body{display:flex;flex-direction:column}
       <span>Cursor</span><span id="bb-cursor">0, 0</span>
       <span>Zoom</span><span id="bb-zoom">100%</span>
       <span>Tool</span><span id="bb-tool">move</span>
-      <span>Active layer</span><span id="bb-layer">—</span>
+      <span>Active layer</span><span id="bb-layer">(none)</span>
     </div>
   </div>
 </div>
@@ -518,7 +518,7 @@ body{display:flex;flex-direction:column}
   const I = FloatI18n;
 
   /* ============================================================
-     PAINT.WEB — main app object
+     PAINT.WEB: main app object
      ============================================================ */
   const App = {
     /* ---- State ---- */
@@ -622,7 +622,7 @@ body{display:flex;flex-direction:column}
             {i18n:'paint.flatten', cmd:'edit.flatten'},
           ]},
           {i18n:'common.tool', items:[
-            {i18n:'paint.tool_move', shortcut:{key:'H'}, cmd:'tool.move'},
+            {i18n:'paint.tool_move', shortcut:{key:'V'}, cmd:'tool.move'},
             {i18n:'paint.tool_brush', shortcut:{key:'B'}, cmd:'tool.brush'},
             {i18n:'paint.tool_pencil', shortcut:{key:'P'}, cmd:'tool.pencil'},
             {i18n:'paint.tool_eraser', shortcut:{key:'E'}, cmd:'tool.eraser'},
@@ -753,7 +753,7 @@ body{display:flex;flex-direction:column}
       Float.addShortcut({key:'+', mod:['Ctrl'], fn:() => this.setZoom(this.zoom * 1.2), label:I.t('common.zoom_in'), group:'view'});
       Float.addShortcut({key:'-', mod:['Ctrl'], fn:() => this.setZoom(this.zoom / 1.2), label:I.t('common.zoom_out'), group:'view'});
       Float.addShortcut({key:'F1', fn:() => this.centerCanvas(), label:I.t('paint.fit_view'), group:'view'});
-      Float.addShortcut({key:'H', fn:() => this.setTool('move'), label:I.t('paint.tool_move'), group:'tools'});
+      Float.addShortcut({key:'V', fn:() => this.setTool('move'), label:I.t('paint.tool_move'), group:'tools'});
       Float.addShortcut({key:'B', fn:() => this.setTool('brush'), label:I.t('paint.tool_brush'), group:'tools'});
       Float.addShortcut({key:'P', fn:() => this.setTool('pencil'), label:I.t('paint.tool_pencil'), group:'tools'});
       Float.addShortcut({key:'E', fn:() => this.setTool('eraser'), label:I.t('paint.tool_eraser'), group:'tools'});
@@ -764,6 +764,7 @@ body{display:flex;flex-direction:column}
       Float.addShortcut({key:'L', fn:() => this.setTool('select-lasso'), label:I.t('paint.tool_select_lasso'), group:'tools'});
       Float.addShortcut({key:'W', fn:() => this.setTool('select-magic'), label:I.t('paint.tool_select_magic'), group:'tools'});
       Float.addShortcut({key:'C', fn:() => this.setTool('crop'), label:I.t('paint.tool_crop'), group:'tools'});
+      Float.addShortcut({key:'H', fn:() => this.setTool('pan-layer'), label:'Hand/Pan', group:'tools'});
       Float.addShortcut({key:'U', fn:() => this.setTool('rect-shape'), label:I.t('paint.tool_rect'), group:'tools'});
       Float.addShortcut({key:'O', fn:() => this.setTool('ellipse'), label:I.t('paint.tool_ellipse'), group:'tools'});
       Float.addShortcut({key:'[', fn:() => this.setBrushSize(this.brushSize - 3), label:'Smaller brush', group:'tools'});
@@ -1024,7 +1025,7 @@ body{display:flex;flex-direction:column}
     drawBrushDot(ctx, x, y, opts){
       opts = opts || {};
       const angle = opts.angle != null ? opts.angle : 0;
-      const r = Math.max(0.5, this.brushSize / 2);
+      const r = Math.max(0.5, this.brushSize / 2 * (this._pressureScale || 1));
       const hardness = this.brushHardness / 100;
       const op = (this.brushOpacity / 100) * this.alpha * (this.brushFlow / 100);
       const type = this.brushType || 'round';
@@ -1044,7 +1045,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'calligraphy':
-          // Angled flat brush — looks like a calligraphy pen.
+          // Angled flat brush: looks like a calligraphy pen.
           ctx.translate(x, y);
           ctx.rotate(angle - Math.PI / 4);
           ctx.fillStyle = color;
@@ -1054,7 +1055,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'airbrush':
-          // Spray of small dots — density proportional to brush size.
+          // Spray of small dots: density proportional to brush size.
           ctx.fillStyle = color;
           const density = Math.max(5, Math.floor(r * r * 0.3));
           for(let i = 0; i < density; i++){
@@ -1069,7 +1070,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'marker':
-          // Flat-top marker — high coverage, slight transparency.
+          // Flat-top marker: high coverage, slight transparency.
           ctx.globalAlpha = Math.min(1, op * 0.7);
           ctx.fillStyle = color;
           ctx.beginPath();
@@ -1078,7 +1079,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'watercolor':
-          // Soft, low-opacity, with irregular edge — builds up gradually.
+          // Soft, low-opacity, with irregular edge: builds up gradually.
           ctx.globalAlpha = Math.min(1, op * 0.25);
           const wcGrad = ctx.createRadialGradient(x, y, 0, x, y, r * 1.2);
           wcGrad.addColorStop(0, color);
@@ -1101,7 +1102,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'pixel':
-          // Hard square — no anti-aliasing, aligned to grid.
+          // Hard square: no anti-aliasing, aligned to grid.
           ctx.imageSmoothingEnabled = false;
           ctx.fillStyle = color;
           const px = Math.floor(x - r);
@@ -1110,7 +1111,7 @@ body{display:flex;flex-direction:column}
           break;
 
         case 'crayon':
-          // Textured dots — like a crayon rubbing.
+          // Textured dots: like a crayon rubbing.
           ctx.fillStyle = color;
           ctx.globalAlpha = Math.min(1, op * 0.6);
           const crayonDots = Math.max(8, Math.floor(r * r * 0.2));
@@ -1126,7 +1127,7 @@ body{display:flex;flex-direction:column}
 
         case 'round':
         default:
-          // Soft round brush — the classic. Radial gradient from solid to transparent.
+          // Soft round brush: the classic. Radial gradient from solid to transparent.
           if(hardness >= 0.95){
             ctx.fillStyle = color;
             ctx.beginPath();
@@ -1234,6 +1235,8 @@ body{display:flex;flex-direction:column}
 
     onPointerDown(e){
       if(e.button !== 0) return;
+      // Stylus pressure (defaults to 1 for mouse/finger)
+      this._pressureScale = (e.pointerType === 'pen' && e.pressure > 0) ? Math.max(0.05, e.pressure) : 1;
       const layer = this.getLayer();
       if(!layer) return;
       const c = this.getCoords(e);
@@ -1326,6 +1329,8 @@ body{display:flex;flex-direction:column}
 
     onPointerMove(e){
       if(!this.isDrawing) return;
+      // Stylus pressure updates while drawing
+      if(e.pointerType === 'pen' && e.pressure > 0) this._pressureScale = Math.max(0.05, e.pressure);
       const layer = this.getLayer();
       if(!layer) return;
       const c = this.getCoords(e);
@@ -1581,7 +1586,7 @@ body{display:flex;flex-direction:column}
     cloneDraw(layer, x, y){
       if(!this.cloneState.active || !this.cloneOffset) return;
       const src = this.getLayer(); // source is the active layer
-      const r = Math.max(0.5, this.brushSize / 2);
+      const r = Math.max(0.5, this.brushSize / 2 * (this._pressureScale || 1));
       const sx = x - this.cloneOffset.x;
       const sy = y - this.cloneOffset.y;
       layer.ctx.save();
@@ -1596,7 +1601,7 @@ body{display:flex;flex-direction:column}
 
     smudgeAt(layer, x, y){
       if(!this.smudgeBuffer) return;
-      const r = Math.max(0.5, this.brushSize / 2);
+      const r = Math.max(0.5, this.brushSize / 2 * (this._pressureScale || 1));
       const sx = clamp(x - r, 0, this.width - this.brushSize);
       const sy = clamp(y - r, 0, this.height - this.brushSize);
       // Smudge: blend current location with previous buffer
@@ -1736,7 +1741,7 @@ body{display:flex;flex-direction:column}
       const nx = 0, ny = 0, nw = this.width, nh = this.height;
       // Compute the inverted box (top + bottom + left + right strips merged into a bounding box minus the original)
       // For simplicity, we'll set selection to the inverse bounding region (all area not in selection).
-      // Easiest approach: select everything except the current rect — represent as union of 4 strips.
+      // Easiest approach: select everything except the current rect: represent as union of 4 strips.
       // Since we only support a single rect, we'll just select the area outside.
       // To keep things simple and useful, we invert to the "outer" rectangle relative to the canvas.
       // For pixel-accurate invert, we'd need a mask. We'll do that.
@@ -2170,7 +2175,7 @@ body{display:flex;flex-direction:column}
       });
       // Active layer name in bottom bar
       const al = this.getLayer();
-      $('#bb-layer').textContent = al ? al.name : '—';
+      $('#bb-layer').textContent = al ? al.name : '';
       this.updateLayerProps();
     },
     applyLayerStyle(l){
@@ -2398,7 +2403,7 @@ body{display:flex;flex-direction:column}
       }else if(fmt === 'odt'){
         const tmp = el('div', {},
           el('p', {}, 'Painting: ' + name),
-          el('p', {}, 'Created with Paint.web — Float Suite.')
+          el('p', {}, 'Created with Paint.web | Float Suite.')
         );
         FloatExport.htmlToODT(tmp, name, {title:name})
           .then(() => { toast(I.t('paint.toast_export_odt'), 'success'); closeModal('modal-export'); })
@@ -2436,7 +2441,7 @@ body{display:flex;flex-direction:column}
       // White background so dark colors show up
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, c.width, c.height);
-      // Draw a stroke preview — three dots at different sizes
+      // Draw a stroke preview: three dots at different sizes
       const cy = c.height / 2;
       const sizes = [Math.min(16, this.brushSize / 2), Math.min(10, this.brushSize / 3), Math.min(6, this.brushSize / 4)];
       const positions = [c.width * 0.25, c.width * 0.5, c.width * 0.75];
@@ -2469,7 +2474,7 @@ body{display:flex;flex-direction:column}
             }));
           }
         }catch(e){
-          // Quota exceeded — silently skip
+          // Quota exceeded: silently skip
         }
       };
       this.autosaveTimer = setInterval(save, 30000);
@@ -2718,7 +2723,7 @@ body{display:flex;flex-direction:column}
 
     /* ---- Keyboard ---- */
     bindKeyboard(){
-      // Ctrl+0 — we need to handle because Ctrl+0 might be intercepted by float.js
+      // Ctrl+0: we need to handle because Ctrl+0 might be intercepted by float.js
       // Already registered in bindHUD
     }
   };

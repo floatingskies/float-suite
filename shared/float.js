@@ -1,5 +1,5 @@
 /* =========================================================================
-   FLOAT SUITE — Shared runtime
+   FLOAT SUITE: Shared runtime
    HUD (Ubuntu Unity style), theme manager, shortcuts registry, modal
    manager, toast helper, and a small DOM/Events utility layer.
 
@@ -236,12 +236,12 @@
   /* ----- Unity HUD ---------------------------------------------------- */
   /*
      HUD has two parts:
-     1) Menubar — top of the app with File/Edit/View/etc. menus that drop
+     1) Menubar: top of the app with File/Edit/View/etc. menus that drop
         down on click or Alt+underlined-letter.
-     2) Search overlay — Alt (or Ctrl+Space) opens a command palette
+     2) Search overlay: Alt (or Ctrl+Space) opens a command palette
         where the user types a command name and Enter executes it.
      Commands are registered via `registerCommand({id,label,i18n,group,run,shortcut})`.
-     Either `label` or `i18n` is required — `i18n` is resolved live against
+     Either `label` or `i18n` is required: `i18n` is resolved live against
      the current language so labels follow the active locale.
   */
   const _commands = []; // {id,label,i18n,group,run,shortcut,icon}
@@ -356,7 +356,7 @@
     bar.appendChild(right);
 
     // Register outside-click + Escape handlers once for the whole document.
-    // These are global behaviours, not per-HUD — guard against duplicates.
+    // These are global behaviours, not per-HUD: guard against duplicates.
     if(!_hudListenersBound){
       document.addEventListener('click', closeAllMenus);
       document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAllMenus(); });

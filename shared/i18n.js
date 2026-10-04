@@ -1,5 +1,5 @@
 /* =========================================================================
-   FLOAT SUITE — Internationalization
+   FLOAT SUITE: Internationalization
    Languages: en, pt-BR, pt-PT, it, fr, ja, de, uk
    ========================================================================= */
 (function(global){
@@ -87,7 +87,7 @@
       'common.check_updates':'Check for Updates','common.about_float':'About Float Suite',
 
       /* ---- Portal specific ---- */
-      'portal.tagline':'Create without limits.','portal.subtitle':'Four offline-first tools for academic and creative work. No accounts. No cloud. No tracking.',
+      'portal.tagline':'Create without limits.','portal.subtitle':'Four offline-first tools for academic and creative work.',
       'portal.launch':'Open the Suite','portal.whats_inside':"What's inside",
       'portal.apps':'Apps','portal.features':'Features','portal.changelog':"What's New",
       'portal.stats_apps':'Creative Apps','portal.stats_offline':'% Offline',
@@ -150,7 +150,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 print 2480×3508',
-      'paint.toast_magic_implemented':'Magic Wand ready — click to select similar pixels',
+      'paint.toast_magic_implemented':'Magic Wand ready: click to select similar pixels',
       'paint.toast_smudge_fixed':'Smudge tool calibrated',
       'paint.toast_blur_fixed':'Blur tool working',
       'paint.toast_invert_sel':'Selection inverted',
@@ -382,7 +382,7 @@
       'common.docs':'Docs','common.community':'Comunidade','common.report_bug':'Reportar bug',
       'common.check_updates':'Verificar atualizações','common.about_float':'Sobre o Float Suite',
 
-      'portal.tagline':'Crie sem limites.','portal.subtitle':'Quatro ferramentas offline para trabalho acadêmico e criativo. Sem contas. Sem nuvem. Sem rastreamento.',
+      'portal.tagline':'Crie sem limites.','portal.subtitle':'Quatro ferramentas offline para trabalho acadêmico e criativo.',
       'portal.launch':'Abrir o suite','portal.whats_inside':'O que tem dentro',
       'portal.apps':'Apps','portal.features':'Recursos','portal.changelog':'Novidades',
       'portal.stats_apps':'Apps criativos','portal.stats_offline':'% Offline',
@@ -443,7 +443,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 impressão 2480×3508',
-      'paint.toast_magic_implemented':'Varinha mágica pronta — clique para selecionar pixels parecidos',
+      'paint.toast_magic_implemented':'Varinha mágica pronta: clique para selecionar pixels parecidos',
       'paint.toast_smudge_fixed':'Ferramenta borrar calibrada',
       'paint.toast_blur_fixed':'Desfoque funcionando',
       'paint.toast_invert_sel':'Seleção invertida',
@@ -673,7 +673,7 @@
       'common.docs':'Docs','common.community':'Comunidade','common.report_bug':'Reportar erro',
       'common.check_updates':'Verificar atualizações','common.about_float':'Sobre o Float Suite',
 
-      'portal.tagline':'Crie sem limites.','portal.subtitle':'Quatro ferramentas offline para trabalho académico e criativo. Sem contas. Sem nuvem. Sem rastreamento.',
+      'portal.tagline':'Crie sem limites.','portal.subtitle':'Quatro ferramentas offline para trabalho académico e criativo.',
       'portal.launch':'Abrir a suite','portal.whats_inside':'O que está dentro',
       'portal.apps':'Apps','portal.features':'Funcionalidades','portal.changelog':'Novidades',
       'portal.stats_apps':'Apps criativos','portal.stats_offline':'% Offline',
@@ -736,7 +736,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 impressão 2480×3508',
-      'paint.toast_magic_implemented':'Varinha mágica pronta — clique para selecionar pixels semelhantes',
+      'paint.toast_magic_implemented':'Varinha mágica pronta: clique para selecionar pixels semelhantes',
       'paint.toast_smudge_fixed':'Ferramenta borrar calibrada',
       'paint.toast_blur_fixed':'Desfoque a funcionar',
       'paint.toast_invert_sel':'Seleção invertida',
@@ -966,7 +966,7 @@
       'common.docs':'Documentazione','common.community':'Comunità','common.report_bug':'Segnala bug',
       'common.check_updates':'Cerca aggiornamenti','common.about_float':'Info su Float Suite',
 
-      'portal.tagline':'Crea senza limiti.','portal.subtitle':'Quattro strumenti offline per lavoro accademico e creativo. Nessun account. Nessun cloud. Nessun tracciamento.',
+      'portal.tagline':'Crea senza limiti.','portal.subtitle':'Quattro strumenti offline per lavoro accademico e creativo.',
       'portal.launch':'Apri la suite','portal.whats_inside':'Cosa contiene',
       'portal.apps':'App','portal.features':'Funzioni','portal.changelog':'Novità',
       'portal.stats_apps':'App creative','portal.stats_offline':'% Offline',
@@ -1026,7 +1026,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 stampa 2480×3508',
-      'paint.toast_magic_implemented':'Bacchetta magica pronta — clicca per selezionare pixel simili',
+      'paint.toast_magic_implemented':'Bacchetta magica pronta: clicca per selezionare pixel simili',
       'paint.toast_smudge_fixed':'Strumento sfuma calibrato',
       'paint.toast_blur_fixed':'Sfoca funzionante',
       'paint.toast_invert_sel':'Selezione invertita',
@@ -1256,7 +1256,7 @@
       'common.docs':'Documentation','common.community':'Communauté','common.report_bug':'Signaler un bug',
       'common.check_updates':'Vérifier les mises à jour','common.about_float':'À propos de Float Suite',
 
-      'portal.tagline':'Créez sans limites.','portal.subtitle':'Quatre outils hors ligne pour le travail académique et créatif. Sans compte. Sans cloud. Sans suivi.',
+      'portal.tagline':'Créez sans limites.','portal.subtitle':'Quatre outils hors ligne pour le travail académique et créatif.',
       'portal.launch':'Ouvrir la suite','portal.whats_inside':'Ce qu\'elle contient',
       'portal.apps':'Applications','portal.features':'Fonctionnalités','portal.changelog':'Nouveautés',
       'portal.stats_apps':'Applications créatives','portal.stats_offline':'% Hors ligne',
@@ -1316,7 +1316,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 impression 2480×3508',
-      'paint.toast_magic_implemented':'Baguette magique prête — cliquez pour sélectionner les pixels similaires',
+      'paint.toast_magic_implemented':'Baguette magique prête: cliquez pour sélectionner les pixels similaires',
       'paint.toast_smudge_fixed':'Outil doigt calibré',
       'paint.toast_blur_fixed':'Flou fonctionnel',
       'paint.toast_invert_sel':'Sélection inversée',
@@ -1546,7 +1546,7 @@
       'common.docs':'ドキュメント','common.community':'コミュニティ','common.report_bug':'バグ報告',
       'common.check_updates':'更新を確認','common.about_float':'Float Suite について',
 
-      'portal.tagline':'制限なく創造する。','portal.subtitle':'学術と創作のための4つのオフラインツール。アカウント不要。クラウド不要。追跡なし。',
+      'portal.tagline':'制限なく創造する。','portal.subtitle':'学術と創作のための4つのオフラインツール。',
       'portal.launch':'スイートを開く','portal.whats_inside':'中身を見る',
       'portal.apps':'アプリ','portal.features':'機能','portal.changelog':'新着情報',
       'portal.stats_apps':'クリエイティブアプリ','portal.stats_offline':'% オフライン',
@@ -1606,7 +1606,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 印刷 2480×3508',
-      'paint.toast_magic_implemented':'魔法の杖が利用可能 — 類似ピクセルを選択',
+      'paint.toast_magic_implemented':'魔法の杖が利用可能: 類似ピクセルを選択',
       'paint.toast_smudge_fixed':'指先ツールを調整',
       'paint.toast_blur_fixed':'ぼかしツールが動作中',
       'paint.toast_invert_sel':'選択範囲を反転',
@@ -1836,7 +1836,7 @@
       'common.docs':'Doku','common.community':'Community','common.report_bug':'Fehler melden',
       'common.check_updates':'Auf Updates prüfen','common.about_float':'Über Float Suite',
 
-      'portal.tagline':'Grenzenlos schaffen.','portal.subtitle':'Vier Offline-Werkzeuge für akademische und kreative Arbeit. Keine Konten. Keine Cloud. Kein Tracking.',
+      'portal.tagline':'Grenzenlos schaffen.','portal.subtitle':'Vier Offline-Werkzeuge für akademische und kreative Arbeit.',
       'portal.launch':'Suite öffnen','portal.whats_inside':'Was drin ist',
       'portal.apps':'Apps','portal.features':'Funktionen','portal.changelog':'Neuigkeiten',
       'portal.stats_apps':'Kreative Apps','portal.stats_offline':'% Offline',
@@ -1896,7 +1896,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 Druck 2480×3508',
-      'paint.toast_magic_implemented':'Zauberstab bereit — klicken für ähnliche Pixel',
+      'paint.toast_magic_implemented':'Zauberstab bereit: klicken für ähnliche Pixel',
       'paint.toast_smudge_fixed':'Verwischen-Werkzeug kalibriert',
       'paint.toast_blur_fixed':'Weichzeichner funktioniert',
       'paint.toast_invert_sel':'Auswahl umgekehrt',
@@ -2126,7 +2126,7 @@
       'common.docs':'Документація','common.community':'Спільнота','common.report_bug':'Повідомити про помилку',
       'common.check_updates':'Перевірити оновлення','common.about_float':'Про Float Suite',
 
-      'portal.tagline':'Створюйте без обмежень.','portal.subtitle':'Чотири офлайн-інструменти для академічної та творчої роботи. Без акаунтів. Без хмари. Без стеження.',
+      'portal.tagline':'Створюйте без обмежень.','portal.subtitle':'Чотири офлайн-інструменти для академічної та творчої роботи.',
       'portal.launch':'Відкрити suite','portal.whats_inside':'Що всередині',
       'portal.apps':'Додатки','portal.features':'Можливості','portal.changelog':'Новини',
       'portal.stats_apps':'Творчі додатки','portal.stats_offline':'% Офлайн',
@@ -2138,7 +2138,7 @@
       'portal.feature_offline_title':'Справді офлайн','portal.feature_offline_desc':'Без сервера. Без телеметрії. Файли ніколи не залишають пристрій. Працює в літаку.',
       'portal.feature_private_title':'Приватність насамперед','portal.feature_private_desc':'Без акаунтів, без кук, без аналітики. Ваша робота лишається лише в браузері.',
       'portal.feature_fast_title':'Швидко й легко','portal.feature_fast_desc':'Чистий JavaScript. Без фреймворків. Відкривається миттєво навіть на п\'ятирічному ноутбуці.',
-      'portal.feature_open_title':'Відкриті формати','portal.feature_open_desc':'Експорт у стандартні PNG, SVG, PDF, DOCX та ODT. Ваша робота — ваша.',
+      'portal.feature_open_title':'Відкриті формати','portal.feature_open_desc':'Експорт у стандартні PNG, SVG, PDF, DOCX та ODT. Ваша робота: ваша.',
       'portal.feature_multi_title':'Багатомовність','portal.feature_multi_desc':'Вісім мов із коробки. Перемикайте в будь-який час із меню.',
       'portal.feature_themes_title':'Світла й темна','portal.feature_themes_desc':'Синхронізується з системою або оберіть. Зберігається між сесіями.',
       'portal.power_title':'Для справжньої роботи','portal.power_subtitle':'Під капотом',
@@ -2186,7 +2186,7 @@
       'paint.preset_hd':'HD 1280×720','paint.preset_fhd':'Full HD 1920×1080',
       'paint.preset_4k':'4K 3840×2160','paint.preset_insta':'Instagram 1080×1080',
       'paint.preset_a4':'A4 друк 2480×3508',
-      'paint.toast_magic_implemented':'Чарівна паличка готова — клікніть для вибору схожих пікселів',
+      'paint.toast_magic_implemented':'Чарівна паличка готова: клікніть для вибору схожих пікселів',
       'paint.toast_smudge_fixed':'Розмазування калібровано',
       'paint.toast_blur_fixed':'Розмиття працює',
       'paint.toast_invert_sel':'Виділення інвертовано',
@@ -2325,7 +2325,7 @@
       'thesis.toast_invalid_regex':'Невірний регулярний вираз','thesis.toast_not_found':'Не знайдено',
       'thesis.toast_replace_done':'Замінено {count} входжень','thesis.toast_footnote':'Виноску вставлено',
       'thesis.toast_quota':'Перевищено ліміт сховища',
-      'thesis.toast_zen':'Режим дзен. Вихід — F11 або Esc.',
+      'thesis.toast_zen':'Режим дзен. Вихід: F11 або Esc.',
       'thesis.toast_image_required':'Виберіть файл або введіть URL','thesis.toast_url_required':'Потрібна URL',
       'thesis.footnote_sample':'Текст виноски',
       'notes.title':'Notebase','notes.tagline':'Локальна база знань у Markdown',
@@ -2339,7 +2339,7 @@
       'notes.toast_created':'Нотатку створено','notes.toast_deleted':'Нотатку видалено','notes.toast_saved':'Нотатку збережено',
       'notes.toast_imported':'Імпортовано: {name}',
       'notes.welcome_title':'Ласкаво просимо до Notebase',
-      'notes.welcome_body':'Почніть друкувати, щоб перетворити думки на нотатки. Все зберігається локально у браузері.\n\n## Як це працює\n\n- Пишіть **Markdown** у лівій панелі.\n- Права панель показує попередній перегляд.\n- Зв\'язуйте нотатки подвійними дужками: [[Ласкаво просимо до Notebase]].\n- Використовуйте #теги для організації.\n\n## Спробуйте\n\nСтворюйте більше нотаток — вони з\'являться у бічній панелі. Натисніть **Alt** для пошуку команд, **Ctrl+E** для експорту.',
+      'notes.welcome_body':'Почніть друкувати, щоб перетворити думки на нотатки. Все зберігається локально у браузері.\n\n## Як це працює\n\n- Пишіть **Markdown** у лівій панелі.\n- Права панель показує попередній перегляд.\n- Зв\'язуйте нотатки подвійними дужками: [[Ласкаво просимо до Notebase]].\n- Використовуйте #теги для організації.\n\n## Спробуйте\n\nСтворюйте більше нотаток: вони з\'являться у бічній панелі. Натисніть **Alt** для пошуку команд, **Ctrl+E** для експорту.',
       'thesis.no_docs':'Документів ще немає. Збережіть свою роботу, щоб почати список.',
       'thesis.empty_stats':'Почніть друкувати, щоб побачити статистику.'
     }

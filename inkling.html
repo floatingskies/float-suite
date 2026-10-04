@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inkling — Float Suite</title>
+<title>Inkling | Float Suite</title>
 <link rel="icon" type="image/svg+xml" href="favicons/inkling.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/inkling-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicons/inkling-16.png">
@@ -44,14 +44,14 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 
 /* Left toolbar */
 #toolbar{width:var(--toolbar-w);background:var(--c-panel);border-right:var(--bw-sm) solid var(--c-border);overflow-y:auto;display:flex;flex-direction:column;padding:8px 0;gap:4px;align-items:center;flex-shrink:0}
-.tool-btn{width:38px;height:38px;background:var(--c-surface);border:2px solid var(--c-border);cursor:pointer;display:grid;place-items:center;font-size:13px;box-shadow:2px 2px 0 var(--c-border);transition:transform .1s,background .1s}
+.tool-btn{width:38px;height:38px;background:var(--c-surface);border:2px solid var(--c-border);cursor:pointer;display:grid;place-items:center;font-size:13px;box-shadow:2px 2px 0 var(--c-border);transition:none}
 .tool-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--c-border)}
 .tool-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--c-border)}
 .tool-btn.active{background:var(--c-pink);color:#000}
 .tool-sep{width:60%;height:1px;background:var(--c-border);margin:6px 0;opacity:.3}
 
 /* Viewport */
-#viewport{flex:1;position:relative;overflow:hidden;background:var(--c-bg);background-image:radial-gradient(var(--c-border) 1px, transparent 1px);background-size:20px 20px;background-position:0 0}
+#viewport{flex:1;position:relative;overflow:hidden;touch-action:none;background:var(--c-bg);background-image:radial-gradient(var(--c-border) 1px, transparent 1px);background-size:20px 20px;background-position:0 0}
 #viewport.rulers-on .ruler{display:block}
 #viewport .ruler{position:absolute;background:var(--c-surface);z-index:5;overflow:hidden;pointer-events:none;display:none}
 #viewport .ruler-x{left:0;right:0;top:0;height:18px;border-bottom:1px solid var(--c-border)}
@@ -169,7 +169,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
   <main id="viewport">
     <div id="artboard-container">
       <div id="artboard">
-        <svg id="artboard-svg" width="900" height="600" xmlns="http://www.w3.org/2000/svg"></svg>
+        <svg id="artboard-svg" width="900" height="600" style="touch-action:none;display:block" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
     </div>
     <div class="ruler ruler-x"><canvas id="ruler-x-canvas"></canvas></div>
@@ -387,7 +387,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
   const NS = 'http://www.w3.org/2000/svg';
 
   /* ============================================================
-     INKLING — Vector editor
+     INKLING: Vector editor
      ============================================================ */
   class InklingApp {
     constructor(){
@@ -1488,7 +1488,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
       this.updatePropsFromSelection();
     }
 
-    /* ---- Boolean ops (simple — using SVG masks/clip-paths) ---- */
+    /* ---- Boolean ops (simple: using SVG masks/clip-paths) ---- */
     boolOp(op){
       if(this.selectedIds.size < 2){
         toast('Select 2+ elements for boolean ops', 'warn');
