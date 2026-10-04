@@ -155,6 +155,19 @@ transition:none;
   .folder-item:hover .folder-del{ opacity:.8; }
   .folder-item .folder-del:hover{ color:var(--c-danger); opacity:1; }
   .folder-item.active .folder-del:hover{ color:#fff; }
+  .folder-item.dragover{ background:var(--notes-accent);color:#fff;outline:2px dashed var(--c-text); }
+  .folder-new-input{
+    width:100%;margin-top:6px;font-family:var(--font-ui);font-size:12px;
+    background:var(--c-bg);border:var(--bw-sm) solid var(--notes-accent);
+    color:var(--c-text);padding:5px 7px;outline:none;
+  }
+  .note-item[draggable="true"]{ cursor:grab; }
+  .note-item.dragging{ opacity:.4; }
+  .note-del-btn{
+    background:none;border:var(--bw-sm) solid transparent;cursor:pointer;
+    color:var(--c-muted);padding:2px 5px;
+  }
+  .note-del-btn:hover{ border-color:var(--c-danger); color:var(--c-danger); }
   .view-toggle{ display:flex;gap:4px; }
   .view-btn{
     background:var(--c-bg);border:var(--bw-sm) solid var(--c-border);
@@ -334,6 +347,7 @@ transition:none;
         <button id="btn-new-folder" title="New folder"><i class="fa-solid fa-folder-plus"></i></button>
       </div>
       <div id="folder-list" class="folder-list"></div>
+      <input type="text" id="folder-new" class="folder-new-input" style="display:none" placeholder="Folder name (use / for subfolders)" spellcheck="false">
     </div>
     <div class="sidebar-scroll">
       <div id="note-list" class="note-list"></div>
@@ -353,6 +367,7 @@ transition:none;
       <div class="note-header">
         <input type="text" id="note-title" class="note-title-input" autocomplete="off" spellcheck="false">
         <select id="note-folder" class="note-folder-select" title="Folder"></select>
+        <button class="note-del-btn" id="btn-delete-note" title="Delete note"><i class="fa-solid fa-trash"></i></button>
         <div class="view-toggle">
           <button id="view-edit" class="view-btn" title="Edit"><i class="fa-solid fa-pen"></i></button>
           <button id="view-split" class="view-btn active" title="Split"><i class="fa-solid fa-columns"></i></button>
@@ -613,7 +628,7 @@ transition:none;
         const excerpt = n.body.replace(/\s+/g, ' ').slice(0, 70);
         const tags = this.tagsOf(n);
         pieces.push(
-          '<button class="note-item' + (n.id === this.activeId ? ' active' : '') + '" data-id="' + n.id + '">' +
+          '<button class="note-item' + (n.id === this.activeId ? ' active' : '') + '" data-id="' + n.id + '" draggable="true">' +
             '<span class="ni-title">' + this.esc(n.title || I.t('notes.untitled')) + (n.pinned ? ' <i class="fa-solid fa-thumbtack"></i>' : '') +
               '<button type="button" class="ni-pin" data-pin="' + n.id + '" title="' + I.t('notes.pinned') + '"><i class="fa-solid fa-' + (n.pinned ? 'thumbtack' : 'thumbtack-slash') + '"></i></button>' +
             '</span>' +
@@ -990,26 +1005,20 @@ transition:none;
       temp.appendChild(node);
       document.body.appendChild(temp);
       const run = () => {
-        html2canvas(node, {scale:2, useCORS:true, backgroundColor:'#FFFFFF', scrollY:0}).then(canvas => {
-          temp.remove();
-          FloatExport.canvasToPDF(canvas, this.defaultName(), {background:'#FFFFFF', orientation:'portrait', margin_mm:0})
-            .then(() => { toast(I.t('common.exported'), 'success'); closeModal('modal-export'); })
-            .catch(err => { console.error(err); temp.remove(); toast(I.t('common.failed') + ': ' + err.message, 'danger'); });
-        }).catch(err => {
-          temp.remove();
-          console.error(err);
-          toast(I.t('common.failed') + ': ' + err.message, 'danger');
-        });
+        FloatExport.ensureHTML2Canvas()
+          .then(() => globalThis.html2canvas(node, {scale:2, useCORS:true, backgroundColor:'#FFFFFF', scrollY:0}))
+          .then(canvas => {
+            temp.remove();
+            return FloatExport.canvasToPDF(canvas, this.defaultName(), {background:'#FFFFFF', orientation:'portrait', margin_mm:0});
+          })
+          .then(() => { toast(I.t('common.exported'), 'success'); closeModal('modal-export'); })
+          .catch(err => {
+            temp.remove();
+            console.error(err);
+            toast(I.t('common.failed') + ': ' + err.message, 'danger');
+          });
       };
-      if(typeof html2canvas === 'undefined'){
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload = run;
-        s.onerror = () => { temp.remove(); toast(I.t('thesis.toast_failed_html2canvas'), 'danger'); };
-        document.head.appendChild(s);
-      }else{
-        run();
-      }
+      run();
     }
 
     exportDOCX(){
@@ -1074,15 +1083,30 @@ transition:none;
       });
 
       const btnNewFolder = $('#btn-new-folder');
-      if(btnNewFolder) btnNewFolder.addEventListener('click', () => {
-        const name = prompt(I.t('notes.prompt_folder'), '');
-        if(!name) return;
-        const path = name.trim().replace(/^\/+|\/+$/g, '');
+      const folderInput = $('#folder-new');
+      const showFolderInput = () => {
+        if(!folderInput) return;
+        folderInput.style.display = 'block';
+        folderInput.value = '';
+        folderInput.focus();
+      };
+      const commitFolder = () => {
+        if(!folderInput) return;
+        const path = folderInput.value.trim().replace(/^\/+|\/+$/g, '');
+        folderInput.style.display = 'none';
         if(!path) return;
         if(!this.folders.includes(path)){ this.folders.push(path); this.saveFolders(); }
         this.folderFilter = path;
         this.renderAll();
-      });
+      };
+      if(btnNewFolder) btnNewFolder.addEventListener('click', showFolderInput);
+      if(folderInput){
+        folderInput.addEventListener('keydown', e => {
+          if(e.key === 'Enter'){ e.preventDefault(); commitFolder(); }
+          else if(e.key === 'Escape'){ folderInput.style.display = 'none'; }
+        });
+        folderInput.addEventListener('blur', () => { if(folderInput.value.trim()) commitFolder(); else folderInput.style.display = 'none'; });
+      }
 
       const folderList = $('#folder-list');
       if(folderList) folderList.addEventListener('click', e => {
@@ -1100,6 +1124,51 @@ transition:none;
         }
         const item = e.target.closest('.folder-item');
         if(item){ this.folderFilter = item.dataset.folder; this.renderAll(); }
+      });
+
+      // Drag & drop: drag a note onto a folder to move it there
+      if(folderList){
+        folderList.addEventListener('dragover', e => {
+          const item = e.target.closest('.folder-item');
+          if(!item) return;
+          e.preventDefault();
+          item.classList.add('dragover');
+        });
+        folderList.addEventListener('dragleave', e => {
+          const item = e.target.closest('.folder-item');
+          if(item) item.classList.remove('dragover');
+        });
+        folderList.addEventListener('drop', e => {
+          const item = e.target.closest('.folder-item');
+          if(!item) return;
+          e.preventDefault();
+          item.classList.remove('dragover');
+          const id = e.dataTransfer.getData('text/plain');
+          const n = this.byId(id);
+          if(!n) return;
+          const target = item.dataset.folder;
+          n.folder = (target === '__all__') ? '' : target;
+          n.modified = Date.now();
+          this.persist(true);
+          this.renderAll();
+          toast(this.esc(n.title || I.t('notes.untitled')) + ' → ' + (n.folder || I.t('notes.root')), 'success', 1400);
+        });
+      }
+
+      const delNoteBtn = $('#btn-delete-note');
+      if(delNoteBtn) delNoteBtn.addEventListener('click', () => this.askDelete(this.activeId));
+
+      // Drag a note from the list
+      $('#note-list').addEventListener('dragstart', e => {
+        const item = e.target.closest('.note-item');
+        if(!item) return;
+        item.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', item.dataset.id);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      $('#note-list').addEventListener('dragend', e => {
+        const item = e.target.closest('.note-item');
+        if(item) item.classList.remove('dragging');
       });
 
       $('#note-list').addEventListener('click', e => {

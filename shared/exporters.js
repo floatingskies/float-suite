@@ -11,8 +11,18 @@
 
   const CDN = {
     jspdf:  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-    docx:   'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js',
-    jszip:  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
+    docx:   'https://cdn.jsdelivr.net/npm/docx@9.8.1/dist/index.umd.cjs',
+    jszip:  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    html2canvas: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+  };
+
+  /* Bundled copies shipped with the suite: exports work fully offline.
+     The CDN is only a fallback for odd packaging situations. */
+  const VENDOR = {
+    jspdf:  'shared/vendor/jspdf.umd.min.js',
+    docx:   'shared/vendor/docx.umd.js',
+    jszip:  'shared/vendor/jszip.min.js',
+    html2canvas: 'shared/vendor/html2canvas.min.js'
   };
 
   const _loaded = {};
@@ -27,23 +37,37 @@
     });
   }
 
+  /* Load a bundled library, then fall back to the CDN if the local copy is missing. */
+  function loadLib(name){
+    const local = VENDOR[name];
+    if(local) return loadScript(local).catch(() => loadScript(CDN[name]));
+    return loadScript(CDN[name]);
+  }
+  function ensureHTML2Canvas(){
+    if(global.html2canvas) return Promise.resolve(global.html2canvas);
+    return loadLib('html2canvas').then(() => {
+      if(!global.html2canvas) throw new Error('html2canvas not available');
+      return global.html2canvas;
+    });
+  }
+
   function ensureJSPDF(){
     if(global.jspdf && global.jspdf.jsPDF) return Promise.resolve(global.jspdf.jsPDF);
-    return loadScript(CDN.jspdf).then(() => {
+    return loadLib('jspdf').then(() => {
       if(!global.jspdf || !global.jspdf.jsPDF) throw new Error('jsPDF not available');
       return global.jspdf.jsPDF;
     });
   }
   function ensureDocx(){
     if(global.docx) return Promise.resolve(global.docx);
-    return loadScript(CDN.docx).then(() => {
+    return loadLib('docx').then(() => {
       if(!global.docx) throw new Error('docx library not available');
       return global.docx;
     });
   }
   function ensureJSZip(){
     if(global.JSZip) return Promise.resolve(global.JSZip);
-    return loadScript(CDN.jszip).then(() => {
+    return loadLib('jszip').then(() => {
       if(!global.JSZip) throw new Error('JSZip not available');
       return global.JSZip;
     });
@@ -534,7 +558,7 @@ ${entries}
     saveBlob, sanitizeFilename,
     canvasToPDF, svgToPDF,
     htmlToDocx, htmlToODT,
-    ensureJSPDF, ensureDocx, ensureJSZip
+    ensureJSPDF, ensureDocx, ensureJSZip, ensureHTML2Canvas
   };
 
 })(window);

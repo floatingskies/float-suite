@@ -84,10 +84,22 @@ body{display:flex;flex-direction:column}
 /* Workspace */
 #workspace{flex:1;overflow:auto;background:var(--c-bg);padding:30px 0;position:relative;display:flex;flex-direction:column;align-items:center}
 #paper{
-  background:#fff;border:none;
+  /* Page sheets: every --page-h starts a new sheet, so long documents
+     no longer look like one endless sheet. */
+  --page-h:29.7cm;
+  background:
+    repeating-linear-gradient(to bottom,
+      #fff 0,
+      #fff calc(var(--page-h) - 7mm),
+      var(--c-bg) calc(var(--page-h) - 7mm),
+      var(--c-bg) calc(var(--page-h) - 5mm),
+      #b9b9c6 calc(var(--page-h) - 5mm),
+      #b9b9c6 calc(var(--page-h) - 4.2mm),
+      #fff calc(var(--page-h) - 4.2mm));
+  border:none;
   width:210mm;min-height:297mm;
   padding:3cm 2cm 2cm 3cm;
-  box-shadow:0 0 0 1px var(--c-border), 12px 12px 0 rgba(0,0,0,.06);
+  box-shadow:0 0 0 1px var(--c-border);
   font-family:'Times New Roman', serif;
   font-size:12pt;
   line-height:1.5;
@@ -98,8 +110,8 @@ body{display:flex;flex-direction:column}
 #paper[data-standard="apa"]{font-family:'Times New Roman',serif;font-size:12pt;line-height:2;padding:2.54cm}
 #paper[data-standard="mla"]{font-family:'Times New Roman',serif;font-size:12pt;line-height:2;padding:2.54cm;margin:0}
 #paper[data-standard="abnt"]{font-family:'Arial',sans-serif;font-size:12pt;line-height:1.5;padding:3cm 2cm 2cm 3cm}
-#paper[data-width="letter"]{width:8.5in;min-height:11in}
-#paper[data-width="full"]{width:auto;max-width:900px;min-height:auto;padding:2cm}
+#paper[data-width="letter"]{width:8.5in;min-height:11in;--page-h:11in}
+#paper[data-width="full"]{width:auto;max-width:900px;min-height:auto;padding:2cm;background:#fff}
 
 #cover-page{display:none;border-bottom:1px solid #000;padding-bottom:2cm;margin-bottom:2cm;text-align:center;min-height:8cm;flex-direction:column;justify-content:center;gap:8px}
 #cover-page.visible{display:flex}
@@ -1168,9 +1180,8 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       const chars = text.length;
       const paras = this.editor.querySelectorAll('p').length;
       const sent = (text.match(/[.!?]+/g) || []).length;
-      // Estimate pages based on words-per-page for the current standard
-      const wpp = this.currentStandard === 'abnt' ? 300 : 250;
-      const pages = Math.max(1, Math.ceil(words / wpp) + (this.cover.classList.contains('visible') ? 1 : 0));
+      // Real page count: measure the paper instead of guessing from word count
+      const pages = this.countPages();
       const readMin = Math.ceil(words / 200);
       $('#stat-words').textContent = words.toLocaleString();
       $('#stat-chars').textContent = chars.toLocaleString();
@@ -1200,6 +1211,24 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       this.updateOutline();
       // Auto-refresh any TOC in the document
       this.updateTOC();
+    }
+
+    /* Count pages from the real layout: content height / page sheet height */
+    countPages(){
+      const width = this.settings.width || 'a4';
+      if(width === 'full'){
+        const h = this.paper.scrollHeight;
+        return Math.max(1, Math.ceil(h / Math.max(1, this.paper.clientHeight || h)));
+      }
+      const pageMm = (width === 'letter') ? 279.4 : 297;
+      const pageWidthMm = (width === 'letter') ? 215.9 : 210;
+      const mmPx = this.paper.clientWidth / pageWidthMm;
+      if(!mmPx || !isFinite(mmPx)) return 1;
+      const cs = getComputedStyle(this.paper);
+      const padTop = parseFloat(cs.paddingTop) || 0;
+      const padBottom = parseFloat(cs.paddingBottom) || 0;
+      const content = Math.max(1, this.paper.scrollHeight - padTop - padBottom);
+      return Math.max(1, Math.ceil(content / (pageMm * mmPx)));
     }
 
     /* ---- Documents ---- */
@@ -1378,6 +1407,9 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       const includePageNums = $('#exp-include-pagenums').checked;
       // Build a clean copy of the paper for export
       const exportNode = this.paper.cloneNode(true);
+      // Exports are plain white pages: no on-screen sheet separators
+      exportNode.style.background = '#fff';
+      exportNode.style.boxShadow = 'none';
       // Reset zoom
       exportNode.style.transform = '';
       exportNode.style.transformOrigin = '';
@@ -1462,28 +1494,19 @@ a{color:#2D7DD2;text-decoration:underline}
       tempContainer.style.background = '#fff';
       tempContainer.appendChild(node);
       document.body.appendChild(tempContainer);
-      // Load html2canvas if needed
-      const doExport = () => {
-        html2canvas(node, {scale:2, useCORS:true, backgroundColor:'#FFFFFF', scrollY:0}).then(canvas => {
+      // Load html2canvas (bundled locally, CDN fallback) then rasterise the page
+      FloatExport.ensureHTML2Canvas()
+        .then(() => globalThis.html2canvas(node, {scale:2, useCORS:true, backgroundColor:'#FFFFFF', scrollY:0}))
+        .then(canvas => {
           tempContainer.remove();
-          FloatExport.canvasToPDF(canvas, name, {background:'#FFFFFF', orientation:'portrait', margin_mm:0})
-            .then(() => { toast(I.t('thesis.toast_export_pdf'), 'success'); closeModal('modal-export'); })
-            .catch(err => { console.error(err); toast(I.t('common.failed') + ': ' + err.message, 'danger'); });
-        }).catch(err => {
+          return FloatExport.canvasToPDF(canvas, name, {background:'#FFFFFF', orientation:'portrait', margin_mm:0});
+        })
+        .then(() => { toast(I.t('thesis.toast_export_pdf'), 'success'); closeModal('modal-export'); })
+        .catch(err => {
           tempContainer.remove();
           console.error(err);
           toast(I.t('common.failed') + ': ' + err.message, 'danger');
         });
-      };
-      if(typeof html2canvas === 'undefined'){
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload = doExport;
-        s.onerror = () => { tempContainer.remove(); toast(I.t('thesis.toast_failed_html2canvas'), 'danger'); };
-        document.head.appendChild(s);
-      }else{
-        doExport();
-      }
     }
     exportDOCX(node, name){
       toast(I.t('thesis.toast_generating', {fmt:'DOCX'}), 'info', 1500);
