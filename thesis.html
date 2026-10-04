@@ -149,7 +149,7 @@ body{display:flex;flex-direction:column}
 #editor-area .toc-num{min-width:30pt;display:inline-block;color:#444;font-family:var(--font-ui);font-size:9pt}
 #editor-area .toc-link{color:#000;text-decoration:none;flex:1;border-bottom:1px dotted transparent}
 #editor-area .toc-link:hover{border-bottom-color:#999}
-#editor-area .toc-empty{font-family:var(--font-ui);font-size:10pt;color:#888;font-style:italic;padding:6pt 0}
+#editor-area .toc-empty{font-family:var(--font-ui);font-size:10pt;color:var(--c-muted);font-style:italic;padding:6pt 0}
 
 #page-numbers{display:none;text-align:center;font-family:'Times New Roman',serif;font-size:10pt;color:#666;padding-top:8pt;border-top:1px solid #eee;margin-top:12pt}
 #page-numbers.visible{display:block}
@@ -1004,22 +1004,20 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       this.saveRange();
       this.restoreRange();
       this.editor.focus();
-      const std = this.currentStandard;
-      const isPt = (std === 'abnt');
       let html = '';
       if(kind === 'abstract'){
-        html = isPt
-          ? '<h1>RESUMO</h1><p>Resumo do trabalho.</p><p><strong>Palavras-chave:</strong> palavra1; palavra2; palavra3.</p>'
-          : '<h1>ABSTRACT</h1><p>Abstract of the work.</p><p><strong>Keywords:</strong> word1; word2; word3.</p>';
+        html = '<h1>' + I.t('thesis.struct_abstract_title') + '</h1>' +
+               '<p>' + I.t('thesis.struct_abstract_body') + '</p>' +
+               '<p><strong>' + I.t('thesis.struct_keywords') + ':</strong> word1; word2; word3.</p>';
       }else if(kind === 'toc'){
-        html = '<h1 data-toc-title="1">' + (isPt ? 'SUMÁRIO' : 'TABLE OF CONTENTS') + '</h1>' +
+        html = '<h1 data-toc-title="1">' + I.t('thesis.struct_toc_title') + '</h1>' +
                '<div class="toc-container" contenteditable="false" data-toc="1"></div>';
       }else if(kind === 'references'){
-        html = '<h1>' + (isPt ? 'REFERÊNCIAS' : 'REFERENCES') + '</h1><p>Use the References menu to insert formatted citations.</p>';
+        html = '<h1>' + I.t('thesis.struct_refs_title') + '</h1><p>' + I.t('thesis.struct_refs_body') + '</p>';
       }else if(kind === 'intro'){
-        html = '<h1>' + (isPt ? '1 INTRODUÇÃO' : '1 INTRODUCTION') + '</h1><p>Introduction text.</p>';
+        html = '<h1>' + I.t('thesis.struct_intro_title') + '</h1><p>' + I.t('thesis.struct_intro_body') + '</p>';
       }else if(kind === 'conclusion'){
-        html = '<h1>' + (isPt ? 'CONSIDERAÇÕES FINAIS' : 'CONCLUSION') + '</h1><p>Conclusion text.</p>';
+        html = '<h1>' + I.t('thesis.struct_concl_title') + '</h1><p>' + I.t('thesis.struct_concl_body') + '</p>';
       }
       document.execCommand('insertHTML', false, html);
       this.updateStats();
@@ -1056,7 +1054,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       });
       const tocHtml = tocItems.length
         ? tocItems.join('')
-        : '<div class="toc-empty">[No headings yet. Add H1/H2/H3 to generate the table of contents.]</div>';
+        : '<div class="toc-empty">[' + I.t('thesis.toc_empty') + ']</div>';
       containers.forEach(c => { c.innerHTML = tocHtml; });
       // Wire up clicks to scroll smoothly
       $$('.toc-link', this.editor).forEach(a => {
@@ -1226,7 +1224,7 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
         list.appendChild(item);
       });
       if(headings.length === 0){
-        list.innerHTML = '<div style="font-family:var(--font-ui);font-size:10px;color:var(--c-muted)">No headings yet.</div>';
+        list.innerHTML = '<div style="font-family:var(--font-ui);font-size:10px;color:var(--c-muted)">' + I.t('thesis.toc_empty') + '</div>';
       }
     }
 
