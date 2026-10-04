@@ -1,12 +1,13 @@
 {
   "appId": "io.floatsuite.thesis",
   "productName": "Thesis",
-  "copyright": "Copyright \u00a9 2025 Arik Closs Novais",
+  "copyright": "Copyright © 2025 Arik Closs Novais",
   "directories": {
     "output": "electron/dist/thesis",
     "buildResources": "electron/build"
   },
   "files": [
+    "index.html",
     "thesis.html",
     "shared/**/*",
     "favicons/**/*",
@@ -139,6 +140,9 @@
     "artifactName": "Thesis-Portable-${version}-${arch}.exe"
   },
   "extraMetadata": {
-    "main": "electron/main-thesis.js"
+    "main": "electron/main-thesis.js",
+    "name": "thesis",
+    "productName": "Thesis",
+    "description": "Academic word processor with ABNT/APA/MLA export"
   }
 }

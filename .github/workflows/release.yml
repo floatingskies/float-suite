@@ -1,0 +1,61 @@
+name: Auto Tag & Release
+
+# When the version in package.json changes on main, automatically
+#   1. create and push an annotated git tag (vX.Y.Z), and
+#   2. dispatch the Build Native Packages workflow on that tag,
+#      which builds the Linux/macOS/Windows artifacts and publishes
+#      the GitHub Release.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: auto-tag-release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag version bump
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      created: ${{ steps.tag.outputs.created }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version from package.json
+        id: ver
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Create tag if missing
+        id: tag
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          git fetch --tags
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "Tag v${VERSION} already exists, skipping"
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "v${VERSION}" -m "Release v${VERSION}"
+            git push origin "v${VERSION}"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dispatch build workflow on the new tag
+        if: steps.tag.outputs.created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run build.yml --ref "v${{ steps.ver.outputs.version }}"

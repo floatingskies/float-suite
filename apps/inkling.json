@@ -1,12 +1,13 @@
 {
   "appId": "io.floatsuite.inkling",
   "productName": "Inkling",
-  "copyright": "Copyright \u00a9 2025 Arik Closs Novais",
+  "copyright": "Copyright © 2025 Arik Closs Novais",
   "directories": {
     "output": "electron/dist/inkling",
     "buildResources": "electron/build"
   },
   "files": [
+    "index.html",
     "inkling.html",
     "shared/**/*",
     "favicons/**/*",
@@ -139,6 +140,9 @@
     "artifactName": "Inkling-Portable-${version}-${arch}.exe"
   },
   "extraMetadata": {
-    "main": "electron/main-inkling.js"
+    "main": "electron/main-inkling.js",
+    "name": "inkling",
+    "productName": "Inkling",
+    "description": "SVG vector editor with pen, shapes, gradients and boolean ops"
   }
 }

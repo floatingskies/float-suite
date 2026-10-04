@@ -1,12 +1,13 @@
 {
   "appId": "io.floatsuite.paint",
   "productName": "Paint Web",
-  "copyright": "Copyright \u00a9 2025 Arik Closs Novais",
+  "copyright": "Copyright © 2025 Arik Closs Novais",
   "directories": {
     "output": "electron/dist/paint",
     "buildResources": "electron/build"
   },
   "files": [
+    "index.html",
     "paint.html",
     "shared/**/*",
     "favicons/**/*",
@@ -139,6 +140,9 @@
     "artifactName": "PaintWeb-Portable-${version}-${arch}.exe"
   },
   "extraMetadata": {
-    "main": "electron/main-paint.js"
+    "main": "electron/main-paint.js",
+    "name": "paint-web",
+    "productName": "Paint.web",
+    "description": "Raster paint studio with layers, filters and adjustments"
   }
 }
