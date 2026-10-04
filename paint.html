@@ -182,7 +182,7 @@ body{display:flex;flex-direction:column}
 <header class="app-header">
   <div class="header-left">
     <a href="paint.html" class="app-logo">PAINT<span class="logo-suffix">.WEB</span></a>
-    <span class="version-badge">v5.3</span>
+    <span class="version-badge">v5.3.1</span>
   </div>
   <div class="header-right">
     <button class="btn btn-sm" id="btn-import"><i class="fa-solid fa-image"></i> <span data-i18n="common.import">Import</span></button>
@@ -249,7 +249,7 @@ body{display:flex;flex-direction:column}
           <option value="crayon">Crayon</option>
         </select>
         <label data-i18n="common.brush_size">Brush Size</label>
-        <input type="range" id="brush-size" min="1" max="200" value="10">
+        <input type="range" id="brush-size" min="1" max="500" value="10">
         <label data-i18n="common.brush_hardness">Hardness</label>
         <input type="range" id="brush-hardness" min="0" max="100" value="80">
         <label data-i18n="common.brush_opacity">Opacity</label>
@@ -970,8 +970,10 @@ body{display:flex;flex-direction:column}
     },
 
     setBrushSize(v){
-      this.brushSize = clamp(parseInt(v,10) || 1, 1, 500);
-      $('#brush-size').value = this.brushSize;
+      const slider = $('#brush-size');
+      const max = slider ? parseInt(slider.max, 10) || 500 : 500;
+      this.brushSize = clamp(parseInt(v,10) || 1, 1, max);
+      if(slider) slider.value = this.brushSize;
       this.updateBrushPreview();
     },
 
@@ -2539,7 +2541,7 @@ body{display:flex;flex-direction:column}
       });
 
       // Brush controls
-      $('#brush-size').addEventListener('input', e => { this.brushSize = parseInt(e.target.value,10); this.updateBrushPreview(); });
+      $('#brush-size').addEventListener('input', e => this.setBrushSize(e.target.value));
       $('#brush-hardness').addEventListener('input', e => { this.brushHardness = parseInt(e.target.value,10); this.updateBrushPreview(); });
       $('#brush-opacity').addEventListener('input', e => { this.brushOpacity = parseInt(e.target.value,10); });
       $('#brush-flow').addEventListener('input', e => { this.brushFlow = parseInt(e.target.value,10); });
