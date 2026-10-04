@@ -211,10 +211,43 @@
         }));
       }
 
+      /* Inline content of a block element -> TextRuns (keeps the paragraph intact) */
+      function inlineRuns(node, ctx){
+        const runs = [];
+        function collect(el, style){
+          el.childNodes.forEach(c => {
+            if(c.nodeType === 3){
+              if(c.textContent) runs.push(new TextRun(Object.assign({ text: c.textContent }, style)));
+              return;
+            }
+            if(c.nodeType !== 1) return;
+            const t = c.tagName.toLowerCase();
+            if(t === 'br'){ runs.push(new TextRun({ text:'', break: 1 })); return; }
+            if(t === 'b' || t === 'strong') return collect(c, Object.assign({}, style, { bold: true }));
+            if(t === 'i' || t === 'em') return collect(c, Object.assign({}, style, { italics: true }));
+            if(t === 'u') return collect(c, Object.assign({}, style, { underline: {} }));
+            if(t === 's' || t === 'del' || t === 'strike') return collect(c, Object.assign({}, style, { strike: true }));
+            if(t === 'sup') return collect(c, Object.assign({}, style, { superScript: true }));
+            if(t === 'sub') return collect(c, Object.assign({}, style, { subScript: true }));
+            if(t === 'a') return collect(c, Object.assign({}, style, { underline: {} }));
+            collect(c, style);
+          });
+        }
+        collect(node, {
+          bold: !!ctx.bold, italics: !!ctx.italic,
+          underline: ctx.underline ? {} : undefined,
+          strike: !!ctx.strike,
+          color: ctx.color,
+          size: ctx.size ? ctx.size*2 : undefined,
+          font: ctx.font
+        });
+        return runs;
+      }
+
       function walk(node, ctx){
         ctx = ctx || {};
         node.childNodes.forEach(child => {
-          if(child.nodeType === 3){ // text
+          if(child.nodeType === 3){ // loose text, not inside a paragraph
             const text = child.textContent;
             if(text && text.trim()){
               children.push(new Paragraph({
@@ -241,7 +274,26 @@
             case 'h3': children.push(new Paragraph({heading:HeadingLevel.HEADING_3, children:[new TextRun({text:child.textContent, bold:true})]})); break;
             case 'h4': children.push(new Paragraph({heading:HeadingLevel.HEADING_4, children:[new TextRun({text:child.textContent, bold:true})]})); break;
             case 'p':
-              walk(child, ctx);
+              // One paragraph per <p> with the inline formatting kept as runs
+              // inside it. Emitting one paragraph per text node used to shred
+              // sentences into separate lines (and overlap them in Writer).
+              {
+                const runs = inlineRuns(child, ctx);
+                if(runs.length || !child.textContent.trim()){
+                  children.push(new Paragraph({
+                    children: runs,
+                    alignment: ctx.align || AlignmentType.LEFT,
+                    spacing:{after:120}
+                  }));
+                }
+              }
+              break;
+            case 'div':
+              if(child.classList && child.classList.contains('page-break')){
+                children.push(new Paragraph({children:[new PageBreak()]}));
+              }else{
+                walk(child, ctx);
+              }
               break;
             case 'b': case 'strong': walk(child, Object.assign({}, ctx, {bold:true})); break;
             case 'i': case 'em':     walk(child, Object.assign({}, ctx, {italic:true})); break;
@@ -429,10 +481,13 @@
     </style:style>
     <style:style style:name="Body" style:family="paragraph">
       <style:text-properties fo:font-size="12pt"/>
-      <style:paragraph-properties fo:line-height="1.5" fo:margin-bottom="0.2cm"/>
+      <style:paragraph-properties fo:line-height="150%" fo:margin-bottom="0.2cm"/>
     </style:style>
     <style:style style:name="Quote" style:family="paragraph">
       <style:paragraph-properties fo:margin-left="1cm" fo:font-style="italic"/>
+    </style:style>
+    <style:style style:name="PageBreak" style:family="paragraph">
+      <style:paragraph-properties fo:break-before="page"/>
     </style:style>
   </office:styles>
 </office:document-styles>`;
@@ -508,6 +563,14 @@ ${entries}
             break;
           case 'br':
             out.push('<text:line-break/>');
+            break;
+          case 'div':
+            // Page-break markers from the editor become real ODF page breaks
+            if(child.classList && child.classList.contains('page-break')){
+              out.push('<text:p text:style-name="PageBreak"/>');
+            }else{
+              walk(child);
+            }
             break;
           case 'img':{
             const ds = child.getAttribute('data-odt-img');

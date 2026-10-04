@@ -48,6 +48,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 .tool-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--c-border)}
 .tool-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--c-border)}
 .tool-btn.active{background:var(--c-pink);color:#000}
+[data-theme="dark"] .tool-btn.active{background:var(--c-purple);color:#fff}
 .tool-sep{width:60%;height:1px;background:var(--c-border);margin:6px 0;opacity:.3}
 
 /* Viewport */
@@ -73,6 +74,7 @@ body{display:flex;flex-direction:column;background:var(--c-bg)}
 .panel-tab{flex:1;padding:8px 4px;background:transparent;border:none;font-family:var(--font-ui);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--c-text)}
 .panel-tab:hover{background:var(--c-surface2)}
 .panel-tab.active{background:var(--c-pink);color:#000}
+[data-theme="dark"] .panel-tab.active{background:var(--c-purple);color:#fff}
 .panel-content{flex:1;overflow-y:auto}
 .pane{display:none;padding:10px}
 .pane.active{display:block}

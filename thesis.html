@@ -137,7 +137,12 @@ body{display:flex;flex-direction:column}
 #editor-area th,#editor-area td{border:1px solid #000;padding:4pt 6pt;text-align:left}
 #editor-area th{background:#eee;font-weight:700}
 #editor-area hr{border:none;border-top:1px solid #000;margin:12pt 0}
-#editor-area .page-break{page-break-after:always;border-top:1px dashed #999;margin:12pt 0;padding-top:4pt;text-align:center;font-family:var(--font-ui);font-size:9pt;color:#999;text-transform:uppercase}
+#editor-area .page-break{
+  page-break-after:always;break-after:page;
+  border-top:1px dashed #999;margin:12pt 0;padding-top:4pt;
+  text-align:center;font-family:var(--font-ui);font-size:9pt;color:#999;
+  text-transform:uppercase;user-select:none;min-height:1em;
+}
 #editor-area .footnote{font-size:9pt;vertical-align:super;color:var(--c-blue)}
 #editor-area a{color:var(--c-blue);text-decoration:underline}
 #editor-area .toc-container{padding:8pt 0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:8pt 0;font-family:'Times New Roman',serif}
@@ -986,17 +991,43 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
     }
     insertPageBreak(){
       this.saveRange();
+      const sel = window.getSelection();
+      if(!sel.rangeCount || !this.editor.contains(sel.anchorNode)){
+        const r0 = document.createRange();
+        r0.selectNodeContents(this.editor);
+        r0.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(r0);
+      }
+      const r = sel.getRangeAt(0);
       const div = document.createElement('div');
       div.className = 'page-break';
-      div.contentEditable = false;
-      div.textContent = 'Page Break';
-      const sel = window.getSelection();
-      if(sel.rangeCount){
-        const r = sel.getRangeAt(0);
+      div.contentEditable = 'false';
+      div.dataset.pageBreak = '1';
+      div.textContent = I.t('thesis.page_break_marker');
+      // A real break marker plus an empty paragraph, so the caret always has
+      // somewhere to land and typing can continue after the break
+      const tail = document.createElement('p');
+      tail.appendChild(document.createElement('br'));
+      const host = r.startContainer.nodeType === 1
+        ? r.startContainer
+        : r.startContainer.parentElement;
+      const block = host && host !== this.editor ? host.closest('p,li,h1,h2,h3,h4') : null;
+      if(block && this.editor.contains(block)){
+        block.parentNode.insertBefore(tail, block.nextSibling);
+        block.parentNode.insertBefore(div, tail);
+      }else{
         r.deleteContents();
+        r.insertNode(tail);
         r.insertNode(div);
-        r.collapse(false);
       }
+      // put the caret on the new empty paragraph after the break
+      const after = document.createRange();
+      after.setStart(tail, 0);
+      after.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(after);
+      this.editor.focus();
       this.updateStats();
     }
 
@@ -1091,15 +1122,35 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
     insertHTMLAtCursor(html){
       this.restoreRange();
       this.editor.focus();
-      // Make sure the caret really sits inside the editor
       const sel = window.getSelection();
-      if(!sel.rangeCount || !this.editor.contains(sel.anchorNode)){
-        const r = document.createRange();
-        r.selectNodeContents(this.editor);
-        r.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(r);
+      let range = sel.rangeCount ? sel.getRangeAt(0) : null;
+      const usable = r => r && this.editor.contains(r.startContainer) &&
+        !(r.startContainer.nodeType === 1 && r.startContainer.isContentEditable === false);
+      if(!usable(range)){
+        // No usable caret: fall back to the end of the document
+        range = document.createRange();
+        range.selectNodeContents(this.editor);
+        range.collapse(false);
       }
+      // If the caret was parked inside a non-editable block (TOC, footnote
+      // marker, page break), move it just after that block instead
+      let node = range.startContainer;
+      while(node && node !== this.editor){
+        if(node.nodeType === 1 && node.isContentEditable === false){
+          const after = document.createRange();
+          after.setStartAfter(node);
+          after.collapse(true);
+          node = after.startContainer;
+          break;
+        }
+        node = node.parentNode;
+      }
+      if(node && node !== range.startContainer){
+        range.setStart(node, 0);
+        range.collapse(true);
+      }
+      sel.removeAllRanges();
+      sel.addRange(range);
       document.execCommand('insertHTML', false, html);
       this.updateStats();
     }
@@ -1200,10 +1251,12 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
     insertReference(){
       const data = this.getRefData();
       const html = this.formatRef(data);
-      closeModal('modal-ref');
+      // Save the caret before the modal goes away, otherwise it is lost and
+      // the caret ends up nowhere (you cannot type after the citation)
       this.saveRange();
-      this.restoreRange();
-      document.execCommand('insertHTML', false, '<p>' + html + '</p>');
+      closeModal('modal-ref');
+      // Citation in its own paragraph, followed by an empty one to keep typing
+      this.insertHTMLAtCursor('<p>' + html + '</p><p><br></p>');
       toast(I.t('thesis.toast_ref_inserted'), 'success');
       this.updateStats();
     }
@@ -1480,6 +1533,9 @@ footer .f-section .k{color:var(--c-muted);text-transform:uppercase;letter-spacin
       exportNode.querySelectorAll('.page-break').forEach(el => {
         el.textContent = '';
         el.style.borderTop = 'none';
+        el.style.height = '0';
+        el.style.margin = '0';
+        el.style.padding = '0';
       });
 
       if(fmt === 'html'){

@@ -57,6 +57,9 @@
   --theme-transition:none;
   --grain-opacity:.04;
   --radius:0;
+
+  /* Translucent surface used by glass panels (menus, popovers) */
+  --c-glass:rgba(255,255,255,.90);
 }
 
 /* Dark theme: full token override */
@@ -84,6 +87,8 @@
   --c-warn:#FFA94D;
   --c-info:#5BD6FF;
 
+  --c-glass:rgba(22,22,28,.90);
+
   --shadow:6px 6px 0 rgba(255,255,255,.18);
   --shadow-sm:4px 4px 0 rgba(255,255,255,.12);
   --shadow-lg:8px 8px 0 rgba(255,255,255,.22);
@@ -110,6 +115,9 @@ img,svg,canvas{display:block;max-width:100%}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:3px solid var(--c-primary);outline-offset:2px}
+/* Native controls (select popups, date pickers, scrollbars) follow the theme */
+:root{color-scheme:light}
+[data-theme="dark"]{color-scheme:dark}
 
 /* Subtle film grain overlay */
 body::after{
@@ -138,7 +146,7 @@ small{font-size:.85em}
 /* ----- Buttons -------------------------------------------------------- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
+  background:var(--c-glass);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px) saturate(1.2);
   padding:11px 20px;font-family:var(--font-ui);font-weight:700;
   text-transform:uppercase;cursor:pointer;box-shadow:var(--shadow-sm);
   font-size:12px;letter-spacing:.5px;color:var(--c-text);
@@ -150,6 +158,11 @@ small{font-size:.85em}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--shadow-sm)}
 .btn-primary{background:var(--c-primary);color:#fff}
 .btn-danger{background:var(--c-danger);color:#fff}
+/* Dark theme: bright status colours are toned down so buttons keep contrast
+   against the dark panels instead of glowing. */
+[data-theme="dark"] .btn-danger{background:#C42B2B}
+[data-theme="dark"] .badge-danger{background:#C42B2B;color:#fff}
+[data-theme="dark"] .toast.danger{background:#C42B2B;color:#fff}
 .btn-success{background:var(--c-success);color:#000}
 .btn-info{background:var(--c-info);color:#000}
 .btn-dark{background:#000;color:#fff;border-color:#000}
@@ -263,7 +276,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 }
 .hud-dropdown{
   position:absolute;top:100%;left:0;min-width:240px;
-  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
+  background:var(--c-glass);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px) saturate(1.2);
   box-shadow:var(--shadow);padding:6px 0;
   /* Very high z-index so the dropdown is always above app content
      (toolbars, sidebars, viewports, etc.). */
@@ -353,7 +366,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 .shortcuts-overlay.open{opacity:1;visibility:visible}
 .shortcuts-modal{
   width:min(720px,95vw);max-height:88vh;overflow-y:auto;
-  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
+  background:var(--c-glass);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px) saturate(1.2);
   box-shadow:var(--shadow-lg);padding:28px;
 }
 .shortcuts-modal h2{
@@ -390,7 +403,7 @@ label{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-
 }
 .modal-overlay.open{opacity:1;visibility:visible}
 .modal{
-  background:rgba(255,255,255,.92);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px);
+  background:var(--c-glass);border:var(--bw) solid var(--c-border);backdrop-filter:blur(8px) saturate(1.2);
   box-shadow:var(--shadow-lg);width:min(540px,95vw);
   max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;
   transform:none;
