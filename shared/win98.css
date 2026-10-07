@@ -1,0 +1,829 @@
+/* =========================================================================
+   FLOAT SUITE: Windows 98 theme layer
+   -------------------------------------------------------------------------
+   Sits on top of the neo-brutalist design system and re-skins every shared
+   component with the classic Windows 98 look, using 98.css (MIT, vendored
+   in shared/vendor/98css/) as the base for native form controls.
+
+   Load order in every page:
+     shared/float.css  →  shared/vendor/98css/98.css  →  shared/win98.css
+
+   The dark theme ([data-theme="dark"] on <html>, toggled by float.js) is a
+   Win98-compatible "dark gray" scheme: same bevels, darker palette.
+   ========================================================================= */
+
+/* ----- Win98 palette + bevel tokens (light) ----------------------------- */
+:root{
+  /* Face colors */
+  --w98-face:#c0c0c0;          /* button-face / dialog gray   */
+  --w98-light:#dfdfdf;         /* inner light edge            */
+  --w98-highlight:#ffffff;     /* outer highlight edge        */
+  --w98-shadow:#808080;        /* inner shadow edge           */
+  --w98-dark:#0a0a0a;          /* outer frame edge            */
+
+  /* Title bar */
+  --w98-title:#000080;         /* navy                        */
+  --w98-title2:#1084d0;        /* gradient end                */
+  --w98-title-text:#ffffff;
+
+  /* Text & fields */
+  --w98-text:#222222;
+  --w98-muted:#5c5c5c;
+  --w98-field-bg:#ffffff;      /* sunken white fields         */
+  --w98-field-text:#222222;
+  --w98-select:#000080;        /* navy selection              */
+  --w98-select-text:#ffffff;
+  --w98-link:#0000ff;
+  --w98-bluelabel:#000080;     /* blue text on gray face      */
+  --w98-track:#dfdfdf;         /* scrollbar track             */
+
+  --w98-font:"Pixelated MS Sans Serif","MS Sans Serif",Tahoma,Geneva,Arial,sans-serif;
+
+  /* Bevel geometry (mirrors 98.css) */
+  --w98-raise:
+    inset -1px -1px var(--w98-dark), inset 1px 1px var(--w98-highlight),
+    inset -2px -2px var(--w98-shadow), inset 2px 2px var(--w98-light);
+  --w98-raise-win:
+    inset -1px -1px var(--w98-dark), inset 1px 1px var(--w98-light),
+    inset -2px -2px var(--w98-shadow), inset 2px 2px var(--w98-highlight);
+  --w98-press:
+    inset -1px -1px var(--w98-highlight), inset 1px 1px var(--w98-dark),
+    inset -2px -2px var(--w98-light), inset 2px 2px var(--w98-shadow);
+  --w98-default:
+    inset -2px -2px var(--w98-dark), inset 1px 1px var(--w98-dark),
+    inset 2px 2px var(--w98-highlight), inset -3px -3px var(--w98-shadow),
+    inset 3px 3px var(--w98-light);
+  --w98-sink:
+    inset -1px -1px var(--w98-highlight), inset 1px 1px var(--w98-shadow),
+    inset -2px -2px var(--w98-light), inset 2px 2px var(--w98-dark);
+  --w98-sink-thin:
+    inset -1px -1px var(--w98-light), inset 1px 1px var(--w98-shadow);
+  --w98-raise-mini:
+    inset -1px -1px var(--w98-shadow), inset 1px 1px var(--w98-highlight);
+
+  /* Grooved separator (horizontal rules, footer tops, etc.) */
+  --w98-groove-top:1px solid var(--w98-shadow);
+}
+
+/* ----- Win98 palette (dark: "dark gray" scheme) ------------------------- */
+[data-theme="dark"]{
+  --w98-face:#3a3a3a;
+  --w98-light:#4a4a4a;
+  --w98-highlight:#5c5c5c;
+  --w98-shadow:#202020;
+  --w98-dark:#000000;
+
+  --w98-title:#000080;
+  --w98-title2:#0d62a8;
+  --w98-title-text:#ffffff;
+
+  --w98-text:#e8e8e8;
+  --w98-muted:#a8a8a8;
+  --w98-field-bg:#242424;
+  --w98-field-text:#f0f0f0;
+  --w98-select:#000080;
+  --w98-select-text:#ffffff;
+  --w98-link:#66a3ff;
+  --w98-bluelabel:#6ea8ff;
+  --w98-track:#2a2a2a;
+}
+
+/* ----- Remap FLOAT design tokens to the Win98 palette -------------------- */
+:root{
+  --c-bg:var(--w98-face);
+  --c-surface:var(--w98-face);
+  --c-surface2:var(--w98-light);
+  --c-panel:var(--w98-face);
+  --c-text:var(--w98-text);
+  --c-border:var(--w98-shadow);
+  --c-muted:var(--w98-muted);
+
+  --c-primary:var(--w98-select);
+  --c-glass:var(--w98-face);
+
+  --bw:1px;
+  --bw-sm:1px;
+  --shadow:none;
+  --shadow-sm:none;
+  --shadow-lg:none;
+  --shadow-hover:none;
+  --shadow-active:none;
+
+  --font-head:var(--w98-font);
+  --font-ui:var(--w98-font);
+  --font-body:var(--w98-font);
+
+  --grain-opacity:0;
+}
+[data-theme="dark"]{
+  --c-bg:var(--w98-face);
+  --c-surface:var(--w98-face);
+  --c-surface2:var(--w98-light);
+  --c-panel:var(--w98-face);
+  --c-text:var(--w98-text);
+  --c-border:var(--w98-shadow);
+  --c-muted:var(--w98-muted);
+
+  --c-primary:var(--w98-select);
+  --c-glass:var(--w98-face);
+
+  --shadow:none;
+  --shadow-sm:none;
+  --shadow-lg:none;
+  --shadow-hover:none;
+  --shadow-active:none;
+}
+
+/* ----- Base -------------------------------------------------------------- */
+body{
+  background:var(--w98-face);
+  color:var(--w98-text);
+  font-family:var(--w98-font);
+  font-size:12px;
+  -webkit-font-smoothing:none;
+}
+/* Long-form document content keeps smooth rendering */
+#paper,#editor-area,.markdown-body,.note-preview,.note-body{-webkit-font-smoothing:antialiased}
+
+body::after{display:none} /* film grain off: Win98 is clean */
+
+h1,h2,h3,h4,.head{
+  font-family:var(--w98-font);
+  font-weight:700;
+  text-transform:none;
+  letter-spacing:0;
+}
+h1{font-size:28px}
+h2{font-size:22px}
+h3{font-size:16px}
+h4{font-size:13px}
+
+a{color:var(--w98-link)}
+a:focus{outline:1px dotted var(--w98-link)}
+:focus-visible{outline:1px dotted var(--w98-text);outline-offset:1px}
+::selection{background:var(--w98-select);color:var(--w98-select-text)}
+
+label{
+  font-family:var(--w98-font);font-size:11px;font-weight:400;
+  text-transform:none;letter-spacing:0;color:var(--w98-text);
+}
+
+/* ----- Buttons ------------------------------------------------------------- */
+/* Reset the 98.css minimums so icon buttons keep their app-defined sizes. */
+button{min-width:0;min-height:0;padding:2px 8px}
+
+.btn{
+  background:var(--w98-face);
+  border:none;
+  box-shadow:var(--w98-raise);
+  backdrop-filter:none;
+  color:var(--w98-text);
+  font-family:var(--w98-font);font-size:11px;font-weight:400;
+  text-transform:none;letter-spacing:0;
+  padding:4px 14px;min-height:23px;
+  border-radius:0;
+}
+.btn:hover{box-shadow:var(--w98-raise);transform:none}
+.btn:active{box-shadow:var(--w98-press);transform:none}
+.btn:focus{outline:1px dotted var(--w98-dark);outline-offset:-4px}
+.btn:disabled{
+  opacity:1;cursor:default;
+  color:var(--w98-shadow);
+  text-shadow:1px 1px 0 var(--w98-highlight);
+  box-shadow:var(--w98-raise);
+}
+
+/* "Default" (primary) button gets the extra black frame. */
+.btn-primary{background:var(--w98-face);color:var(--w98-text);box-shadow:var(--w98-default)}
+.btn-primary:active{box-shadow:var(--w98-press)}
+
+/* Every other colored variant becomes a regular gray Win98 button. */
+.btn-danger,.btn-success,.btn-info,.btn-dark{background:var(--w98-face);color:var(--w98-text)}
+[data-theme="dark"] .btn-danger{background:var(--w98-face);color:var(--w98-text)}
+.btn-ghost{background:var(--w98-face);box-shadow:var(--w98-raise)}
+.btn-ghost:hover{background:var(--w98-face);box-shadow:var(--w98-raise)}
+.btn-sm{padding:3px 10px;min-height:21px;font-size:11px}
+.btn-xs{padding:2px 8px;min-height:18px;font-size:11px;box-shadow:var(--w98-raise)}
+.btn-icon{padding:3px;min-width:23px}
+
+/* Header buttons sit on the navy title bar: white dotted focus. */
+.app-header .btn:focus{outline-color:#fff}
+
+/* ----- Badges & chips ------------------------------------------------------ */
+.badge{
+  background:var(--w98-face);color:var(--w98-text);
+  box-shadow:var(--w98-raise-mini);
+  font-family:var(--w98-font);font-size:10px;font-weight:400;
+  text-transform:none;letter-spacing:0;padding:2px 7px;
+}
+.badge-primary{background:var(--w98-select);color:#fff;box-shadow:none}
+.badge-success,.badge-danger,.badge-info{background:var(--w98-face);color:var(--w98-text)}
+[data-theme="dark"] .badge-danger{background:var(--w98-face);color:var(--w98-text)}
+.chip{
+  background:var(--w98-face);border:none;box-shadow:var(--w98-raise);
+  font-family:var(--w98-font);font-size:11px;text-transform:none;
+  padding:4px 12px;
+}
+.chip:hover{box-shadow:var(--w98-raise)}
+.chip.active{background:var(--w98-light);color:var(--w98-text);box-shadow:var(--w98-press)}
+
+/* ----- App header = Win98 title bar ---------------------------------------- */
+.app-header{
+  background:linear-gradient(90deg,var(--w98-title),var(--w98-title2)) !important;
+  border-bottom:none !important;
+  box-shadow:none;
+}
+.app-logo{
+  background:transparent !important;border:none !important;box-shadow:none !important;
+  transform:none !important;
+  color:var(--w98-title-text) !important;
+  font-family:var(--w98-font);font-weight:700;font-size:14px;
+  padding:2px 6px;
+}
+.app-logo:hover{transform:none}
+.app-logo .logo-suffix{opacity:.85;font-weight:400}
+.version-badge{
+  background:var(--w98-face) !important;color:var(--w98-text) !important;
+  box-shadow:var(--w98-raise-mini);
+  font-family:var(--w98-font);font-size:9px;letter-spacing:0;
+}
+
+/* ----- HUD menu bar = Win98 menu ------------------------------------------- */
+.hud-menubar{
+  background:var(--w98-face);
+  border-bottom:var(--w98-groove-top);
+  box-shadow:0 1px 0 var(--w98-highlight);
+  font-family:var(--w98-font);font-size:11px;
+}
+.hud-menu-btn{
+  font-family:var(--w98-font);font-size:11px;font-weight:400;
+  text-transform:none;letter-spacing:0;color:var(--w98-text);
+  padding:0 10px;
+}
+.hud-menu-btn:hover,.hud-menu.open .hud-menu-btn{
+  background:var(--w98-select);color:var(--w98-select-text);
+}
+.hud-menu.open .hud-menu-btn{border-left-color:transparent;border-right-color:transparent}
+.hud-dropdown{
+  background:var(--w98-face);backdrop-filter:none;
+  border:none;box-shadow:var(--w98-raise);
+  padding:2px;
+}
+.hud-item{
+  font-family:var(--w98-font);font-size:11px;text-transform:none;letter-spacing:0;
+  color:var(--w98-text);padding:4px 18px;
+}
+.hud-item:hover{background:var(--w98-select);color:var(--w98-select-text)}
+.hud-item:disabled{color:var(--w98-shadow);text-shadow:1px 1px 0 var(--w98-highlight);opacity:1}
+.hud-item:disabled:hover{background:transparent;color:var(--w98-shadow)}
+.hud-item .hud-kbd{font-family:var(--w98-font);font-size:10px;text-transform:none}
+.hud-sep{
+  height:0;background:none;opacity:1;margin:3px 2px;
+  border-top:1px solid var(--w98-shadow);
+  border-bottom:1px solid var(--w98-highlight);
+}
+.hud-lang-select{
+  width:auto;min-width:0;
+  background-color:var(--w98-field-bg);color:var(--w98-field-text);
+  border:none;box-shadow:var(--w98-sink);
+  font-family:var(--w98-font);font-size:11px;font-weight:400;text-transform:none;
+  padding:2px 20px 2px 4px;
+}
+.hud-hint{color:var(--w98-muted);font-size:10px}
+kbd,.hud-hint kbd,.shortcuts-list kbd,.hud-result-kbd{
+  background:var(--w98-face) !important;border:none !important;
+  box-shadow:var(--w98-raise-mini) !important;
+  color:var(--w98-text) !important;
+  font-family:var(--w98-font) !important;font-size:10px;font-weight:400;
+}
+
+/* ----- Search & shortcuts overlays ------------------------------------------ */
+.hud-overlay,.shortcuts-overlay,.modal-overlay{background:rgba(0,0,0,.45);backdrop-filter:none}
+.hud-search-box{
+  background:var(--w98-face);border:none;box-shadow:var(--w98-raise-win);
+  padding:3px;
+}
+.hud-search-input{
+  background:var(--w98-field-bg);color:var(--w98-field-text);
+  box-shadow:var(--w98-sink);
+  font-family:var(--w98-font);font-size:13px;font-weight:400;
+  padding:6px 8px;
+}
+.hud-search-input::placeholder{color:var(--w98-muted);text-transform:none;font-size:11px}
+.hud-results{border-top:none;background:var(--w98-field-bg);box-shadow:var(--w98-sink);margin-top:3px}
+.hud-result{
+  font-family:var(--w98-font);font-size:11px;color:var(--w98-text);
+  border-bottom:none;padding:5px 12px;
+}
+.hud-result:hover,.hud-result.selected{background:var(--w98-select);color:var(--w98-select-text)}
+.hud-empty{font-family:var(--w98-font);font-size:11px;color:var(--w98-muted)}
+.shortcuts-modal{
+  background:var(--w98-face);backdrop-filter:none;
+  border:none;box-shadow:var(--w98-raise-win);padding:3px;
+}
+.shortcuts-modal h2{font-size:16px;padding:6px 8px}
+.shortcuts-modal .modal-sub{
+  font-family:var(--w98-font);font-size:10px;color:var(--w98-muted);
+  text-transform:none;letter-spacing:0;padding:0 8px;
+}
+.shortcuts-grid{padding:0 8px 8px}
+.shortcuts-section h3{
+  font-family:var(--w98-font);font-size:11px;text-transform:none;letter-spacing:0;
+  color:var(--w98-text);
+  border-bottom:1px solid var(--w98-shadow);
+  box-shadow:0 1px 0 var(--w98-highlight);
+  padding-bottom:3px;
+}
+.shortcuts-list li{font-family:var(--w98-font);font-size:11px}
+
+/* ----- Modal = Win98 dialog --------------------------------------------------- */
+.modal{
+  background:var(--w98-face);backdrop-filter:none;
+  border:none;box-shadow:var(--w98-raise-win);padding:3px;
+}
+.modal-header{
+  background:linear-gradient(90deg,var(--w98-title),var(--w98-title2));
+  color:var(--w98-title-text);
+  border-bottom:none;padding:3px 4px 3px 8px;
+}
+.modal-header h3{font-size:12px;font-weight:700;color:var(--w98-title-text)}
+.modal-close{
+  background:var(--w98-face);border:none;box-shadow:var(--w98-raise);
+  color:var(--w98-text);font-family:var(--w98-font);font-size:11px;font-weight:400;
+  width:auto;height:auto;min-width:20px;min-height:16px;padding:0 5px;
+}
+.modal-close:hover{background:var(--w98-face);color:var(--w98-text)}
+.modal-close:active{box-shadow:var(--w98-press)}
+.modal-body{padding:10px}
+.modal-footer{
+  background:var(--w98-face);
+  border-top:1px solid var(--w98-shadow);
+  box-shadow:inset 0 1px 0 var(--w98-highlight);
+  padding:8px 10px;
+}
+
+/* ----- Toast = Win98 message strip -------------------------------------------- */
+.toast{
+  background:var(--w98-face);color:var(--w98-text);
+  border:none;box-shadow:var(--w98-raise);
+  font-family:var(--w98-font);font-size:11px;font-weight:400;
+  text-transform:none;letter-spacing:0;
+  padding:8px 14px;
+}
+/* Semantic variants keep a small colored strip on the left edge. */
+.toast.success,.toast.danger,.toast.warn,.toast.info,
+[data-theme="dark"] .toast.danger{background:var(--w98-face);color:var(--w98-text)}
+.toast.success{box-shadow:var(--w98-raise),inset 4px 0 0 var(--c-success);padding-left:16px}
+.toast.danger{box-shadow:var(--w98-raise),inset 4px 0 0 var(--c-danger);padding-left:16px}
+.toast.warn{box-shadow:var(--w98-raise),inset 4px 0 0 var(--c-warn);padding-left:16px}
+.toast.info{box-shadow:var(--w98-raise),inset 4px 0 0 var(--c-info);padding-left:16px}
+
+/* ----- Loading screen ----------------------------------------------------------- */
+.loading-screen{background:var(--w98-face)}
+.loading-logo{
+  background:linear-gradient(90deg,var(--w98-title),var(--w98-title2));
+  color:var(--w98-title-text);
+  border:none;box-shadow:var(--w98-raise-win);
+  transform:none;
+  font-family:var(--w98-font);font-weight:700;font-size:14px;
+  padding:4px 14px;
+}
+.loading-bar{
+  width:160px;height:14px;background:var(--w98-field-bg);
+  box-shadow:var(--w98-sink);padding:2px;
+}
+.loading-bar-fill{
+  background:linear-gradient(90deg,var(--w98-select) 10px,transparent 10px);
+  background-size:12px 100%;
+}
+
+/* ----- Scrollbars (Firefox + dark WebKit; light WebKit comes from 98.css) ------- */
+*{scrollbar-width:auto;scrollbar-color:var(--w98-face) var(--w98-track)}
+[data-theme="dark"] ::-webkit-scrollbar{background:var(--w98-face)}
+[data-theme="dark"] ::-webkit-scrollbar-corner{background:var(--w98-face)}
+[data-theme="dark"] ::-webkit-scrollbar-track{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='2' height='2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1 0H0v1h1v1h1V1H1V0z' fill='%23333333'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 0H1v1H0v1h1V1h1V0z' fill='%23282828'/%3E%3C/svg%3E");
+  border-left:none;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{
+  background-color:var(--w98-face);
+  box-shadow:var(--w98-raise);
+  border:none;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background-color:var(--w98-face)}
+[data-theme="dark"] ::-webkit-scrollbar-button{display:block;width:16px;height:17px}
+[data-theme="dark"] ::-webkit-scrollbar-button:vertical:start:decrement{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%234a4a4a'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='%23202020'/%3E%3Cpath fill='%233a3a3a' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 6H7v1H6v1H5v1H4v1h7V9h-1V8H9V7H8V6z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] ::-webkit-scrollbar-button:vertical:end:increment{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%234a4a4a'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='%23202020'/%3E%3Cpath fill='%233a3a3a' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] ::-webkit-scrollbar-button:horizontal:start:decrement{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%234a4a4a'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='%23202020'/%3E%3Cpath fill='%233a3a3a' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 4H8v1H7v1H6v1H5v1h1v1h1v1h1v1h1V4z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] ::-webkit-scrollbar-button:horizontal:end:increment{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%234a4a4a'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='%23202020'/%3E%3Cpath fill='%233a3a3a' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 4H6v7h1v-1h1V9h1V8h1V7H9V6H8V5H7V4z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+
+/* ----- Forms --------------------------------------------------------------------- */
+input[type="text"],input[type="number"],input[type="email"],
+input[type="url"],input[type="password"],input[type="search"],
+select,textarea{
+  background-color:var(--w98-field-bg);
+  color:var(--w98-field-text);
+  border:none;
+  box-shadow:var(--w98-sink);
+  font-family:var(--w98-font);font-size:11px;
+  padding:3px 4px;
+}
+input:focus,select:focus,textarea:focus{
+  border:none;
+  box-shadow:var(--w98-sink);
+  outline:none;
+}
+input:disabled,select:disabled,textarea:disabled,
+input[readonly],textarea[readonly]{
+  background-color:var(--w98-face);color:var(--w98-shadow);
+}
+option{background:var(--w98-field-bg);color:var(--w98-field-text)}
+input[type="range"]{accent-color:var(--w98-select)}
+input[type="color"]{
+  background:var(--w98-face);border:none;box-shadow:var(--w98-sink);
+  padding:2px;cursor:pointer;
+}
+
+/* Checkboxes & radios: the suite wraps them inside <label>, but 98.css hides
+   the native control and draws via input+label siblings — so we restore the
+   control itself and draw the glyph on it. */
+input[type="checkbox"],input[type="radio"]{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  position:static;opacity:1;
+  display:inline-block;flex-shrink:0;
+  width:13px;height:13px;margin:0 5px 0 0;padding:0;
+  vertical-align:-2px;cursor:pointer;
+  background-color:var(--w98-field-bg);
+  box-shadow:var(--w98-sink);
+}
+input[type="radio"]{border-radius:50%}
+input[type="checkbox"]:checked{
+  background:var(--w98-field-bg) url("data:image/svg+xml;charset=utf-8,%3Csvg width='7' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0H6v1H5v1H4v1H3v1H2V3H1V2H0v3h1v1h1v1h1V6h1V5h1V4h1V3h1V0z' fill='%23000'/%3E%3C/svg%3E") center/7px 7px no-repeat;
+}
+input[type="radio"]:checked{
+  background:var(--w98-field-bg) url("data:image/svg+xml;charset=utf-8,%3Csvg width='4' height='4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0H1v1H0v2h1v1h2V3h1V1H3V0z' fill='%23000'/%3E%3C/svg%3E") center/4px 4px no-repeat;
+}
+input[type="checkbox"]:disabled,input[type="radio"]:disabled{
+  background-color:var(--w98-face);opacity:.6;cursor:default;
+}
+input[type="checkbox"]:focus,input[type="radio"]:focus{
+  outline:1px dotted var(--w98-text);outline-offset:1px;
+}
+/* Neutralize the 98.css label-drawn glyphs */
+input[type="checkbox"]+label,input[type="radio"]+label{margin-left:0}
+input[type="checkbox"]+label::before,input[type="checkbox"]+label::after,
+input[type="radio"]+label::before,input[type="radio"]+label::after{
+  content:none;display:none;background:none;box-shadow:none;
+}
+
+/* Dark: light glyphs + dark select arrow */
+[data-theme="dark"] input[type="checkbox"]:checked{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='7' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0H6v1H5v1H4v1H3v1H2V3H1V2H0v3h1v1h1v1h1V6h1V5h1V4h1V3h1V0z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] input[type="radio"]:checked{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='4' height='4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0H1v1H0v2h1v1h2V3h1V1H3V0z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] select{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%234a4a4a'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='%23202020'/%3E%3Cpath fill='%233a3a3a' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23e8e8e8'/%3E%3C/svg%3E");
+}
+
+/* ----- App tool buttons & tabs (beat per-page rules with cosmetic !important) ---- */
+.tool-btn,.insert-btn,.standard-btn,.preset-btn,.fchip,.ref-tab,.panel-tab{
+  background:var(--w98-face) !important;
+  border:none !important;
+  box-shadow:var(--w98-raise) !important;
+  color:var(--w98-text) !important;
+  font-family:var(--w98-font);
+  text-transform:none !important;letter-spacing:0 !important;font-weight:400;
+  transition:none;
+}
+.tool-btn:hover,.insert-btn:hover,.standard-btn:hover,.preset-btn:hover,
+.fchip:hover,.ref-tab:hover,.panel-tab:hover{transform:none}
+.tool-btn:active,.insert-btn:active,.standard-btn:active,.preset-btn:active,
+.fchip:active,.ref-tab:active{box-shadow:var(--w98-press) !important;transform:none}
+.tool-btn.active,.insert-btn.active,.standard-btn.active,.preset-btn.active,
+.fchip.active,.ref-tab.active,.panel-tab.active{
+  background:var(--w98-light) !important;
+  color:var(--w98-text) !important;
+  box-shadow:var(--w98-press) !important;
+}
+.color-block{box-shadow:var(--w98-raise-mini) !important;border:none !important}
+.color-block:hover{transform:none}
+
+/* Rich-text toolbar (Thesis): groove separator + gray hover */
+.rich-toolbar{box-shadow:0 1px 0 var(--w98-highlight)}
+.rich-toolbar button,.rich-toolbar select{
+  border:none !important;box-shadow:var(--w98-raise-mini);
+  background:var(--w98-face);color:var(--w98-text);
+}
+.rich-toolbar button:hover,.rich-toolbar select:hover{background:var(--w98-light);color:var(--w98-text)}
+.rich-toolbar button.active{background:var(--w98-light) !important;color:var(--w98-text) !important;box-shadow:var(--w98-press) !important}
+.rich-toolbar .sep{
+  width:0;background:none;margin:0 4px;height:22px;
+  border-left:1px solid var(--w98-shadow);
+  border-right:1px solid var(--w98-highlight);
+}
+
+/* ----- App status bars / footers -------------------------------------------------- */
+footer,.statusbar,.bottom-bar,#status-bar{
+  background:var(--w98-face) !important;
+  color:var(--w98-text) !important;
+  border-top:var(--w98-groove-top) !important;
+  box-shadow:inset 0 1px 0 var(--w98-highlight);
+  font-family:var(--w98-font);
+}
+footer .k,.status-item .k,footer .f-section .k{color:var(--w98-muted) !important}
+.menubar-status .status-chip{
+  background:var(--w98-face);border:none;box-shadow:var(--w98-raise-mini);
+  color:var(--w98-text);
+}
+.menubar-status .status-chip.active{background:var(--w98-select);color:var(--w98-select-text)}
+
+/* =========================================================================
+   PORTAL (index.html)
+   ========================================================================= */
+.portal-logo{
+  background:transparent !important;border:none !important;box-shadow:none !important;
+  transform:none !important;
+  color:var(--w98-title-text) !important;
+  font-family:var(--w98-font);font-weight:700;font-size:16px;
+  padding:2px 6px;
+}
+.portal-logo:hover{transform:none}
+
+.hero h1{
+  text-shadow:none !important;
+  color:var(--w98-text);
+}
+[data-theme="dark"] .hero h1{text-shadow:none !important}
+.hero-eyebrow{
+  font-family:var(--w98-font);font-size:11px;font-weight:400;
+  color:var(--w98-muted) !important;letter-spacing:0;text-transform:none;
+}
+.hero p{font-size:12px}
+
+/* Hero status card = window with title bar */
+.hero-card{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  transform:none;padding:22px !important;
+}
+.hero-card:hover{transform:none}
+.hero-card-header{
+  background:linear-gradient(90deg,var(--w98-title),var(--w98-title2));
+  border-bottom:none !important;
+  padding:3px 8px !important;margin:-19px -22px 14px !important;
+}
+.hero-card-title{
+  font-family:var(--w98-font);font-size:11px;font-weight:700;
+  text-transform:none;letter-spacing:0;color:var(--w98-title-text);
+}
+.status-row{
+  background:var(--w98-field-bg) !important;border:none !important;box-shadow:var(--w98-sink) !important;
+  font-family:var(--w98-font);font-size:11px;color:var(--w98-field-text);
+  padding:10px;
+}
+.status-key{color:var(--w98-muted);font-size:10px}
+.status-bar{background:var(--w98-field-bg) !important;box-shadow:var(--w98-sink-thin) !important;height:10px;margin-top:8px}
+.status-fill{
+  background:linear-gradient(90deg,var(--w98-select) 6px,transparent 6px) !important;
+  background-size:8px 100% !important;
+}
+.float-tag{
+  background:var(--w98-face) !important;color:var(--w98-text) !important;
+  border:none !important;box-shadow:var(--w98-raise) !important;
+  font-family:var(--w98-font);font-weight:400;font-size:11px;
+  transform:none !important;
+}
+
+/* Stats */
+.stat{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  padding:14px;
+}
+.stat-val{font-family:var(--w98-font);font-weight:700;font-size:24px;color:var(--w98-bluelabel)}
+.stat-label{font-family:var(--w98-font);font-size:10px;text-transform:none;letter-spacing:0;color:var(--w98-muted)}
+
+/* Section headings */
+.section-heading{
+  border-bottom:1px solid var(--w98-shadow);
+  box-shadow:0 1px 0 var(--w98-highlight);
+  padding-bottom:8px;
+}
+.section-heading h2{font-size:22px}
+.section-heading .sub{
+  font-family:var(--w98-font);font-size:11px;color:var(--w98-muted);
+  text-transform:none;letter-spacing:0;
+}
+
+/* App cards = windows with navy title stripes */
+.card{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  padding:3px;
+}
+.card:hover{transform:none;box-shadow:var(--w98-raise-win) !important}
+.card-stripe{
+  height:20px;border-bottom:none !important;
+  background:linear-gradient(90deg,var(--w98-title),var(--w98-title2)) !important;
+}
+.card-body{padding:12px}
+.card-title{font-size:15px;font-weight:700}
+.card-version{
+  font-family:var(--w98-font);font-size:9px;
+  background:var(--w98-face) !important;color:var(--w98-text) !important;
+  box-shadow:var(--w98-raise-mini);padding:2px 5px;
+}
+.card-desc{font-size:12px}
+.tech-chip{
+  font-family:var(--w98-font);font-size:9px;text-transform:none;
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-mini) !important;
+  padding:2px 6px;
+}
+
+/* Feature cards */
+.feature-card{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  padding:14px;
+}
+.feature-card .icon{
+  background:var(--w98-select) !important;border:none !important;box-shadow:var(--w98-raise-mini) !important;
+  color:#fff;
+}
+.feature-card h3{
+  font-family:var(--w98-font);font-size:12px;font-weight:700;
+  text-transform:none;letter-spacing:0;
+}
+.feature-card p{font-size:12px;opacity:1;color:var(--w98-muted)}
+
+/* Power section: framed black screen */
+.power-section{
+  background:#000 !important;color:#e8e8e8;
+  border:none !important;box-shadow:var(--w98-raise-win) !important;
+}
+.power-section h2{color:var(--w98-title2) !important}
+.power-section .sub{
+  color:#9a9a9a;font-family:var(--w98-font);font-size:10px;
+  text-transform:none;letter-spacing:0;
+}
+.power-specs li{
+  font-family:var(--w98-font);font-size:11px;
+  background:rgba(255,255,255,.06) !important;border-left:3px solid var(--w98-title2) !important;
+}
+.terminal{
+  background:#000;color:#00d000;
+  font-family:"JetBrains Mono","Courier New",monospace;font-size:11px;
+  border:none !important;box-shadow:var(--w98-sink) !important;
+}
+.terminal .t-prompt{color:#5bd6ff}
+.terminal .t-cmd{color:#7fb2ff}
+.terminal .t-out{color:#9a9a9a}
+
+/* Changelog */
+.changelog-entry{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  padding:12px;
+}
+.changelog-date{
+  font-family:var(--w98-font);font-size:10px;
+  background:var(--w98-select) !important;color:var(--w98-select-text) !important;
+  border:none !important;box-shadow:var(--w98-raise-mini) !important;
+  padding:3px 8px;
+}
+.changelog-content h3{font-size:13px}
+.changelog-content p{font-size:12px;opacity:1;color:var(--w98-muted)}
+
+/* Launch strip = plain window */
+.launch-strip{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise-win) !important;
+  transform:none !important;padding:20px;
+}
+.launch-strip:hover{transform:none}
+.launch-strip h2{font-size:20px;color:var(--w98-bluelabel)}
+.launch-strip p{
+  font-family:var(--w98-font);font-size:11px;
+  text-transform:none;letter-spacing:0;color:var(--w98-muted);
+}
+
+/* Portal footer */
+footer{
+  border-top:var(--w98-groove-top);
+  box-shadow:inset 0 1px 0 var(--w98-highlight);
+}
+footer h4{
+  font-family:var(--w98-font);font-size:12px;font-weight:700;
+  color:var(--w98-bluelabel) !important;text-transform:none;
+}
+footer a{
+  font-family:var(--w98-font);font-size:11px;
+  color:var(--w98-link) !important;text-decoration:none;
+}
+footer a:hover{color:var(--w98-link) !important;text-decoration:underline}
+footer .footer-bottom{
+  border-top:1px solid var(--w98-shadow) !important;
+  box-shadow:inset 0 1px 0 var(--w98-highlight);
+  font-family:var(--w98-font);font-size:10px;color:var(--w98-muted) !important;
+}
+
+/* Hamburger + back-to-top + scroll progress */
+.hamburger{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise) !important;
+  color:var(--w98-text);font-family:var(--w98-font);font-weight:400;font-size:12px;
+}
+.hamburger:hover{transform:none;box-shadow:var(--w98-raise) !important}
+.hamburger:active{box-shadow:var(--w98-press) !important}
+.back-to-top{
+  background:var(--w98-face) !important;border:none !important;box-shadow:var(--w98-raise) !important;
+  color:var(--w98-text) !important;font-size:12px;
+}
+.back-to-top:hover{transform:none;box-shadow:var(--w98-raise) !important}
+.back-to-top:active{box-shadow:var(--w98-press) !important}
+.scroll-progress{
+  background:var(--w98-select) !important;border-bottom:none !important;
+}
+
+/* =========================================================================
+   98.css component overrides for the dark scheme
+   (98.css hardcodes its light palette; re-theme the pieces the pages use)
+   ========================================================================= */
+[data-theme="dark"] body{color:var(--w98-text)}
+
+[data-theme="dark"] button,
+[data-theme="dark"] input[type="reset"],
+[data-theme="dark"] input[type="submit"]{
+  background:var(--w98-face);
+  box-shadow:var(--w98-raise);
+  color:transparent;text-shadow:0 0 var(--w98-text);
+}
+[data-theme="dark"] button.default,
+[data-theme="dark"] input[type="reset"].default,
+[data-theme="dark"] input[type="submit"].default{box-shadow:var(--w98-default)}
+[data-theme="dark"] button:not(:disabled):active,
+[data-theme="dark"] input[type="reset"]:not(:disabled):active,
+[data-theme="dark"] input[type="submit"]:not(:disabled):active{
+  box-shadow:var(--w98-press);text-shadow:1px 1px var(--w98-text);
+}
+[data-theme="dark"] button:focus,
+[data-theme="dark"] input[type="reset"]:focus,
+[data-theme="dark"] input[type="submit"]:focus{outline:1px dotted var(--w98-text);outline-offset:-4px}
+[data-theme="dark"] :disabled,[data-theme="dark"] :disabled+label,
+[data-theme="dark"] input[readonly],[data-theme="dark"] input[readonly]+label{color:var(--w98-shadow)}
+[data-theme="dark"] :disabled+label,[data-theme="dark"] button:disabled,
+[data-theme="dark"] input[type="reset"]:disabled,
+[data-theme="dark"] input[type="submit"]:disabled{text-shadow:1px 1px 0 var(--w98-highlight)}
+
+[data-theme="dark"] .window{background:var(--w98-face);box-shadow:var(--w98-raise-win)}
+[data-theme="dark"] .status-bar-field{box-shadow:var(--w98-sink-thin);color:var(--w98-text)}
+[data-theme="dark"] legend{background:var(--w98-face)}
+[data-theme="dark"] fieldset{
+  border-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='5' height='5' fill='%23202020' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h5v5H0V2h2v1h1V2H0' fill='%235c5c5c'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h4v4H0V1h1v2h2V1H0'/%3E%3C/svg%3E") 2;
+}
+
+[data-theme="dark"] pre{
+  background:var(--w98-field-bg);color:var(--w98-field-text);
+  box-shadow:var(--w98-sink);
+}
+[data-theme="dark"] ul.tree-view{background:var(--w98-field-bg);box-shadow:var(--w98-sink);color:var(--w98-field-text)}
+[data-theme="dark"] ul.tree-view a{color:var(--w98-field-text)}
+[data-theme="dark"] ul.tree-view a:focus{background:var(--w98-select);color:var(--w98-select-text)}
+[data-theme="dark"] ul.tree-view ul{border-left-color:var(--w98-muted)}
+[data-theme="dark"] ul.tree-view ul>li::before{border-bottom-color:var(--w98-muted)}
+[data-theme="dark"] ul.tree-view ul>li:last-child::after{background:var(--w98-field-bg)}
+[data-theme="dark"] ul.tree-view details>summary::before{
+  background-color:var(--w98-field-bg);border-color:var(--w98-shadow);color:var(--w98-field-text);
+}
+[data-theme="dark"] .sunken-panel{
+  background-color:var(--w98-field-bg);color:var(--w98-field-text);
+  border-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='5' height='5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23202020' d='M0 0h4v1H0z'/%3E%3Cpath fill='%23202020' d='M0 0h1v4H0z'/%3E%3Cpath fill='%23000000' d='M1 1h2v1H1z'/%3E%3Cpath fill='%23000000' d='M1 1h1v2H1z'/%3E%3Cpath fill='%235c5c5c' d='M0 4h5v1H0z'/%3E%3Cpath fill='%235c5c5c' d='M4 0h1v5H4z'/%3E%3Cpath fill='%234a4a4a' d='M3 1h1v3H3z'/%3E%3Cpath fill='%234a4a4a' d='M1 3h3v1H1z'/%3E%3C/svg%3E") 2;
+}
+[data-theme="dark"] table{background-color:var(--w98-field-bg);color:var(--w98-field-text)}
+[data-theme="dark"] table>thead>tr>*{
+  background:var(--w98-face);box-shadow:var(--w98-raise);color:var(--w98-text);
+}
+[data-theme="dark"] table>tbody>tr.highlighted{background:var(--w98-select);color:var(--w98-select-text)}
+[data-theme="dark"] .progress-indicator{box-shadow:var(--w98-sink)}
+[data-theme="dark"] .progress-indicator>.progress-indicator-bar{background-color:var(--w98-select)}
+[data-theme="dark"] .progress-indicator.segmented>.progress-indicator-bar{
+  background-image:linear-gradient(90deg,var(--w98-select) 16px,transparent 0 2px);
+}
+[data-theme="dark"] .field-border{background:var(--w98-field-bg);box-shadow:var(--w98-sink)}
+[data-theme="dark"] .field-border-disabled{background:var(--w98-face);box-shadow:var(--w98-sink)}
+[data-theme="dark"] .status-field-border{background:var(--w98-face);box-shadow:var(--w98-sink-thin)}
+[data-theme="dark"] menu[role="tablist"]>li{
+  background:var(--w98-light);
+  box-shadow:inset -1px 0 var(--w98-dark),inset 1px 1px var(--w98-light),inset -2px 0 var(--w98-shadow),inset 2px 2px var(--w98-highlight);
+}
+[data-theme="dark"] menu[role="tablist"]>li[aria-selected="true"]{background:var(--w98-face)}
+[data-theme="dark"] menu[role="tablist"]>li>a{color:var(--w98-text)}
+
+/* ----- Print ------------------------------------------------------------------------ */
+@media print{
+  .hud-menubar,.app-header,.modal-overlay,.toast-container,
+  .back-to-top,.scroll-progress,.loading-screen{display:none !important}
+}
